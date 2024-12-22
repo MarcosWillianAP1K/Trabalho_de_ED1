@@ -1,6 +1,6 @@
 
 
-typedef struct INFO
+typedef struct 
 {
     signed short int ID;
     char *nome;
@@ -13,7 +13,12 @@ typedef struct INFO
     signed short int mes;
     signed short int ano;
 
-    struct INFO *proximo;
 } INFO;
 
 void liberar_INFO(INFO *info);
+
+
+INFO *escrever_dados();
+
+
+void printar_dados(INFO *info);
