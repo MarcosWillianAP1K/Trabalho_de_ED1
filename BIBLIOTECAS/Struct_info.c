@@ -18,6 +18,7 @@ void digitar_ID(short int *n)
         limpar_buffer();
     }
 
+    //AIAI TESTANDO NE
     getchar();
 }
 
