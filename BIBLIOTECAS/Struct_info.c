@@ -31,9 +31,14 @@ short int digitar_ID()
         limpar_buffer();
     }
 
+<<<<<<< HEAD
     limpar_buffer();
 
     return n;
+=======
+    //AIAI TESTANDO NE
+    getchar();
+>>>>>>> 045c84c98225183a8fd7568815504e80f5f0dd04
 }
 
 char *digitar_nome()
