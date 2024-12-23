@@ -339,7 +339,10 @@ INFO *escrever_dados()
     do
     {
 
-        info->ID = digitar_ID();
+        // info->ID = digitar_ID();
+
+        //Sera atribuido o ID correto depois
+        info->ID = 0;
 
         info->nome = digitar_nome();
 

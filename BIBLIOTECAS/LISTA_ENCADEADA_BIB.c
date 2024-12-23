@@ -19,22 +19,33 @@ void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes)
         *lista = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
         
         (*lista)->informacoes = informacoes;
+        (*lista)->informacoes->ID = 1;
         (*lista)->proximo = NULL;
     }
     else
     {
+        Lista_encadeada *novo_no = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
+        novo_no->informacoes = informacoes;
         
         Lista_encadeada *atual = *lista;
 
-        while (atual->proximo != NULL)
+        while (atual->proximo != NULL && atual->informacoes->ID + 1 == atual->proximo->informacoes->ID)
         {
             atual = atual->proximo;
         }
 
-        atual->proximo = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
-        atual = atual->proximo;
-        atual->informacoes = informacoes;
-        atual->proximo = NULL;
+        novo_no->informacoes->ID = atual->informacoes->ID + 1;
+
+        if (atual->proximo == NULL)
+        {
+            novo_no->proximo = NULL;
+            atual->proximo = novo_no;
+        }
+        else
+        {
+            novo_no->proximo = atual->proximo;
+            atual->proximo = novo_no;
+        }
     }
 }
 
