@@ -4,29 +4,34 @@
 #include <time.h>
 #include <string.h>
 
-// void *iniciar()
-// {
-//     return NULL;
-// }
-
 
 
 void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes)
 {
-    
+    //vazia
     if (*lista == NULL)
     {
         *lista = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
-        
+
         (*lista)->informacoes = informacoes;
         (*lista)->informacoes->ID = 1;
         (*lista)->proximo = NULL;
     }
-    else
+    else if((*lista)->informacoes->ID > 1)
     {
+        //Caso o primeiro ID não seja 1
         Lista_encadeada *novo_no = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
         novo_no->informacoes = informacoes;
-        
+        novo_no->informacoes->ID = 1;
+        novo_no->proximo = *lista;
+        *lista = novo_no;
+    }
+    else
+    {
+        //Caso o ID não seja sequencial ou seja o ultimo
+        Lista_encadeada *novo_no = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
+        novo_no->informacoes = informacoes;
+
         Lista_encadeada *atual = *lista;
 
         while (atual->proximo != NULL && atual->informacoes->ID + 1 == atual->proximo->informacoes->ID)
@@ -50,32 +55,67 @@ void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes)
 }
 
 
+//Fornece o ID do elemento a ser removido
+void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID)
+{
+    Lista_encadeada *anterior = *lista;
+    Lista_encadeada *atual = *lista;
 
+    if (atual->informacoes->ID == ID)
+    {
+        *lista = atual->proximo;
+        liberar_INFO(atual->informacoes);
+        free(atual);
+        return;
+    }
 
-// void criar_lista_encadeada(Lista_encadeada **lista, int tam)
-// {
-//    Lista_encadeada **atual = lista;
+    while (atual != NULL && atual->informacoes->ID != ID)
+    {
+        anterior = atual;
+        atual = atual->proximo;
+    }
 
-//     for (int i = 0; i < tam; i++)
-//     {
-//         adicionar_elemento(atual, i + 1);
-//         atual = &(*atual)->proximo;
-//     }
-// }
+    if (atual == NULL)
+    {
+        printf("ID nao encontrado\n");
+        return;
+    }
 
-// void criar_lista_aleatoria_encadeada(Lista_encadeada **lista, int tam)
-// {
-//     Lista_encadeada **atual = lista;
+    anterior->proximo = atual->proximo;
+    liberar_INFO(atual->informacoes);
+    free(atual);
+}
 
-//     srand(time(NULL));
+//Fornece o endereço do elemento a ser removido, pode ser usado em conjunto com buscar_lista_encadeada
+void remover_elemento_encadeada_por_endereco(Lista_encadeada **lista, Lista_encadeada *endereco)
+{
+    Lista_encadeada *anterior = *lista;
+    Lista_encadeada *atual = *lista;
 
-//     for (int i = 0; i < tam; i++)
-//     {
-//         adicionar_elemento(atual, rand() % tam);
-//         atual = &(*atual)->proximo;
-//     }
-// }
+    if (atual == endereco)
+    {
+        *lista = atual->proximo;
+        liberar_INFO(atual->informacoes);
+        free(atual);
+        return;
+    }
 
+    while (atual != NULL && atual != endereco)
+    {
+        anterior = atual;
+        atual = atual->proximo;
+    }
+
+    if (atual == NULL)
+    {
+        printf("Endereco nao encontrado\n");
+        return;
+    }
+
+    anterior->proximo = atual->proximo;
+    liberar_INFO(atual->informacoes);
+    free(atual);
+}
 
 
 void liberar_memoria_encadeada(Lista_encadeada **lista)
@@ -86,7 +126,7 @@ void liberar_memoria_encadeada(Lista_encadeada **lista)
     {
 
         *lista = (*lista)->proximo;
-        //Temporario, ja que tecnicamente precisamos salvar no historico
+        // Temporario, ja que tecnicamente precisamos salvar no historico
         liberar_INFO(anterior->informacoes);
         free(anterior);
         anterior = *lista;
@@ -97,25 +137,34 @@ void liberar_memoria_encadeada(Lista_encadeada **lista)
 }
 
 
+void printar_lista_encadeada(Lista_encadeada *list)
+{
+    while (list != NULL)
+    {
+        printf("ID: %d\n", list->informacoes->ID);
+        printf("Nome: %s\n", list->informacoes->nome);
+        printf("Nivel de Prioridade: %d\n", list->informacoes->nivel_prioridade);
+        printf("Data: %02d/%02d/%04d\n", list->informacoes->dia, list->informacoes->mes, list->informacoes->ano);
+        printf("Hora: %02d:%02d\n\n", list->informacoes->hora, list->informacoes->minuto);
+
+        list = list->proximo;
+    }
+}
 
 
-// void printar_lista_encadeada(Lista_encadeada *list)
-// {
-//     while (list != NULL)
-//     {
-        
-//         list = list->proximo;
-//     }
-// }
 
+Lista_encadeada *buscar_lista_encadeada(Lista_encadeada *list, int ID)
+{
+    if (list == NULL)
+    {
+        return NULL;
+    }
+    
+    while (list != NULL && list->informacoes->ID != ID)
+    {
+        list = list->proximo;
+    }
 
-// void printar_lista_modificado_encadeada(Lista_encadeada *list)
-// {
-//     while (list != NULL)
-//     {
-//         printf("Endereco atual: %p\n", list);
-//         printf("Aponta: %p\n", list->proximo);
-//         list = list->proximo;
-//     }
-// }
+    return list;
+}
 

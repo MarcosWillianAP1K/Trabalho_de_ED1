@@ -15,24 +15,17 @@ typedef struct Lista_encadeada
 
 
 
-// void *iniciar();
-
-
 
 void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes);
 
+void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID);
 
-// void criar_lista_encadeada(Lista_encadeada **lista, int tam);
-
-// void criar_lista_aleatoria_encadeada(Lista_encadeada **lista, int tam);
-
-
+void remover_elemento_encadeada_por_endereco(Lista_encadeada **lista, Lista_encadeada *endereco);
 
 void liberar_memoria_encadeada(Lista_encadeada **lista);
 
 
+void printar_lista_encadeada(Lista_encadeada *list);
 
-// void printar_lista_encadeada(Lista_encadeada *list);
 
-// void printar_lista_modificado_encadeada(Lista_encadeada *list);
-
+Lista_encadeada *buscar_lista_encadeada(Lista_encadeada *list, int ID);
