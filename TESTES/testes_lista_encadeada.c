@@ -9,7 +9,7 @@ int main()
     Lista_encadeada *lista = NULL;
 
     INFO *teste1 = (INFO *)malloc(sizeof(INFO));
-    teste1->ID = 1;
+    teste1->ID = 0;
     teste1->nome = "teste1";
     teste1->nivel_prioridade = 1;
     teste1->dia = 1;
@@ -19,7 +19,7 @@ int main()
     teste1->minuto = 1;
 
     INFO *teste2 = (INFO *)malloc(sizeof(INFO));
-    teste2->ID = 2;
+    teste2->ID = 0;
     teste2->nome = "teste2";
     teste2->nivel_prioridade = 2;
     teste2->dia = 2;
