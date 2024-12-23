@@ -9,7 +9,9 @@ int main()
     Lista_encadeada *lista = NULL;
 
     INFO *teste1 = escrever_dados();
+    printf("\n");
     INFO *teste2 = escrever_dados();
+    printf("\n");
 
 
     adicionar_elemento_encadeada(&lista, teste1);
@@ -17,14 +19,11 @@ int main()
     adicionar_elemento_encadeada(&lista, teste2);
 
 
-    printf("\nID: %d\n", lista->informacoes->ID);
+    printf("ID: %d\n", lista->informacoes->ID);
     printf("Nome: %s\n", lista->informacoes->nome);
     printf("Nivel de Prioridade: %d\n", lista->informacoes->nivel_prioridade);
-    printf("Minuto: %d\n", lista->informacoes->minuto);
-    printf("Hora: %d\n", lista->informacoes->hora);
-    printf("Dia: %d\n", lista->informacoes->dia);
-    printf("Mes: %d\n", lista->informacoes->mes);
-    printf("Ano: %d\n", lista->informacoes->ano);
+    printf("Data: %02d/%02d/%04d\n", lista->informacoes->dia, lista->informacoes->mes, lista->informacoes->ano);
+    printf("Hora: %02d:%02d\n", lista->informacoes->hora, lista->informacoes->minuto);
     
     
     lista = lista->proximo;
@@ -32,11 +31,8 @@ int main()
     printf("\nID: %d\n", lista->informacoes->ID);
     printf("Nome: %s\n", lista->informacoes->nome);
     printf("Nivel de Prioridade: %d\n", lista->informacoes->nivel_prioridade);
-    printf("Minuto: %d\n", lista->informacoes->minuto);
-    printf("Hora: %d\n", lista->informacoes->hora);
-    printf("Dia: %d\n", lista->informacoes->dia);
-    printf("Mes: %d\n", lista->informacoes->mes);
-    printf("Ano: %d\n", lista->informacoes->ano);
+    printf("Data: %02d/%02d/%04d\n", lista->informacoes->dia, lista->informacoes->mes, lista->informacoes->ano);
+    printf("Hora: %02d:%02d\n", lista->informacoes->hora, lista->informacoes->minuto);
 
 
     liberar_memoria_encadeada(&lista);

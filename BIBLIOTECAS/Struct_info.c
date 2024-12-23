@@ -16,11 +16,8 @@ void printar_dados(INFO *info)
     printf("ID: %d\n", info->ID);
     printf("Nome: %s\n", info->nome);
     printf("Nivel de Prioridade: %d\n", info->nivel_prioridade);
-    printf("Minuto: %d\n", info->minuto);
-    printf("Hora: %d\n", info->hora);
-    printf("Dia: %d\n", info->dia);
-    printf("Mes: %d\n", info->mes);
-    printf("Ano: %d\n", info->ano);
+    printf("Data: %02d/%02d/%04d\n", info->dia, info->mes, info->ano);
+    printf("Hora: %02d:%02d\n", info->hora, info->minuto);
 }
 
 void limpar_buffer()
