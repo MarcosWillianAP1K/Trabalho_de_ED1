@@ -2,8 +2,31 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <time.h>
+
 #include "Struct_info.h"
 
+void printar_dados(INFO *info)
+{
+    if (info == NULL)
+    {
+        return;
+    }
+
+    printf("ID: %d\n", info->ID);
+    printf("Nome: %s\n", info->nome);
+    printf("Nivel de Prioridade: %d\n", info->nivel_prioridade);
+    printf("Minuto: %d\n", info->minuto);
+    printf("Hora: %d\n", info->hora);
+    printf("Dia: %d\n", info->dia);
+    printf("Mes: %d\n", info->mes);
+    printf("Ano: %d\n", info->ano);
+}
+
+void limpar_buffer()
+{
+    fflush(stdin);
+}
 
 void liberar_INFO(INFO *info)
 {
@@ -11,15 +34,34 @@ void liberar_INFO(INFO *info)
     free(info);
 }
 
+bool selecionar_s_ou_n()
+{
+    char c;
 
+    do
+    {
+        scanf("%c", &c);
+        limpar_buffer();
+
+        if (c == 's' || c == 'S')
+        {
+            return true;
+        }
+
+        if (c != 'n' && c != 'N' && c != 's' && c != 'S')
+        {
+            printf("Digite um valor valido: ");
+        }
+
+    } while (c != 'n' && c != 'N' && c != 's' && c != 'S');
+
+    return false;
+}
 
 
 // Sequencia de funções para digitar os dados
-void limpar_buffer()
-{
-    fflush(stdin);
-}
 
+// Digitar ID e apenas para testes, não sera implementado no produto final
 short int digitar_ID()
 {
     short int n;
@@ -43,6 +85,12 @@ char *digitar_nome()
     int tam, cont = 0;
     char *nome = (char *)malloc(TAM_PADRAO * sizeof(char));
 
+    if (nome == NULL)
+    {
+        printf("Erro na alocacao de memoria\n");
+        exit(1);
+    }
+
     printf("Digite o nome: ");
 
     if (fgets(nome, TAM_PADRAO * sizeof(char), stdin) != NULL)
@@ -57,8 +105,8 @@ char *digitar_nome()
 
             if (temp == NULL)
             {
-                printf("Erro na alocacao de memoria\n");
-                return NULL;
+                printf("Erro na realocacao de memoria\n");
+                exit(1);
             }
 
             nome = temp;
@@ -166,10 +214,14 @@ short int digitar_mes()
 
 short int digitar_ano()
 {
+    time_t t = time(NULL);
+    // Pega a data atual
+    struct tm tempo_atual = *localtime(&t);
+
     short int n;
     printf("Digite o ano: ");
-
-    while (scanf("%hd", &n) != 1 || n < 0)
+    //+500 pra não deixar o usuario colocar um ano muito distante
+    while (scanf("%hd", &n) != 1 || n < 0 || n > tempo_atual.tm_year + 1900 + 500)
     {
         printf("Digite um valor valido: ");
         limpar_buffer();
@@ -180,11 +232,14 @@ short int digitar_ano()
     return n;
 }
 
-
-
 // Ave maria, terror de juliana
-bool validar_data(short int dia, short int mes, short int ano)
+bool validar_data(short int dia, short int mes, short int ano, short int hora, short int minuto)
 {
+    time_t t = time(NULL);
+    // Pega a data atual
+    struct tm tempo_atual = *localtime(&t);
+
+    // Verificar se o mes é valido
     if (mes == 2)
     {
         if (ano % 4 == 0 && ano % 100 != 0 || ano % 400 == 0)
@@ -211,22 +266,30 @@ bool validar_data(short int dia, short int mes, short int ano)
         }
     }
 
+    // Verificar se a data digitada é antes da nossa data atual
+    if (ano < tempo_atual.tm_year + 1900 || (ano == tempo_atual.tm_year + 1900 && mes < tempo_atual.tm_mon + 1) || (ano == tempo_atual.tm_year + 1900 && mes == tempo_atual.tm_mon + 1 && dia < tempo_atual.tm_mday))
+    {
+        return false;
+    }
+
+    // Verificar se a hora e minuto é valida
+    if ((ano == tempo_atual.tm_year + 1900 && mes == tempo_atual.tm_mon + 1 && dia == tempo_atual.tm_mday) &&
+        (hora < tempo_atual.tm_hour || (hora == tempo_atual.tm_hour && minuto < tempo_atual.tm_min)))
+    {
+        return false;
+    }
+
     return true;
 }
 
-
 bool verificar(INFO **info)
 {
-    if(!validar_data((*info)->dia, (*info)->mes, (*info)->ano))
+    if (!validar_data((*info)->dia, (*info)->mes, (*info)->ano, (*info)->hora, (*info)->minuto))
     {
-        printf("\nData invalida.\nDeseja reescrever a data? (s/n): ");
-        char c;
-        scanf("%c", &c);
-        limpar_buffer();
-        
-        
+        printf("\nData invalida.");
+        printf("\nDeseja reescrever a data? (s/n): ");
 
-        if(c == 's' || c == 'S')
+        if (selecionar_s_ou_n())
         {
             return true;
         }
@@ -236,60 +299,69 @@ bool verificar(INFO **info)
             *info = NULL;
             printf("\nOperacao cancelada.\n");
         }
-
-
     }
 
+    return false;
+}
+
+bool confirmar_dados(INFO **info)
+{
+    printf("\n");
+    printar_dados(*info);
+
+    printf("\nDeseja confirmar os dados? (s/n): ");
+
+    if (selecionar_s_ou_n())
+    {
+        return true;
+    }
+
+    printf("\nDeseja reescrever os dados? (s/n): ");
+
+    if (selecionar_s_ou_n())
+    {
+        free((*info)->nome);
+        return true;
+    }
+    else
+    {
+        liberar_INFO(*info);
+        *info = NULL;
+        printf("\nOperacao cancelada.\n");
+    }
 
     return false;
 }
 
 
+//Seguinte, essa função permite escrever os dados e retorna um ponteiro com o endereços dos dados, ja tem as blindagens necessarias
 INFO *escrever_dados()
 {
-    INFO *info = (INFO *)malloc(sizeof(INFO));
 
-    
+    INFO *info = (INFO *)malloc(sizeof(INFO));
+    do
+    {
+
         info->ID = digitar_ID();
 
         info->nome = digitar_nome();
 
         info->nivel_prioridade = digitar_nivel_prioridade();
 
-        info->minuto = digitar_minuto();
+        do
+        {
+            info->minuto = digitar_minuto();
 
-        info->hora = digitar_hora();
+            info->hora = digitar_hora();
 
-    do
-    {
+            info->dia = digitar_dia();
 
-        info->dia = digitar_dia();
+            info->mes = digitar_mes();
 
-        info->mes = digitar_mes();
+            info->ano = digitar_ano();
 
-        info->ano = digitar_ano();
-
-    } while (verificar(&info));
+        } while (verificar(&info));
+    } while (info == NULL && confirmar_dados(&info));
 
     return info;
-}
-
-
-
-void printar_dados(INFO *info)
-{
-    if (info == NULL)
-    {
-        return;
-    }
-    
-
-    printf("ID: %d\n", info->ID);
-    printf("Nome: %s\n", info->nome);
-    printf("Nivel de Prioridade: %d\n", info->nivel_prioridade);
-    printf("Minuto: %d\n", info->minuto);
-    printf("Hora: %d\n", info->hora);
-    printf("Dia: %d\n", info->dia);
-    printf("Mes: %d\n", info->mes);
-    printf("Ano: %d\n", info->ano);
 }

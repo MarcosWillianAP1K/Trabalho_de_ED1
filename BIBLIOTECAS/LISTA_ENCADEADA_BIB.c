@@ -1,4 +1,6 @@
 #include "LISTA_ENCADEADA_BIB.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 #include <string.h>
 
@@ -73,6 +75,7 @@ void liberar_memoria_encadeada(Lista_encadeada **lista)
     {
 
         *lista = (*lista)->proximo;
+        //Temporario, ja que tecnicamente precisamos salvar no historico
         liberar_INFO(anterior->informacoes);
         free(anterior);
         anterior = *lista;

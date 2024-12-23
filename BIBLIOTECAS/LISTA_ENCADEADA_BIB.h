@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
+
 #include "Struct_info.h"
 
 
