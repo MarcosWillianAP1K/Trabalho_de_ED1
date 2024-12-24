@@ -25,10 +25,11 @@ void limpar_buffer()
     fflush(stdin);
 }
 
-void liberar_INFO(INFO *info)
+void liberar_INFO(INFO **info)
 {
-    free(info->nome);
-    free(info);
+    free((*info)->nome);
+    free(*info);
+    *info = NULL;
 }
 
 bool selecionar_s_ou_n()
@@ -292,8 +293,7 @@ bool verificar(INFO **info)
         }
         else
         {
-            liberar_INFO(*info);
-            *info = NULL;
+            liberar_INFO(info);
             printf("\nOperacao cancelada.\n");
         }
     }
@@ -322,8 +322,7 @@ bool confirmar_dados(INFO **info)
     }
     else
     {
-        liberar_INFO(*info);
-        *info = NULL;
+        liberar_INFO(info);
         printf("\nOperacao cancelada.\n");
     }
 

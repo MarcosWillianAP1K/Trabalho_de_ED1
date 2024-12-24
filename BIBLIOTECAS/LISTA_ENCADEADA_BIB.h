@@ -4,7 +4,7 @@
 
 typedef struct Lista_encadeada
 {
-    struct INFO *informacoes;
+    INFO *informacoes;
 
     struct Lista_encadeada *proximo;
 

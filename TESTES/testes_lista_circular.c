@@ -1,4 +1,6 @@
-#include "../BIBLIOTECAS/LISTA_ENCADEADA_BIB.h"
+#include "../BIBLIOTECAS/LISTA_CIRCULAR_BIB.h"
+// #include "../BIBLIOTECAS/LISTA_ENCADEADA_BIB.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -6,7 +8,7 @@
 
 int main()
 {
-    Lista_encadeada *lista = NULL;
+    Lista_circular *lista = NULL;
 
     INFO *teste1 = (INFO *)malloc(sizeof(INFO));
     teste1->ID = 0;
@@ -30,23 +32,23 @@ int main()
 
 
 
-    adicionar_elemento_encadeada(&lista, teste1);
+    adicionar_elemento_circular(&lista, teste1);
     
 
-    adicionar_elemento_encadeada(&lista, teste2);
+    adicionar_elemento_circular(&lista, teste2);
 
-    printf("Antes de remover\n");
-    printar_lista_encadeada(lista);
-
-
-    remover_elemento_encadeada_por_endereco(&lista, buscar_lista_encadeada(lista, 1));
-
-    printf("Depois de remover\n");
-
-    printar_lista_encadeada(lista);
+    // printf("Antes de remover\n");
+    // printar_lista_circular(lista);
 
 
-    liberar_memoria_encadeada(&lista);
+    // remover_elemento_circular_por_endereco(&lista, buscar_lista_circular(lista, 1));
+
+    // printf("Depois de remover\n");
+
+    printar_lista_circular(lista);
+
+
+    liberar_memoria_circular(&lista);
 
     
 

@@ -4,11 +4,9 @@
 #include <time.h>
 #include <string.h>
 
-
-
 void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes)
 {
-    //vazia
+    // vazia
     if (*lista == NULL)
     {
         *lista = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
@@ -17,9 +15,9 @@ void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes)
         (*lista)->informacoes->ID = 1;
         (*lista)->proximo = NULL;
     }
-    else if((*lista)->informacoes->ID > 1)
+    else if ((*lista)->informacoes->ID > 1)
     {
-        //Caso o primeiro ID não seja 1
+        // Caso o primeiro ID não seja 1
         Lista_encadeada *novo_no = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
         novo_no->informacoes = informacoes;
         novo_no->informacoes->ID = 1;
@@ -28,7 +26,7 @@ void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes)
     }
     else
     {
-        //Caso o ID não seja sequencial ou seja o ultimo
+        // Caso o ID não seja sequencial ou seja o ultimo
         Lista_encadeada *novo_no = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
         novo_no->informacoes = informacoes;
 
@@ -54,17 +52,21 @@ void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes)
     }
 }
 
-
-//Fornece o ID do elemento a ser removido
+// Fornece o ID do elemento a ser removido
 void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID)
 {
+    if (lista == NULL)
+    {
+        return;
+    }
+
     Lista_encadeada *anterior = *lista;
     Lista_encadeada *atual = *lista;
 
     if (atual->informacoes->ID == ID)
     {
         *lista = atual->proximo;
-        liberar_INFO(atual->informacoes);
+        liberar_INFO(&atual->informacoes);
         free(atual);
         return;
     }
@@ -82,20 +84,25 @@ void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID)
     }
 
     anterior->proximo = atual->proximo;
-    liberar_INFO(atual->informacoes);
+    liberar_INFO(&atual->informacoes);
     free(atual);
 }
 
-//Fornece o endereço do elemento a ser removido, pode ser usado em conjunto com buscar_lista_encadeada
+// Fornece o endereço do elemento a ser removido, pode ser usado em conjunto com buscar_lista_encadeada
 void remover_elemento_encadeada_por_endereco(Lista_encadeada **lista, Lista_encadeada *endereco)
 {
+    if (lista == NULL)
+    {
+        return;
+    }
+
     Lista_encadeada *anterior = *lista;
     Lista_encadeada *atual = *lista;
 
     if (atual == endereco)
     {
         *lista = atual->proximo;
-        liberar_INFO(atual->informacoes);
+        liberar_INFO(&atual->informacoes);
         free(atual);
         return;
     }
@@ -113,13 +120,17 @@ void remover_elemento_encadeada_por_endereco(Lista_encadeada **lista, Lista_enca
     }
 
     anterior->proximo = atual->proximo;
-    liberar_INFO(atual->informacoes);
+    liberar_INFO(&atual->informacoes);
     free(atual);
 }
 
-
 void liberar_memoria_encadeada(Lista_encadeada **lista)
 {
+    if (lista == NULL)
+    {
+        return;
+    }
+
     Lista_encadeada *anterior = *lista;
 
     while (*lista != NULL)
@@ -127,7 +138,7 @@ void liberar_memoria_encadeada(Lista_encadeada **lista)
 
         *lista = (*lista)->proximo;
         // Temporario, ja que tecnicamente precisamos salvar no historico
-        liberar_INFO(anterior->informacoes);
+        liberar_INFO(&anterior->informacoes);
         free(anterior);
         anterior = *lista;
     }
@@ -136,9 +147,13 @@ void liberar_memoria_encadeada(Lista_encadeada **lista)
     lista = NULL;
 }
 
-
 void printar_lista_encadeada(Lista_encadeada *list)
 {
+    if (list == NULL)
+    {
+        return NULL;
+    }
+
     while (list != NULL)
     {
         printf("ID: %d\n", list->informacoes->ID);
@@ -151,15 +166,13 @@ void printar_lista_encadeada(Lista_encadeada *list)
     }
 }
 
-
-
 Lista_encadeada *buscar_lista_encadeada(Lista_encadeada *list, int ID)
 {
     if (list == NULL)
     {
         return NULL;
     }
-    
+
     while (list != NULL && list->informacoes->ID != ID)
     {
         list = list->proximo;
@@ -167,4 +180,3 @@ Lista_encadeada *buscar_lista_encadeada(Lista_encadeada *list, int ID)
 
     return list;
 }
-

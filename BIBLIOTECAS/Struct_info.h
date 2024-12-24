@@ -13,7 +13,7 @@ typedef struct INFO
 
 } INFO;
 
-void liberar_INFO(INFO *info);
+void liberar_INFO(INFO **info);
 
 
 INFO *escrever_dados();
