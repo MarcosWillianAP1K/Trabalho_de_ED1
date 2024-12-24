@@ -156,12 +156,8 @@ void printar_lista_encadeada(Lista_encadeada *list)
 
     while (list != NULL)
     {
-        printf("ID: %d\n", list->informacoes->ID);
-        printf("Nome: %s\n", list->informacoes->nome);
-        printf("Nivel de Prioridade: %d\n", list->informacoes->nivel_prioridade);
-        printf("Data: %02d/%02d/%04d\n", list->informacoes->dia, list->informacoes->mes, list->informacoes->ano);
-        printf("Hora: %02d:%02d\n\n", list->informacoes->hora, list->informacoes->minuto);
-
+        printar_dados(list->informacoes);
+        printf("\n");
         list = list->proximo;
     }
 }

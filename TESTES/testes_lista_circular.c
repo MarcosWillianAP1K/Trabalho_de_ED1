@@ -37,13 +37,13 @@ int main()
 
     adicionar_elemento_circular(&lista, teste2);
 
-    // printf("Antes de remover\n");
-    // printar_lista_circular(lista);
+    printf("Antes de remover\n");
+    printar_lista_circular(lista);
 
-
+    remover_primeiro_elemento_circular(&lista);
     // remover_elemento_circular_por_endereco(&lista, buscar_lista_circular(lista, 1));
 
-    // printf("Depois de remover\n");
+    printf("\nDepois de remover\n");
 
     printar_lista_circular(lista);
 

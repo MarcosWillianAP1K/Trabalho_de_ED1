@@ -37,8 +37,40 @@ void printar_lista_circular(Lista_circular *lista)
     do
     {
         printar_dados(atual->info);
+        printf("\n");
         atual = atual->prox;
     } while (atual != lista);
+}
+
+
+void remover_primeiro_elemento_circular(Lista_circular **lista)
+{
+    if (*lista == NULL)
+    {
+        return;
+    }
+
+    if ((*lista)->prox == *lista)
+    {
+        liberar_INFO(&(*lista)->info);
+        free(*lista);
+        *lista = NULL;
+    }
+    else
+    {
+        Lista_circular *atual = *lista;
+
+        while (atual->prox != *lista)
+        {
+            atual = atual->prox;
+        }
+        
+        atual->prox = (*lista)->prox;
+        atual = *lista;
+        *lista = (*lista)->prox;
+        liberar_INFO(&atual->info);
+        free(atual);
+    }
 }
 
 
