@@ -1,5 +1,5 @@
 #include "Struct_info.h"
-
+#include <stdbool.h>
 
 typedef struct Lista_duplamente_encadeada
 {
@@ -10,6 +10,8 @@ typedef struct Lista_duplamente_encadeada
 
 } Lista_duplamente_encadeada;
 
+void adicionar_elemento_duplamente_encadeada(Lista_duplamente_encadeada **lista, Lista_duplamente_encadeada **meio, INFO *informacao, bool frente_tras);
 
-void adicionar_elemento_duplamente_encadeada(Lista_duplamente_encadeada **lista, INFO *informacao, bool frente_tras);
+void printar_lista_duplamente_encadeada(Lista_duplamente_encadeada *lista);
 
+void liberar_memoria_duplamente_encadeada(Lista_duplamente_encadeada **lista);
