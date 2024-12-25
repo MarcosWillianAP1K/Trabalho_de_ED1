@@ -40,8 +40,8 @@ int main()
     printf("Antes de remover\n");
     printar_lista_circular(lista);
 
-    remover_primeiro_elemento_circular(&lista);
-    // remover_elemento_circular_por_endereco(&lista, buscar_lista_circular(lista, 1));
+    // remover_primeiro_elemento_circular(&lista);
+    remover_elemento_circular_por_endereco(&lista, buscar_lista_circular(lista, 0));
 
     printf("\nDepois de remover\n");
 

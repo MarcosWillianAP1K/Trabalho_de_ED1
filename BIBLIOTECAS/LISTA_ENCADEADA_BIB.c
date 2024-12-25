@@ -91,7 +91,7 @@ void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID)
 // Fornece o endereço do elemento a ser removido, pode ser usado em conjunto com buscar_lista_encadeada
 void remover_elemento_encadeada_por_endereco(Lista_encadeada **lista, Lista_encadeada *endereco)
 {
-    if (lista == NULL)
+    if (lista == NULL || endereco == NULL)
     {
         return;
     }

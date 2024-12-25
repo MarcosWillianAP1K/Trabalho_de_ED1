@@ -25,7 +25,6 @@ void adicionar_elemento_circular(Lista_circular **lista, INFO *informacoes)
     }
 }
 
-
 void printar_lista_circular(Lista_circular *lista)
 {
     if (lista == NULL)
@@ -41,7 +40,6 @@ void printar_lista_circular(Lista_circular *lista)
         atual = atual->prox;
     } while (atual != lista);
 }
-
 
 void remover_primeiro_elemento_circular(Lista_circular **lista)
 {
@@ -64,7 +62,7 @@ void remover_primeiro_elemento_circular(Lista_circular **lista)
         {
             atual = atual->prox;
         }
-        
+
         atual->prox = (*lista)->prox;
         atual = *lista;
         *lista = (*lista)->prox;
@@ -73,7 +71,130 @@ void remover_primeiro_elemento_circular(Lista_circular **lista)
     }
 }
 
+void remover_elemento_circular_por_ID(Lista_circular **lista, int ID)
+{
+    if (*lista == NULL)
+    {
+        return;
+    }
 
+    Lista_circular *atual = *lista;
+    Lista_circular *anterior = *lista;
+
+    do
+    {
+        if (atual->info->ID == ID)
+        {
+            // Caso seja o primeiro elemento
+            if (atual == *lista)
+            {
+                // So um elemento na lista
+                if (atual == atual->prox)
+                {
+                    liberar_INFO(&atual->info);
+                    free(atual);
+                    *lista = NULL;
+                    return;
+                }
+                else
+                {
+                    while (anterior->prox != *lista)
+                    {
+                        anterior = anterior->prox;
+                    }
+                    anterior->prox = atual->prox;
+                    *lista = atual->prox;
+                    liberar_INFO(&atual->info);
+                    free(atual);
+                    return;
+                }
+            }
+            else
+            {
+                anterior->prox = atual->prox;
+                liberar_INFO(&atual->info);
+                free(atual);
+                return;
+            }
+        }
+
+        anterior = atual;
+        atual = atual->prox;
+    } while (atual != *lista);
+}
+
+void remover_elemento_circular_por_endereco(Lista_circular **lista, Lista_circular *endereco)
+{
+    if (*lista == NULL || endereco == NULL)
+    {
+        return;
+    }
+
+    Lista_circular *atual = *lista;
+    Lista_circular *anterior = *lista;
+
+    do
+    {
+        if (atual == endereco)
+        {
+            // Caso seja o primeiro elemento
+            if (atual == *lista)
+            {
+                // So um elemento na lista
+                if (atual == atual->prox)
+                {
+                    liberar_INFO(&atual->info);
+                    free(atual);
+                    *lista = NULL;
+                    return;
+                }
+                else
+                {
+                    while (anterior->prox != *lista)
+                    {
+                        anterior = anterior->prox;
+                    }
+                    anterior->prox = atual->prox;
+                    *lista = atual->prox;
+                    liberar_INFO(&atual->info);
+                    free(atual);
+                    return;
+                }
+            }
+            else
+            {
+                anterior->prox = atual->prox;
+                liberar_INFO(&atual->info);
+                free(atual);
+                return;
+            }
+        }
+
+        anterior = atual;
+        atual = atual->prox;
+    } while (atual != *lista);
+}
+
+Lista_circular *buscar_lista_circular(Lista_circular *lista, int ID)
+{
+    if (lista == NULL)
+    {
+        return NULL;
+    }
+
+    Lista_circular *atual = lista;
+
+    do
+    {
+        if (atual->info->ID == ID)
+        {
+            return atual;
+        }
+        atual = atual->prox;
+    } while (atual != lista);
+
+    return NULL;
+}
 
 void liberar_memoria_circular(Lista_circular **lista)
 {
@@ -81,7 +202,6 @@ void liberar_memoria_circular(Lista_circular **lista)
     {
         return;
     }
-    
 
     Lista_circular *atual = *lista;
     Lista_circular *proximo = NULL;

@@ -56,7 +56,6 @@ bool selecionar_s_ou_n()
     return false;
 }
 
-
 // Sequencia de funções para digitar os dados
 
 // Digitar ID e apenas para testes, não sera implementado no produto final
@@ -329,8 +328,7 @@ bool confirmar_dados(INFO **info)
     return false;
 }
 
-
-//Seguinte, essa função permite escrever os dados e retorna um ponteiro com o endereços dos dados, ja tem as blindagens necessarias
+// Seguinte, essa função permite escrever os dados e retorna um ponteiro com o endereços dos dados, ja tem as blindagens necessarias
 INFO *escrever_dados()
 {
 
@@ -340,7 +338,7 @@ INFO *escrever_dados()
 
         // info->ID = digitar_ID();
 
-        //Sera atribuido o ID correto depois
+        // Sera atribuido o ID correto depois
         info->ID = 0;
 
         info->nome = digitar_nome();

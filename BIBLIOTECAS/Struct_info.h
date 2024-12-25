@@ -3,7 +3,7 @@
 typedef struct INFO
 {
     signed short int ID;
-    char *nome ;
+    char *nome;
     signed short int nivel_prioridade;
     signed short int minuto;
     signed short int hora;
@@ -15,8 +15,6 @@ typedef struct INFO
 
 void liberar_INFO(INFO **info);
 
-
 INFO *escrever_dados();
-
 
 void printar_dados(INFO *info);
