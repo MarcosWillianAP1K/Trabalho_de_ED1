@@ -1,5 +1,10 @@
 
 
+#ifndef STRUCT_INFO_H
+#define STRUCT_INFO_H
+
+
+
 typedef struct INFO
 {
     signed short int ID;
@@ -18,3 +23,5 @@ void liberar_INFO(INFO **info);
 INFO *escrever_dados();
 
 void printar_dados(INFO *info);
+
+#endif // STRUCT_INFO_H
