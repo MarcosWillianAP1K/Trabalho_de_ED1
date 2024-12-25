@@ -9,3 +9,7 @@ typedef struct Lista_duplamente_encadeada
     struct Lista_duplamente_encadeada *anterior;
 
 } Lista_duplamente_encadeada;
+
+
+void adicionar_elemento_duplamente_encadeada(Lista_duplamente_encadeada **lista, INFO *informacao, bool frente_tras);
+
