@@ -109,3 +109,162 @@ void liberar_memoria_duplamente_encadeada(Lista_duplamente_encadeada **lista)
 
     *lista = NULL;
 }
+
+int ID_global;
+
+void *percorrer_lista_esquerda_thread(void *arg)
+{
+    Lista_duplamente_encadeada *aux = (Lista_duplamente_encadeada *)arg;
+
+    while (aux != NULL)
+    {
+        if (aux->informacoes->ID == ID_global)
+        {
+            return aux;
+        }
+
+        aux = aux->anterior;
+    }
+
+    return NULL;
+}
+
+void *percorrer_lista_direita_thread(void *arg)
+{
+    Lista_duplamente_encadeada *aux = (Lista_duplamente_encadeada *)arg;
+
+    while (aux != NULL)
+    {
+        if (aux->informacoes->ID == ID_global)
+        {
+            return aux;
+        }
+
+        aux = aux->proximo;
+    }
+
+    return NULL;
+}
+
+int tamanho_lista_duplamente_encadeada(Lista_duplamente_encadeada *meio)
+{
+    if (meio == NULL)
+    {
+        return 0;
+    }
+
+    int tamanho = 0;
+    Lista_duplamente_encadeada *aux = meio;
+    while (aux != NULL)
+    {
+        tamanho++;
+        aux = aux->proximo;
+    }
+
+    aux = meio->anterior;
+
+    while (aux != NULL)
+    {
+        tamanho++;
+        aux = aux->anterior;
+    }
+
+    return tamanho;
+}
+
+void remover_elemento_duplamente_encadeada_por_ID(Lista_duplamente_encadeada **inicio, Lista_duplamente_encadeada **meio, int ID)
+{
+    if (*meio == NULL)
+    {
+        return;
+    }
+
+    Lista_duplamente_encadeada *remover = NULL;
+
+    if ((*meio)->informacoes->ID == ID)
+    {
+        remover = *meio;
+
+        if (tamanho_lista_duplamente_encadeada(*meio) % 2 == 0)
+        {
+            *meio = (*meio)->anterior;
+        }
+        else
+        {
+            *meio = (*meio)->proximo;
+        }
+    }
+    else
+    {
+        ID_global = ID;
+        pthread_t thread_esquerda;
+        pthread_t thread_direita;
+        Lista_duplamente_encadeada *aux_esquerda = (*meio)->anterior;
+        Lista_duplamente_encadeada *aux_direita = (*meio)->proximo;
+
+        // Pavor de juliana
+        if (pthread_create(&thread_esquerda, NULL, percorrer_lista_esquerda_thread, (void *)aux_esquerda) != 0)
+        {
+            printf("Erro ao criar a thread\n");
+            return;
+        }
+
+        if (pthread_create(&thread_direita, NULL, percorrer_lista_direita_thread, (void *)aux_direita) != 0)
+        {
+            printf("Erro ao criar a thread\n");
+            return;
+        }
+
+        if (pthread_join(thread_esquerda, (void **)&aux_esquerda) != 0)
+        {
+            printf("Erro ao esperar pela thread\n");
+            return;
+        }
+
+        if (pthread_join(thread_direita, (void **)&aux_direita) != 0)
+        {
+            printf("Erro ao esperar pela thread\n");
+            return;
+        }
+
+        if (aux_esquerda != NULL)
+        {
+
+            remover = aux_esquerda;
+            *meio = (*meio)->proximo;
+        }
+
+        if (aux_direita != NULL)
+        {
+
+            remover = aux_direita;
+            *meio = (*meio)->anterior;
+        }
+    }
+
+    if (remover != NULL)
+    {
+
+        if (remover->anterior != NULL)
+        {
+            remover->anterior->proximo = remover->proximo;
+        }
+        else
+        {
+            *inicio = remover->proximo;
+            remover->proximo->anterior = NULL;
+        }
+
+        if (remover->proximo != NULL)
+        {
+            remover->proximo->anterior = remover->anterior;
+        }
+        else
+        {
+            remover->anterior->proximo = NULL;
+        }
+
+        liberar_INFO(&remover->informacoes);
+        free(remover);
+    }
+}

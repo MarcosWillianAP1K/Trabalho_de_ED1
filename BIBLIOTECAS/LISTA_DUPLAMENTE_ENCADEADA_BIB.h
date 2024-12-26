@@ -15,3 +15,5 @@ void adicionar_elemento_duplamente_encadeada(Lista_duplamente_encadeada **lista,
 void printar_lista_duplamente_encadeada(Lista_duplamente_encadeada *lista);
 
 void liberar_memoria_duplamente_encadeada(Lista_duplamente_encadeada **lista);
+
+void remover_elemento_duplamente_encadeada_por_ID(Lista_duplamente_encadeada **inicio ,Lista_duplamente_encadeada **meio, int ID);

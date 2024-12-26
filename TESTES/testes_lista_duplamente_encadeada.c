@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 int main()
 {
     Lista_duplamente_encadeada *lista = NULL;
@@ -57,33 +56,32 @@ int main()
     teste5->hora = 5;
     teste5->minuto = 5;
 
-
-
-
-    
-
     adicionar_elemento_duplamente_encadeada(&lista, &meio, teste1, true);
-    
+
     adicionar_elemento_duplamente_encadeada(&lista, &meio, teste2, true);
-    
+
     adicionar_elemento_duplamente_encadeada(&lista, &meio, teste3, true);
- 
+
     adicionar_elemento_duplamente_encadeada(&lista, &meio, teste4, true);
-    
+
     adicionar_elemento_duplamente_encadeada(&lista, &meio, teste5, true);
 
 
-    // printf("Antes de remover\n");
-    // printar_lista_encadeada(lista);
 
-    // remover_elemento_encadeada_por_endereco(&lista, buscar_lista_encadeada(lista, 1));
+    printf("Antes de remover\n");
+    printar_lista_duplamente_encadeada(lista);
 
-    // printf("Depois de remover\n");
+    printf("Meio: %d\n\n", meio->informacoes->ID);
+
+    
+
+    remover_elemento_duplamente_encadeada_por_ID(&lista,&meio, 1);
+
+    printf("Depois de remover\n");
 
     printar_lista_duplamente_encadeada(lista);
 
-    printf("\nMeio: %d\n", meio->informacoes->ID);
-
+    printf("Meio: %d\n", meio->informacoes->ID);
 
     liberar_memoria_duplamente_encadeada(&lista);
 

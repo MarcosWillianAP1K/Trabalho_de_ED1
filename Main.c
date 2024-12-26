@@ -5,6 +5,7 @@
 #include "BIBLIOTECAS/LISTA_CIRCULAR_BIB.h"
 #include "BIBLIOTECAS/LISTA_ENCADEADA_BIB.h"
 
+
 int main()
 {
     //Acessa o cmd não o powershell, tem diferença de comandos
