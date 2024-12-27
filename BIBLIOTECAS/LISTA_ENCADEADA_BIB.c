@@ -4,6 +4,9 @@
 #include <time.h>
 #include <string.h>
 
+
+
+//Esse adicionar ele adiciona e atribui um ID de forma sequencial
 void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes)
 {
     // vazia
@@ -51,6 +54,51 @@ void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes)
         }
     }
 }
+
+//Esse apenas adiciona ja com base no ID fornecido
+void adicionar_elemento_encadeada_ordernadado_por_ID( Lista_encadeada **lista, INFO *informacoes)
+{
+    if (informacoes->ID < 1 || informacoes == NULL)
+    {
+        printf("ID invalido\n");
+        return;
+    }
+    
+
+
+    if (*lista == NULL)
+    {
+        *lista = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
+        (*lista)->informacoes = informacoes;
+        (*lista)->proximo = NULL;
+        return;
+    }
+
+    Lista_encadeada *novo_no = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
+    novo_no->informacoes = informacoes;
+
+    Lista_encadeada *anterior = *lista;
+    Lista_encadeada *atual = *lista;
+
+    while (atual != NULL && atual->informacoes->ID < novo_no->informacoes->ID)
+    {
+        anterior = atual;
+        atual = atual->proximo;
+    }
+
+    if (atual == *lista)
+    {
+        novo_no->proximo = *lista;
+        *lista = novo_no;
+    }
+    else
+    {
+        novo_no->proximo = anterior->proximo;
+        anterior->proximo = novo_no;
+    }
+}
+
+
 
 // Fornece o ID do elemento a ser removido
 void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID)
