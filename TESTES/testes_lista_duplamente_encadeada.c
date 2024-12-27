@@ -75,15 +75,19 @@ int main()
 
     
 
-    remover_elemento_duplamente_encadeada_por_ID(&lista, 5);
+    // remover_elemento_duplamente_encadeada_por_ID(&lista, 5);
 
-    printf("Depois de remover\n");
+    // printf("Depois de remover\n");
 
-    printar_lista_duplamente_encadeada(lista);
+    // printar_lista_duplamente_encadeada(lista);
 
     
 
-    remover_elemento_duplamente_encadeada_por_endereco(buscar_elemento_duplamente_encadeada_por_ID(lista, 4), &lista);
+    remover_elemento_duplamente_encadeada_por_endereco(busca_binaria_duplamente_encadeada(lista, 6), &lista);
+    remover_elemento_duplamente_encadeada_por_endereco(busca_binaria_duplamente_encadeada(lista, 2), &lista);
+    remover_elemento_duplamente_encadeada_por_endereco(busca_binaria_duplamente_encadeada(lista, 5), &lista);
+
+
 
     printf("Depois de remover\n");
 
