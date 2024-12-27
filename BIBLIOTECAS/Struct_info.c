@@ -6,6 +6,21 @@
 
 #include "Struct_info.h"
 
+void copiar_infos(INFO *info1, INFO *info2)
+{
+    free(info1->nome);
+
+    info1->ID = info2->ID;
+    info1->nome = malloc(strlen(info2->nome) + 1);
+    strcpy(info1->nome, info2->nome);
+    info1->nivel_prioridade = info2->nivel_prioridade;
+    info1->minuto = info2->minuto;
+    info1->hora = info2->hora;
+    info1->dia = info2->dia;
+    info1->mes = info2->mes;
+    info1->ano = info2->ano;
+}
+
 void printar_dados(INFO *info)
 {
     if (info == NULL)
@@ -239,7 +254,7 @@ bool validar_data(short int dia, short int mes, short int ano, short int hora, s
     // Verificar se o mes é valido
     if (mes == 2)
     {
-        if (ano % 4 == 0 && ano % 100 != 0 || ano % 400 == 0)
+        if ((ano % 4 == 0 && ano % 100 != 0) || ano % 400 == 0)
         {
             if (dia > 29)
             {
@@ -279,49 +294,20 @@ bool validar_data(short int dia, short int mes, short int ano, short int hora, s
     return true;
 }
 
-bool verificar(INFO **info)
+bool confirmar_dados(INFO *info)
 {
-    if (!validar_data((*info)->dia, (*info)->mes, (*info)->ano, (*info)->hora, (*info)->minuto))
-    {
-        printf("\nData invalida.");
-        printf("\nDeseja reescrever a data? (s/n): ");
+    printar_dados(info);
 
-        if (selecionar_s_ou_n())
-        {
-            return true;
-        }
-        else
-        {
-            liberar_INFO(info);
-            printf("\nOperacao cancelada.\n");
-        }
-    }
-
-    return false;
-}
-
-bool confirmar_dados(INFO **info)
-{
     printf("\nDeseja confirmar os dados? (s/n): ");
 
-    if (selecionar_s_ou_n())
-    {
-        return true;
-    }
-
-    return false;
+    return selecionar_s_ou_n();
 }
 
-bool reescrever_dados(INFO **info)
+bool reescrever_dados()
 {
     printf("\nDeseja reescrever os dados? (s/n): ");
 
-    if (selecionar_s_ou_n())
-    {
-        return true;
-    }
-
-    return false;
+    return selecionar_s_ou_n();
 }
 
 // Seguinte, essa função permite escrever os dados e retorna um ponteiro com o endereços dos dados, ja tem as blindagens necessarias
@@ -329,47 +315,49 @@ INFO *escrever_dados()
 {
 
     INFO *info = (INFO *)malloc(sizeof(INFO));
-    bool confirma = true;
+
     do
     {
-        do
+        // info->ID = digitar_ID();
+
+        // Sera atribuido o ID correto depois
+        info->ID = 0;
+
+        free(info->nome);
+        info->nome = digitar_nome();
+
+        info->nivel_prioridade = digitar_nivel_prioridade();
+
+        while (1)
         {
+            info->minuto = digitar_minuto();
 
-            // info->ID = digitar_ID();
+            info->hora = digitar_hora();
 
-            // Sera atribuido o ID correto depois
-            info->ID = 0;
+            info->dia = digitar_dia();
 
-            free(info->nome);
-            info->nome = digitar_nome();
+            info->mes = digitar_mes();
 
-            info->nivel_prioridade = digitar_nivel_prioridade();
+            info->ano = digitar_ano();
 
-            do
+            if (!validar_data(info->dia, info->mes, info->ano, info->hora, info->minuto))
             {
-                info->minuto = digitar_minuto();
-
-                info->hora = digitar_hora();
-
-                info->dia = digitar_dia();
-
-                info->mes = digitar_mes();
-
-                info->ano = digitar_ano();
-
-            } while (verificar(&info));
-
-            confirma = true;
-
-            if (info != NULL)
-            {
-                printf("\n");
-                printar_dados(info);
-                confirma = confirmar_dados(&info);
+                printf("\nData/hora invalida.");
+                if (!reescrever_dados())
+                {
+                    liberar_INFO(&info);
+                    break;
+                }
             }
+            else
+            {
+                break;
+            }
+        }
 
-        } while (info == NULL && confirma);
-    } while (!confirma && reescrever_dados(&info));
+        printf("\n");
+
+    } while (info != NULL && !confirmar_dados(info) && reescrever_dados(&info));
 
     return info;
 }
@@ -378,11 +366,14 @@ void editar_dados(INFO **info)
 {
     INFO *nova_info = malloc(sizeof(INFO));
 
+    copiar_infos(nova_info, *info);
+
     char c;
 
     do
-    {   
-        printar_dados(*info);
+    {
+        printar_dados(nova_info);
+        // printar_dados(*info);
 
         printf("\nSelecione o que deseja editar:\n");
         printf("1 - Nome\n");
@@ -390,8 +381,9 @@ void editar_dados(INFO **info)
         printf("3 - Data\n");
         printf("4 - Hora\n");
         printf("5 - Confirmar\n");
-        printf("5 - Cancelar\n");
+        printf("6 - Cancelar\n");
 
+        limpar_buffer();
         scanf("%c", &c);
         limpar_buffer();
 
@@ -407,42 +399,102 @@ void editar_dados(INFO **info)
             break;
 
         case '3':
-            do
+        {
+            short int dia, mes, ano;
+
+            while (1)
             {
-                nova_info->minuto = digitar_minuto();
+                dia = digitar_dia();
 
-                nova_info->hora = digitar_hora();
+                mes = digitar_mes();
 
-                nova_info->dia = digitar_dia();
+                ano = digitar_ano();
 
-                nova_info->mes = digitar_mes();
+                if (validar_data(dia, mes, ano, nova_info->hora, nova_info->minuto))
+                {
+                    nova_info->dia = dia;
+                    nova_info->mes = mes;
+                    nova_info->ano = ano;
+                    break;
+                }
+                else
+                {
+                    printf("\nData invalida.");
+                    printf("\nDeseja reescrever a data? (s/n): ");
 
-                nova_info->ano = digitar_ano();
-
-            } while (verificar(&nova_info));
-            break;
+                    if (!selecionar_s_ou_n())
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+        break;
 
         case '4':
-            nova_info->hora = digitar_hora();
-            break;
+        {
+            short int hora, minuto;
+
+            while (1)
+            {
+                hora = digitar_hora();
+
+                minuto = digitar_minuto();
+
+                if (validar_data(nova_info->dia, nova_info->mes, nova_info->ano, hora, minuto))
+                {
+                    nova_info->hora = hora;
+                    nova_info->minuto = minuto;
+                    break;
+                }
+                else
+                {
+                    printf("\nHora invalida.");
+                    printf("\nDeseja reescrever a hora? (s/n): ");
+
+                    if (!selecionar_s_ou_n())
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        break;
 
         case '5':
-
             printf("\n");
-            printar_dados(nova_info);
-            if (confirmar_dados(&nova_info))
+            if (confirmar_dados(nova_info))
             {
-                liberar_INFO(info);
-                *info = nova_info;
+                copiar_infos(*info, nova_info);
+                liberar_INFO(&nova_info);
+                printf("Dados alterados com sucesso.\n");
+               
             }
+            else
+            {
+                
+            c = '0';
+            }
+
 
             break;
 
         case '6':
 
-            liberar_INFO(&nova_info);
-            printf("Operacao cancelada.\n");
-            return;
+            printf("Deseja cancelar a operacao? (s/n): ");
+
+            if (selecionar_s_ou_n())
+            {
+                liberar_INFO(&nova_info);
+                printf("Operacao cancelada.\n");
+            }
+            else
+            {
+                c = '0';
+            }
+
+            break;
 
         default:
             printf("Digite um valor valido: ");

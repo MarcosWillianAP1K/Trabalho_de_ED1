@@ -20,8 +20,11 @@ typedef struct INFO
 
 void liberar_INFO(INFO **info);
 
+void printar_dados(INFO *info);
+
 INFO *escrever_dados();
 
-void printar_dados(INFO *info);
+void editar_dados(INFO **info);
+
 
 #endif // STRUCT_INFO_H
