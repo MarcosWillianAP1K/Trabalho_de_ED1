@@ -302,9 +302,6 @@ bool verificar(INFO **info)
 
 bool confirmar_dados(INFO **info)
 {
-    printf("\n");
-    printar_dados(*info);
-
     printf("\nDeseja confirmar os dados? (s/n): ");
 
     if (selecionar_s_ou_n())
@@ -312,17 +309,16 @@ bool confirmar_dados(INFO **info)
         return true;
     }
 
+    return false;
+}
+
+bool reescrever_dados(INFO **info)
+{
     printf("\nDeseja reescrever os dados? (s/n): ");
 
     if (selecionar_s_ou_n())
     {
-        free((*info)->nome);
         return true;
-    }
-    else
-    {
-        liberar_INFO(info);
-        printf("\nOperacao cancelada.\n");
     }
 
     return false;
@@ -333,32 +329,125 @@ INFO *escrever_dados()
 {
 
     INFO *info = (INFO *)malloc(sizeof(INFO));
+    bool confirma = true;
     do
     {
-
-        // info->ID = digitar_ID();
-
-        // Sera atribuido o ID correto depois
-        info->ID = 0;
-
-        info->nome = digitar_nome();
-
-        info->nivel_prioridade = digitar_nivel_prioridade();
-
         do
         {
-            info->minuto = digitar_minuto();
 
-            info->hora = digitar_hora();
+            // info->ID = digitar_ID();
 
-            info->dia = digitar_dia();
+            // Sera atribuido o ID correto depois
+            info->ID = 0;
 
-            info->mes = digitar_mes();
+            free(info->nome);
+            info->nome = digitar_nome();
 
-            info->ano = digitar_ano();
+            info->nivel_prioridade = digitar_nivel_prioridade();
 
-        } while (verificar(&info));
-    } while (info == NULL && confirmar_dados(&info));
+            do
+            {
+                info->minuto = digitar_minuto();
+
+                info->hora = digitar_hora();
+
+                info->dia = digitar_dia();
+
+                info->mes = digitar_mes();
+
+                info->ano = digitar_ano();
+
+            } while (verificar(&info));
+
+            confirma = true;
+
+            if (info != NULL)
+            {
+                printf("\n");
+                printar_dados(info);
+                confirma = confirmar_dados(&info);
+            }
+
+        } while (info == NULL && confirma);
+    } while (!confirma && reescrever_dados(&info));
 
     return info;
+}
+
+void editar_dados(INFO **info)
+{
+    INFO *nova_info = malloc(sizeof(INFO));
+
+    char c;
+
+    do
+    {   
+        printar_dados(*info);
+
+        printf("\nSelecione o que deseja editar:\n");
+        printf("1 - Nome\n");
+        printf("2 - Nivel de Prioridade\n");
+        printf("3 - Data\n");
+        printf("4 - Hora\n");
+        printf("5 - Confirmar\n");
+        printf("5 - Cancelar\n");
+
+        scanf("%c", &c);
+        limpar_buffer();
+
+        switch (c)
+        {
+        case '1':
+            free(nova_info->nome);
+            nova_info->nome = digitar_nome();
+            break;
+
+        case '2':
+            nova_info->nivel_prioridade = digitar_nivel_prioridade();
+            break;
+
+        case '3':
+            do
+            {
+                nova_info->minuto = digitar_minuto();
+
+                nova_info->hora = digitar_hora();
+
+                nova_info->dia = digitar_dia();
+
+                nova_info->mes = digitar_mes();
+
+                nova_info->ano = digitar_ano();
+
+            } while (verificar(&nova_info));
+            break;
+
+        case '4':
+            nova_info->hora = digitar_hora();
+            break;
+
+        case '5':
+
+            printf("\n");
+            printar_dados(nova_info);
+            if (confirmar_dados(&nova_info))
+            {
+                liberar_INFO(info);
+                *info = nova_info;
+            }
+
+            break;
+
+        case '6':
+
+            liberar_INFO(&nova_info);
+            printf("Operacao cancelada.\n");
+            return;
+
+        default:
+            printf("Digite um valor valido: ");
+            break;
+        }
+
+    } while (c != '5' && c != '6');
 }
