@@ -5,7 +5,7 @@
 int main()
 {
     Lista_duplamente_encadeada *lista = NULL;
-    Lista_duplamente_encadeada *meio = NULL;
+    
 
     INFO *teste1 = (INFO *)malloc(sizeof(INFO));
     teste1->ID = 1;
@@ -56,32 +56,41 @@ int main()
     teste5->hora = 5;
     teste5->minuto = 5;
 
-    adicionar_elemento_duplamente_encadeada(&lista, &meio, teste1, true);
+    adicionar_elemento_duplamente_encadeada(&lista, teste1, true);
 
-    adicionar_elemento_duplamente_encadeada(&lista, &meio, teste2, true);
+    adicionar_elemento_duplamente_encadeada(&lista, teste2, true);
 
-    adicionar_elemento_duplamente_encadeada(&lista, &meio, teste3, true);
+    adicionar_elemento_duplamente_encadeada(&lista, teste3, true);
 
-    adicionar_elemento_duplamente_encadeada(&lista, &meio, teste4, true);
+    adicionar_elemento_duplamente_encadeada(&lista, teste4, true);
 
-    adicionar_elemento_duplamente_encadeada(&lista, &meio, teste5, true);
+    adicionar_elemento_duplamente_encadeada(&lista, teste5, true);
 
 
 
     printf("Antes de remover\n");
     printar_lista_duplamente_encadeada(lista);
 
-    printf("Meio: %d\n\n", meio->informacoes->ID);
+  
 
     
 
-    remover_elemento_duplamente_encadeada_por_ID(&lista,&meio, 1);
+    remover_elemento_duplamente_encadeada_por_ID(&lista, 5);
 
     printf("Depois de remover\n");
 
     printar_lista_duplamente_encadeada(lista);
 
-    printf("Meio: %d\n", meio->informacoes->ID);
+    
+
+    remover_elemento_duplamente_encadeada_por_ID(&lista, 4);
+
+    printf("Depois de remover\n");
+
+    printar_lista_duplamente_encadeada(lista);
+
+    
+
 
     liberar_memoria_duplamente_encadeada(&lista);
 
