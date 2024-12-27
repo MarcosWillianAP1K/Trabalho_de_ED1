@@ -16,4 +16,8 @@ void printar_lista_duplamente_encadeada(Lista_duplamente_encadeada *lista);
 
 void liberar_memoria_duplamente_encadeada(Lista_duplamente_encadeada **lista);
 
-void remover_elemento_duplamente_encadeada_por_ID(Lista_duplamente_encadeada **lista , int ID);
+void remover_elemento_duplamente_encadeada_por_ID(Lista_duplamente_encadeada **lista, int ID);
+
+void remover_elemento_duplamente_encadeada_por_endereco(Lista_duplamente_encadeada *lista, Lista_duplamente_encadeada **inicio);
+
+Lista_duplamente_encadeada *buscar_elemento_duplamente_encadeada_por_ID(Lista_duplamente_encadeada *lista, int ID);

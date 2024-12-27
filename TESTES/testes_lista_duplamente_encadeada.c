@@ -83,7 +83,7 @@ int main()
 
     
 
-    remover_elemento_duplamente_encadeada_por_ID(&lista, 4);
+    remover_elemento_duplamente_encadeada_por_endereco(buscar_elemento_duplamente_encadeada_por_ID(lista, 4), &lista);
 
     printf("Depois de remover\n");
 

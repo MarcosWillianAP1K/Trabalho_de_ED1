@@ -123,3 +123,53 @@ void remover_elemento_duplamente_encadeada_por_ID(Lista_duplamente_encadeada **l
     liberar_INFO(&aux->informacoes);
     free(aux);
 }
+
+//Essa funciona diferente das outras bibliotecas, ela ja remove o elemento direto
+void remover_elemento_duplamente_encadeada_por_endereco(Lista_duplamente_encadeada *lista, Lista_duplamente_encadeada **inicio)
+{
+    if (lista == NULL)
+    {
+        return;
+    }
+
+    Lista_duplamente_encadeada *aux = lista;
+
+    //Se anterior for null, este no é o primeiro da lista
+    if (aux->anterior != NULL)
+    {
+        aux->anterior->proximo = aux->proximo;
+    }
+    else
+    {
+        lista = aux->proximo;
+        lista->anterior = NULL;
+        *inicio = lista;
+    }
+
+    if (aux->proximo != NULL)
+    {
+        aux->proximo->anterior = aux->anterior;
+    }
+    else
+    {
+        aux->anterior->proximo = NULL;
+    }
+
+
+    liberar_INFO(&aux->informacoes);
+    free(aux);
+}
+
+
+Lista_duplamente_encadeada *buscar_elemento_duplamente_encadeada_por_ID(Lista_duplamente_encadeada *lista, int ID)
+{
+    Lista_duplamente_encadeada *aux = lista;
+
+    while (aux != NULL && aux->informacoes->ID != ID)
+    {
+        aux = aux->proximo;
+    }
+
+    return aux;
+}
+
