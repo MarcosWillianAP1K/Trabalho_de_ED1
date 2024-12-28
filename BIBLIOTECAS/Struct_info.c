@@ -52,6 +52,8 @@ bool validar_data(DATA_HORA *data)
     // Pega a data atual
     struct tm tempo_atual = *localtime(&t);
 
+    
+
     // Verificar se o mes é valido
     if (data->mes == 2)
     {
@@ -429,7 +431,10 @@ INFO *escrever_dados()
         // Sera atribuido o ID correto depois
         info->ID = 0;
 
-        atribuir_nome(&info->nome, digitar_nome());
+        // atribuir_nome(&info->nome, digitar_nome());
+
+        free(info->nome);
+        info->nome = digitar_nome();
 
         info->nivel_prioridade = digitar_nivel_prioridade();
 
@@ -452,7 +457,7 @@ INFO *escrever_dados()
                 {
                     liberar_INFO(&info);
                     printf("Operacao cancelada.\n");
-                    return NULL;
+                    return info;
                 }
             }
             else
@@ -514,7 +519,9 @@ void editar_dados(INFO **info)
         switch (c)
         {
         case '1':
-            atribuir_nome(&nova_info->nome, digitar_nome());
+            // atribuir_nome(&nova_info->nome, digitar_nome());
+            free(nova_info->nome);
+            nova_info->nome = digitar_nome();
             break;
 
         case '2':

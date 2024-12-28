@@ -19,20 +19,23 @@ int main()
     atribuir_nome(&teste3->nome, "teste3");
     atribuir_nome(&teste4->nome, "teste4");
 
-    teste1->ID = 1;
-    teste2->ID = 2;
-    teste3->ID = 3;
-    teste4->ID = 4;
-
     adicionar_elemento_encadeada(&lista, teste1);
     adicionar_elemento_encadeada(&lista, teste2);
     adicionar_elemento_encadeada(&lista, teste3);
     adicionar_elemento_encadeada(&lista, teste4);
 
+    teste1->ID = 1;
+    teste2->ID = 2;
+    teste3->ID = 3;
+    teste4->ID = 4;
+
     printf("Antes de remover\n");
     printar_lista_encadeada(lista);
 
-    remover_elemento_encadeada_por_endereco(&lista, buscar_lista_encadeada(lista, lista->proximo->informacoes->ID));
+    remover_elemento_encadeada_por_endereco(&lista, buscar_lista_encadeada(lista, 1));
+    remover_elemento_encadeada_por_ID(&lista, 4);
+    remover_elemento_encadeada_por_ID(&lista, 3);
+    remover_elemento_encadeada_por_ID(&lista, 2);
 
     printf("Depois de remover\n");
 

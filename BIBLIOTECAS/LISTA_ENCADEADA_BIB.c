@@ -12,7 +12,7 @@ void atribuir_ID(INFO *informacoes)
         return;
     }
 
-    informacoes->ID = (rand() % 998) + 1;
+    informacoes->ID = (rand() % 999) + 1;
 }
 
 typedef struct thread_verificar_ID
