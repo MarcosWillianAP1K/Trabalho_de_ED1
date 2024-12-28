@@ -3,68 +3,111 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <pthread.h>
+
+void atribuir_ID(INFO *informacoes)
+{
+    if (informacoes == NULL)
+    {
+        return;
+    }
+
+    informacoes->ID = (rand() % 998) + 1;
+}
+
+typedef struct thread_verificar_ID
+{
+    Lista_encadeada *novo_no;
+    Lista_encadeada *lista;
+} thread_verificar_ID;
+
+
+void *verificar_ID(void *arg)
+{
+    thread_verificar_ID *novo_no_thread = (thread_verificar_ID *)arg;
+
+    Lista_encadeada *atual = novo_no_thread->lista;
+
+    while (1)
+    {
+        atribuir_ID( novo_no_thread->novo_no->informacoes);
+
+        atual = novo_no_thread->lista;
+
+        while (atual != NULL)
+        {
+            if (atual->informacoes->ID == novo_no_thread->novo_no->informacoes->ID && atual != novo_no_thread->novo_no) 
+            {
+                break;
+            }
+
+            atual = atual->proximo;
+        }
+
+        if ( atual == NULL)
+        {
+            break;
+        }
+    }
+
+    pthread_exit(NULL);
+}
 
 
 
-//Esse adicionar ele adiciona e atribui um ID de forma sequencial
+
 void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes)
 {
+    srand(time(NULL));
+
+
     // vazia
     if (*lista == NULL)
     {
         *lista = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
 
         (*lista)->informacoes = informacoes;
-        (*lista)->informacoes->ID = 1;
+        atribuir_ID((*lista)->informacoes);
         (*lista)->proximo = NULL;
-    }
-    else if ((*lista)->informacoes->ID > 1)
-    {
-        // Caso o primeiro ID não seja 1
-        Lista_encadeada *novo_no = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
-        novo_no->informacoes = informacoes;
-        novo_no->informacoes->ID = 1;
-        novo_no->proximo = *lista;
-        *lista = novo_no;
     }
     else
     {
-        // Caso o ID não seja sequencial ou seja o ultimo
         Lista_encadeada *novo_no = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
         novo_no->informacoes = informacoes;
+        novo_no->proximo = NULL;
+        
+        thread_verificar_ID *novo_no_thread = (thread_verificar_ID *)malloc(sizeof(thread_verificar_ID));
+        novo_no_thread->novo_no = novo_no;
+        novo_no_thread->lista = *lista;
+
+        pthread_t thread;
+        pthread_create(&thread, NULL, verificar_ID, (void *)novo_no_thread);
 
         Lista_encadeada *atual = *lista;
 
-        while (atual->proximo != NULL && atual->informacoes->ID + 1 == atual->proximo->informacoes->ID)
+        while (atual->proximo != NULL)
         {
             atual = atual->proximo;
         }
 
-        novo_no->informacoes->ID = atual->informacoes->ID + 1;
+        atual->proximo = novo_no;
 
-        if (atual->proximo == NULL)
-        {
-            novo_no->proximo = NULL;
-            atual->proximo = novo_no;
-        }
-        else
-        {
-            novo_no->proximo = atual->proximo;
-            atual->proximo = novo_no;
-        }
+        pthread_join(thread, NULL);
+
+        free(novo_no_thread);
     }
+
+    
 }
 
-//Esse apenas adiciona ja com base no ID fornecido
-void adicionar_elemento_encadeada_ordernadado_por_ID( Lista_encadeada **lista, INFO *informacoes)
+// Esse apenas adiciona ja com base no ID fornecido
+void adicionar_elemento_encadeada_ordernadado_por_ID(Lista_encadeada **lista, INFO *informacoes)
 {
     if (informacoes->ID < 1 || informacoes == NULL)
     {
         printf("ID invalido\n");
         return;
     }
-    
-
 
     if (*lista == NULL)
     {
@@ -97,8 +140,6 @@ void adicionar_elemento_encadeada_ordernadado_por_ID( Lista_encadeada **lista, I
         anterior->proximo = novo_no;
     }
 }
-
-
 
 // Fornece o ID do elemento a ser removido
 void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID)
@@ -199,7 +240,7 @@ void printar_lista_encadeada(Lista_encadeada *list)
 {
     if (list == NULL)
     {
-        return NULL;
+        return;
     }
 
     while (list != NULL)

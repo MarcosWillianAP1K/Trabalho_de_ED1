@@ -28,7 +28,7 @@ void printar_dados(INFO *info)
         return;
     }
 
-    printf("ID: %d\n", info->ID);
+    printf("ID: %03d\n", info->ID);
     printf("Nome: %s\n", info->nome);
     printf("Nivel de Prioridade: %d\n", info->nivel_prioridade);
     printf("Data: %02d/%02d/%04d\n", info->dia, info->mes, info->ano);

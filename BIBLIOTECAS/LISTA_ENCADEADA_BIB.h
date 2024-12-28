@@ -18,6 +18,8 @@ typedef struct Lista_encadeada
 
 void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes);
 
+void adicionar_elemento_encadeada_ordernadado_por_ID(Lista_encadeada **lista, INFO *informacoes);
+
 void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID);
 
 void remover_elemento_encadeada_por_endereco(Lista_encadeada **lista, Lista_encadeada *endereco);
