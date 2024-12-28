@@ -464,6 +464,7 @@ INFO *escrever_dados()
 
         if (confirmar_dados(info))
         {
+            pegar_data_atual(info->data_criacao);
             break;
         }
 
@@ -480,6 +481,12 @@ INFO *escrever_dados()
 
 void editar_dados(INFO **info)
 {
+    if (*info == NULL)
+    {
+        printf("\nNao ha dados para editar.\n");
+        return;
+    }
+    
 
     INFO *nova_info = criar_info();
 
