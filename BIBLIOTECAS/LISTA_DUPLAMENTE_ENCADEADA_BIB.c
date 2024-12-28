@@ -203,14 +203,12 @@ Lista_duplamente_encadeada *busca_binaria_recursiva(Lista_duplamente_encadeada *
     return NULL;
 }
 
-
 Lista_duplamente_encadeada *busca_binaria_duplamente_encadeada(Lista_duplamente_encadeada *lista, int ID)
 {
     if (lista == NULL)
     {
         return NULL;
     }
-    
 
     Lista_duplamente_encadeada *inicio = lista;
     Lista_duplamente_encadeada *fim = NULL;

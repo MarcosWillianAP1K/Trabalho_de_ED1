@@ -1,7 +1,6 @@
 
 #include "Struct_info.h"
 
-
 typedef struct Lista_encadeada
 {
     INFO *informacoes;
@@ -9,12 +8,6 @@ typedef struct Lista_encadeada
     struct Lista_encadeada *proximo;
 
 } Lista_encadeada;
-
-
-
-
-
-
 
 void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes);
 
@@ -26,8 +19,6 @@ void remover_elemento_encadeada_por_endereco(Lista_encadeada **lista, Lista_enca
 
 void liberar_memoria_encadeada(Lista_encadeada **lista);
 
-
 void printar_lista_encadeada(Lista_encadeada *list);
-
 
 Lista_encadeada *buscar_lista_encadeada(Lista_encadeada *list, int ID);

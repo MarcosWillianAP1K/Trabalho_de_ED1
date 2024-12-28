@@ -6,45 +6,18 @@
 
 #include "Struct_info.h"
 
-void copiar_infos(INFO *info1, INFO *info2)
+void liberar_INFO(INFO **info)
 {
-    free(info1->nome);
-
-    info1->ID = info2->ID;
-    info1->nome = malloc(strlen(info2->nome) + 1);
-    strcpy(info1->nome, info2->nome);
-    info1->nivel_prioridade = info2->nivel_prioridade;
-    info1->minuto = info2->minuto;
-    info1->hora = info2->hora;
-    info1->dia = info2->dia;
-    info1->mes = info2->mes;
-    info1->ano = info2->ano;
-}
-
-void printar_dados(INFO *info)
-{
-    if (info == NULL)
-    {
-        return;
-    }
-
-    printf("ID: %03d\n", info->ID);
-    printf("Nome: %s\n", info->nome);
-    printf("Nivel de Prioridade: %d\n", info->nivel_prioridade);
-    printf("Data: %02d/%02d/%04d\n", info->dia, info->mes, info->ano);
-    printf("Hora: %02d:%02d\n", info->hora, info->minuto);
+    free((*info)->nome);
+    free((*info)->data_entrega);
+    free((*info)->data_criacao);
+    free(*info);
+    *info = NULL;
 }
 
 void limpar_buffer()
 {
     fflush(stdin);
-}
-
-void liberar_INFO(INFO **info)
-{
-    free((*info)->nome);
-    free(*info);
-    *info = NULL;
 }
 
 bool selecionar_s_ou_n()
@@ -71,6 +44,213 @@ bool selecionar_s_ou_n()
     return false;
 }
 
+// Ave maria, terror de juliana
+bool validar_data(DATA_HORA *data)
+{
+    time_t t = time(NULL);
+    // Pega a data atual
+    struct tm tempo_atual = *localtime(&t);
+
+    // Verificar se o mes é valido
+    if (data->mes == 2)
+    {
+        if ((data->ano % 4 == 0 && data->ano % 100 != 0) || data->ano % 400 == 0)
+        {
+            if (data->dia > 29)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (data->dia > 28)
+            {
+                return false;
+            }
+        }
+    }
+
+    if (data->mes == 4 || data->mes == 6 || data->mes == 9 || data->mes == 11)
+    {
+        if (data->dia > 30)
+        {
+            return false;
+        }
+    }
+
+    // Verificar se a data digitada é antes da nossa data atual
+    if (data->ano < tempo_atual.tm_year + 1900 || (data->ano == tempo_atual.tm_year + 1900 && data->mes < tempo_atual.tm_mon + 1) || (data->ano == tempo_atual.tm_year + 1900 && data->mes == tempo_atual.tm_mon + 1 && data->dia < tempo_atual.tm_mday))
+    {
+        return false;
+    }
+
+    // Verificar se a hora e minuto é valida
+    if ((data->ano == tempo_atual.tm_year + 1900 && data->mes == tempo_atual.tm_mon + 1 && data->dia == tempo_atual.tm_mday) &&
+        (data->hora < tempo_atual.tm_hour || (data->hora == tempo_atual.tm_hour && data->minuto < tempo_atual.tm_min)))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool confirmar_dados(INFO *info)
+{
+    printar_dados(info);
+
+    printf("\nDeseja confirmar os dados? (s/n): ");
+
+    return selecionar_s_ou_n();
+}
+
+bool reescrever_dados()
+{
+    printf("\nDeseja reescrever os dados? (s/n): ");
+
+    return selecionar_s_ou_n();
+}
+
+
+
+void verificar_alocacao(void *ponteiro)
+{
+    if (ponteiro == NULL)
+    {
+        printf("Erro na alocacao de memoria\n");
+        exit(1);
+    }
+}
+
+void verificar_realocacao(void *ponteiro)
+{
+    if (ponteiro == NULL)
+    {
+        printf("Erro na realocacao de memoria\n");
+        exit(1);
+    }
+}
+
+void pegar_data_atual(DATA_HORA *data)
+{
+    time_t t = time(NULL);
+    // Pega a data atual
+    struct tm tempo_atual = *localtime(&t);
+
+    data->minuto = tempo_atual.tm_min;
+    data->hora = tempo_atual.tm_hour;
+    data->dia = tempo_atual.tm_mday;
+    data->mes = tempo_atual.tm_mon + 1;
+    data->ano = tempo_atual.tm_year + 1900;
+}
+
+char *criar_nome(int tam)
+{
+    char *nome = (char *)malloc((tam + 1) * sizeof(char));
+
+    verificar_alocacao(nome);
+
+    return nome;
+}
+
+
+
+DATA_HORA *criar_data_hora()
+{
+    DATA_HORA *data = (DATA_HORA *)malloc(sizeof(DATA_HORA));
+
+    verificar_alocacao(data);
+
+    data->minuto = 0;
+    data->hora = 0;
+    data->dia = 0;
+    data->mes = 0;
+    data->ano = 0;
+
+    return data;
+}
+
+INFO *criar_info()
+{
+    INFO *info = (INFO *)malloc(sizeof(INFO));
+
+    verificar_alocacao(info);
+
+    info->ID = 0;
+    info->nome = criar_nome(1);
+    info->nome[0] = '\0';
+    info->nivel_prioridade = 0;
+    info->data_criacao = criar_data_hora();
+    info->data_entrega = criar_data_hora();
+
+    pegar_data_atual(info->data_criacao);
+
+    return info;
+}
+
+
+
+void atribuir_nome(char **nome1, char *nome2)
+{
+    if (nome2 == NULL)
+    {
+        return;
+    }
+
+    free(*nome1);
+    *nome1 = criar_nome(strlen(nome2));
+    *nome1 = nome2;
+}
+
+void copiar_infos(INFO **info1, INFO *info2)
+{
+
+    if (info2 == NULL)
+    {
+        return;
+    }
+
+    if (*info1 == NULL)
+    {
+        *info1 = criar_info();
+    }
+
+    free((*info1)->nome);
+    (*info1)->ID = info2->ID;
+    (*info1)->nome = criar_nome(strlen(info2->nome));
+    strcpy((*info1)->nome, info2->nome);
+
+    (*info1)->nivel_prioridade = info2->nivel_prioridade;
+
+    (*info1)->data_entrega->minuto = info2->data_entrega->minuto;
+    (*info1)->data_entrega->hora = info2->data_entrega->hora;
+    (*info1)->data_entrega->dia = info2->data_entrega->dia;
+    (*info1)->data_entrega->mes = info2->data_entrega->mes;
+    (*info1)->data_entrega->ano = info2->data_entrega->ano;
+
+    (*info1)->data_criacao->minuto = info2->data_criacao->minuto;
+    (*info1)->data_criacao->hora = info2->data_criacao->hora;
+    (*info1)->data_criacao->dia = info2->data_criacao->dia;
+    (*info1)->data_criacao->mes = info2->data_criacao->mes;
+    (*info1)->data_criacao->ano = info2->data_criacao->ano;
+}
+
+void printar_dados(INFO *info)
+{
+    if (info == NULL)
+    {
+        return;
+    }
+
+    printf("ID: %03d\n", info->ID);
+    printf("Nome: %s\n", info->nome);
+    printf("Nivel de Prioridade: %d\n", info->nivel_prioridade);
+    printf("Data de Entrega: %02d/%02d/%04d\n", info->data_entrega->dia, info->data_entrega->mes, info->data_entrega->ano);
+    printf("Hora de Entrega: %02d:%02d\n", info->data_entrega->hora, info->data_entrega->minuto);
+    printf("Data de Criacao: %02d/%02d/%04d\n", info->data_criacao->dia, info->data_criacao->mes, info->data_criacao->ano);
+    printf("Hora de Criacao: %02d:%02d\n", info->data_criacao->hora, info->data_criacao->minuto);
+}
+
+
 // Sequencia de funções para digitar os dados
 
 // Digitar ID e apenas para testes, não sera implementado no produto final
@@ -95,13 +275,7 @@ char *digitar_nome()
 #define TAM_PADRAO 20
 
     int tam, cont = 0;
-    char *nome = (char *)malloc(TAM_PADRAO * sizeof(char));
-
-    if (nome == NULL)
-    {
-        printf("Erro na alocacao de memoria\n");
-        exit(1);
-    }
+    char *nome = criar_nome(TAM_PADRAO);
 
     printf("Digite o nome: ");
 
@@ -115,11 +289,7 @@ char *digitar_nome()
             cont++;
             char *temp = (char *)realloc(nome, (TAM_PADRAO * cont) * sizeof(char));
 
-            if (temp == NULL)
-            {
-                printf("Erro na realocacao de memoria\n");
-                exit(1);
-            }
+            verificar_realocacao(temp);
 
             nome = temp;
 
@@ -244,77 +414,12 @@ short int digitar_ano()
     return n;
 }
 
-// Ave maria, terror de juliana
-bool validar_data(short int dia, short int mes, short int ano, short int hora, short int minuto)
-{
-    time_t t = time(NULL);
-    // Pega a data atual
-    struct tm tempo_atual = *localtime(&t);
-
-    // Verificar se o mes é valido
-    if (mes == 2)
-    {
-        if ((ano % 4 == 0 && ano % 100 != 0) || ano % 400 == 0)
-        {
-            if (dia > 29)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (dia > 28)
-            {
-                return false;
-            }
-        }
-    }
-
-    if (mes == 4 || mes == 6 || mes == 9 || mes == 11)
-    {
-        if (dia > 30)
-        {
-            return false;
-        }
-    }
-
-    // Verificar se a data digitada é antes da nossa data atual
-    if (ano < tempo_atual.tm_year + 1900 || (ano == tempo_atual.tm_year + 1900 && mes < tempo_atual.tm_mon + 1) || (ano == tempo_atual.tm_year + 1900 && mes == tempo_atual.tm_mon + 1 && dia < tempo_atual.tm_mday))
-    {
-        return false;
-    }
-
-    // Verificar se a hora e minuto é valida
-    if ((ano == tempo_atual.tm_year + 1900 && mes == tempo_atual.tm_mon + 1 && dia == tempo_atual.tm_mday) &&
-        (hora < tempo_atual.tm_hour || (hora == tempo_atual.tm_hour && minuto < tempo_atual.tm_min)))
-    {
-        return false;
-    }
-
-    return true;
-}
-
-bool confirmar_dados(INFO *info)
-{
-    printar_dados(info);
-
-    printf("\nDeseja confirmar os dados? (s/n): ");
-
-    return selecionar_s_ou_n();
-}
-
-bool reescrever_dados()
-{
-    printf("\nDeseja reescrever os dados? (s/n): ");
-
-    return selecionar_s_ou_n();
-}
 
 // Seguinte, essa função permite escrever os dados e retorna um ponteiro com o endereços dos dados, ja tem as blindagens necessarias
 INFO *escrever_dados()
 {
 
-    INFO *info = (INFO *)malloc(sizeof(INFO));
+    INFO *info = criar_info();
 
     do
     {
@@ -323,24 +428,23 @@ INFO *escrever_dados()
         // Sera atribuido o ID correto depois
         info->ID = 0;
 
-        free(info->nome);
-        info->nome = digitar_nome();
+        atribuir_nome(&info->nome, digitar_nome());
 
         info->nivel_prioridade = digitar_nivel_prioridade();
 
         while (1)
         {
-            info->minuto = digitar_minuto();
+            info->data_entrega->minuto = digitar_minuto();
 
-            info->hora = digitar_hora();
+            info->data_entrega->hora = digitar_hora();
 
-            info->dia = digitar_dia();
+            info->data_entrega->dia = digitar_dia();
 
-            info->mes = digitar_mes();
+            info->data_entrega->mes = digitar_mes();
 
-            info->ano = digitar_ano();
+            info->data_entrega->ano = digitar_ano();
 
-            if (!validar_data(info->dia, info->mes, info->ano, info->hora, info->minuto))
+            if (!validar_data(info->data_entrega))
             {
                 printf("\nData/hora invalida.");
                 if (!reescrever_dados())
@@ -364,9 +468,10 @@ INFO *escrever_dados()
 
 void editar_dados(INFO **info)
 {
-    INFO *nova_info = malloc(sizeof(INFO));
 
-    copiar_infos(nova_info, *info);
+    INFO *nova_info = criar_info();
+
+    copiar_infos(&nova_info, *info);
 
     char c;
 
@@ -390,8 +495,7 @@ void editar_dados(INFO **info)
         switch (c)
         {
         case '1':
-            free(nova_info->nome);
-            nova_info->nome = digitar_nome();
+            atribuir_nome(&nova_info->nome, digitar_nome());
             break;
 
         case '2':
@@ -400,21 +504,25 @@ void editar_dados(INFO **info)
 
         case '3':
         {
-            short int dia, mes, ano;
+            DATA_HORA *data = criar_data_hora();
+
+            data->minuto = nova_info->data_entrega->minuto;
+            data->hora = nova_info->data_entrega->hora;
 
             while (1)
             {
-                dia = digitar_dia();
+                data->dia = digitar_dia();
 
-                mes = digitar_mes();
+                data->mes = digitar_mes();
 
-                ano = digitar_ano();
+                data->ano = digitar_ano();
 
-                if (validar_data(dia, mes, ano, nova_info->hora, nova_info->minuto))
+                if (validar_data(data))
                 {
-                    nova_info->dia = dia;
-                    nova_info->mes = mes;
-                    nova_info->ano = ano;
+                    nova_info->data_entrega->dia = data->dia;
+                    nova_info->data_entrega->mes = data->mes;
+                    nova_info->data_entrega->ano = data->ano;
+                    free(data);
                     break;
                 }
                 else
@@ -424,6 +532,7 @@ void editar_dados(INFO **info)
 
                     if (!selecionar_s_ou_n())
                     {
+                        free(data);
                         break;
                     }
                 }
@@ -433,18 +542,23 @@ void editar_dados(INFO **info)
 
         case '4':
         {
-            short int hora, minuto;
+            DATA_HORA *data = criar_data_hora();
+
+            data->dia = nova_info->data_entrega->dia;
+            data->mes = nova_info->data_entrega->mes;
+            data->ano = nova_info->data_entrega->ano;
 
             while (1)
             {
-                hora = digitar_hora();
+                data->hora = digitar_hora();
 
-                minuto = digitar_minuto();
+                data->minuto = digitar_minuto();
 
-                if (validar_data(nova_info->dia, nova_info->mes, nova_info->ano, hora, minuto))
+                if (validar_data(data))
                 {
-                    nova_info->hora = hora;
-                    nova_info->minuto = minuto;
+                    nova_info->data_entrega->hora = data->hora;
+                    nova_info->data_entrega->minuto = data->minuto;
+                    free(data);
                     break;
                 }
                 else
@@ -454,6 +568,7 @@ void editar_dados(INFO **info)
 
                     if (!selecionar_s_ou_n())
                     {
+                        free(data);
                         break;
                     }
                 }
@@ -466,17 +581,15 @@ void editar_dados(INFO **info)
             printf("\n");
             if (confirmar_dados(nova_info))
             {
-                copiar_infos(*info, nova_info);
+                copiar_infos(info, nova_info);
                 liberar_INFO(&nova_info);
                 printf("Dados alterados com sucesso.\n");
-               
             }
             else
             {
-                
-            c = '0';
-            }
 
+                c = '0';
+            }
 
             break;
 

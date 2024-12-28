@@ -21,7 +21,6 @@ typedef struct thread_verificar_ID
     Lista_encadeada *lista;
 } thread_verificar_ID;
 
-
 void *verificar_ID(void *arg)
 {
     thread_verificar_ID *novo_no_thread = (thread_verificar_ID *)arg;
@@ -30,13 +29,13 @@ void *verificar_ID(void *arg)
 
     while (1)
     {
-        atribuir_ID( novo_no_thread->novo_no->informacoes);
+        atribuir_ID(novo_no_thread->novo_no->informacoes);
 
         atual = novo_no_thread->lista;
 
         while (atual != NULL)
         {
-            if (atual->informacoes->ID == novo_no_thread->novo_no->informacoes->ID && atual != novo_no_thread->novo_no) 
+            if (atual->informacoes->ID == novo_no_thread->novo_no->informacoes->ID && atual != novo_no_thread->novo_no)
             {
                 break;
             }
@@ -44,7 +43,7 @@ void *verificar_ID(void *arg)
             atual = atual->proximo;
         }
 
-        if ( atual == NULL)
+        if (atual == NULL)
         {
             break;
         }
@@ -53,13 +52,9 @@ void *verificar_ID(void *arg)
     pthread_exit(NULL);
 }
 
-
-
-
 void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes)
 {
     srand(time(NULL));
-
 
     // vazia
     if (*lista == NULL)
@@ -75,7 +70,7 @@ void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes)
         Lista_encadeada *novo_no = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
         novo_no->informacoes = informacoes;
         novo_no->proximo = NULL;
-        
+
         thread_verificar_ID *novo_no_thread = (thread_verificar_ID *)malloc(sizeof(thread_verificar_ID));
         novo_no_thread->novo_no = novo_no;
         novo_no_thread->lista = *lista;
@@ -96,8 +91,6 @@ void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes)
 
         free(novo_no_thread);
     }
-
-    
 }
 
 // Esse apenas adiciona ja com base no ID fornecido
