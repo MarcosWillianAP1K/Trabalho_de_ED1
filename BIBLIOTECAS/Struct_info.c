@@ -415,13 +415,14 @@ short int digitar_ano()
 }
 
 
+
 // Seguinte, essa função permite escrever os dados e retorna um ponteiro com o endereços dos dados, ja tem as blindagens necessarias
 INFO *escrever_dados()
 {
 
     INFO *info = criar_info();
 
-    do
+    while(1)
     {
         // info->ID = digitar_ID();
 
@@ -450,6 +451,7 @@ INFO *escrever_dados()
                 if (!reescrever_dados())
                 {
                     liberar_INFO(&info);
+                    printf("Operacao cancelada.\n");
                     break;
                 }
             }
@@ -458,10 +460,20 @@ INFO *escrever_dados()
                 break;
             }
         }
-
         printf("\n");
 
-    } while (info != NULL && !confirmar_dados(info) && reescrever_dados(&info));
+        if (confirmar_dados(info))
+        {
+            break;
+        }
+
+        if (!reescrever_dados())
+        {
+            liberar_INFO(&info);
+            printf("Operacao cancelada.\n");
+            break;
+        }
+    }
 
     return info;
 }

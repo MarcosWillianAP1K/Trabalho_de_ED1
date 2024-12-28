@@ -8,14 +8,14 @@
 
 int main()
 {
-    INFO *info = criar_info();
+    // INFO *info = criar_info();
 
-    atribuir_nome(&info->nome, "teste1");
+    // atribuir_nome(&info->nome, "teste1");
 
-    info->ID = 1;
+    // info->ID = 1;
 
-    // INFO *info = escrever_dados();
-    // printf("\n\n");
+    INFO *info = escrever_dados();
+    printf("\n\n");
 
     printar_dados(info);
     printf("\n\n");

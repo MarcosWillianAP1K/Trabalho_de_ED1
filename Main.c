@@ -10,7 +10,7 @@
 int main()
 {
     //Acessa o cmd não o powershell, tem diferença de comandos
-    system("gcc -o teste -pthread ../TESTES/testes_lista_circular.c ../BIBLIOTECAS/Struct_info.c ../BIBLIOTECAS/LISTA_CIRCULAR_BIB.c");
+    system("gcc -o teste -pthread ../TESTES/testes_Struct_info.c ../BIBLIOTECAS/Struct_info.c");
     system("teste.exe");
     return 0;
 }
