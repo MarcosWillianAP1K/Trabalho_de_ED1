@@ -26,6 +26,7 @@ bool selecionar_s_ou_n()
 
     do
     {
+        limpar_buffer();
         scanf("%c", &c);
         limpar_buffer();
 
@@ -198,7 +199,7 @@ void atribuir_nome(char **nome1, char *nome2)
 
     free(*nome1);
     *nome1 = criar_nome(strlen(nome2));
-    *nome1 = nome2;
+    strcpy(*nome1, nome2);
 }
 
 void copiar_infos(INFO **info1, INFO *info2)
@@ -214,10 +215,9 @@ void copiar_infos(INFO **info1, INFO *info2)
         *info1 = criar_info();
     }
 
-    free((*info1)->nome);
+    
     (*info1)->ID = info2->ID;
-    (*info1)->nome = criar_nome(strlen(info2->nome));
-    strcpy((*info1)->nome, info2->nome);
+    atribuir_nome(&(*info1)->nome, info2->nome);
 
     (*info1)->nivel_prioridade = info2->nivel_prioridade;
 
@@ -452,7 +452,7 @@ INFO *escrever_dados()
                 {
                     liberar_INFO(&info);
                     printf("Operacao cancelada.\n");
-                    break;
+                    return NULL;
                 }
             }
             else
