@@ -421,7 +421,6 @@ short int digitar_ano()
 // Seguinte, essa função permite escrever os dados e retorna um ponteiro com o endereços dos dados, ja tem as blindagens necessarias
 INFO *escrever_dados()
 {
-
     INFO *info = criar_info();
 
     while(1)
