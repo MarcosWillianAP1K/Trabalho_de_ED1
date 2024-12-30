@@ -1,6 +1,11 @@
 #include "Struct_info.h"
 #include <stdbool.h>
 
+#ifndef LISTA_DUPLAMENTE_ENCADEADA_BIB_H
+#define LISTA_DUPLAMENTE_ENCADEADA_BIB_H
+
+
+
 typedef struct Lista_duplamente_encadeada
 {
     INFO *informacoes;
@@ -23,3 +28,5 @@ void remover_elemento_duplamente_encadeada_por_endereco(Lista_duplamente_encadea
 Lista_duplamente_encadeada *buscar_elemento_duplamente_encadeada_por_ID(Lista_duplamente_encadeada *lista, int ID);
 
 Lista_duplamente_encadeada *busca_binaria_duplamente_encadeada(Lista_duplamente_encadeada *lista, int ID);
+
+#endif // LISTA_DUPLAMENTE_ENCADEADA_BIB_H
