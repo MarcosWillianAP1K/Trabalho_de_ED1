@@ -1,6 +1,10 @@
 
 #include "Struct_info.h"
 
+
+#ifndef LISTA_ENCADEADA_BIB_H
+#define LISTA_ENCADEADA_BIB_H
+
 typedef struct Lista_encadeada
 {
     INFO *informacoes;
@@ -22,3 +26,5 @@ void liberar_memoria_encadeada(Lista_encadeada **lista);
 void printar_lista_encadeada(Lista_encadeada *list);
 
 Lista_encadeada *buscar_lista_encadeada(Lista_encadeada *list, int ID);
+
+#endif // LISTA_ENCADEADA_BIB_H

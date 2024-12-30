@@ -1,5 +1,9 @@
 #include "Struct_info.h"
 
+
+#ifndef LISTA_CIRCULAR_BIB_H
+#define LISTA_CIRCULAR_BIB_H
+
 typedef struct Lista_circular
 {
     INFO *info;
@@ -19,3 +23,5 @@ void remover_elemento_circular_por_endereco(Lista_circular **lista, Lista_circul
 Lista_circular *buscar_lista_circular(Lista_circular *lista, int ID);
 
 void liberar_memoria_circular(Lista_circular **lista);
+
+#endif // LISTA_CIRCULAR_BIB_H
