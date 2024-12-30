@@ -30,10 +30,13 @@ int main()
     adicionar_elemento_duplamente_encadeada(&lista, teste3, true);
     adicionar_elemento_duplamente_encadeada(&lista, teste4, true);
 
-    printf("Antes de ordenar\n");
-    printar_lista_duplamente_encadeada(lista);
+    // printf("Antes de ordenar\n");
+    // printar_lista_duplamente_encadeada(lista);
 
-    bubble_sort_lista_duplamente_encadeada(lista, comparar_ID);
+    // bubble_sort_lista_duplamente_encadeada(&lista, comparar_ID);
+    // selection_sort_lista_duplamente_encadeada(&lista, comparar_ID);
+    // insertion_sort_lista_duplamente_encadeada(&lista, comparar_ID);
+    quick_sort_lista_duplamente_encadeada(&lista, comparar_ID);
 
     printf("Depois de ordenar\n");
     printar_lista_duplamente_encadeada(lista);

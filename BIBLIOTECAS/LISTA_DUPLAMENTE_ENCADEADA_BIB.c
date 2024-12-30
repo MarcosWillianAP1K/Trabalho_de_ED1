@@ -44,6 +44,54 @@ void adicionar_elemento_duplamente_encadeada(Lista_duplamente_encadeada **lista,
     }
 }
 
+void adicionar_a_frente_duplamente_encadeada(Lista_duplamente_encadeada **lista, Lista_duplamente_encadeada *novo_no)
+{
+    if (*lista == NULL)
+    {
+        *lista = novo_no;
+        novo_no->proximo = NULL;
+        novo_no->anterior = NULL;
+        return;
+    }
+
+    if ((*lista)->proximo != NULL)
+    {
+        (*lista)->proximo->anterior = novo_no;
+        novo_no->proximo = (*lista)->proximo;
+    }
+    else
+    {
+        novo_no->proximo = NULL;
+    }
+    novo_no->anterior = *lista;
+    (*lista)->proximo = novo_no;
+}
+
+void adicionar_atras_duplamente_encadeada(Lista_duplamente_encadeada **lista, Lista_duplamente_encadeada *novo_no)
+{
+    if (*lista == NULL)
+    {
+        *lista = novo_no;
+        novo_no->proximo = NULL;
+        novo_no->anterior = NULL;
+        return;
+    }
+
+    if ((*lista)->anterior != NULL)
+    {
+        (*lista)->anterior->proximo = novo_no;
+        novo_no->anterior = (*lista)->anterior;
+    }
+    else
+    {
+        novo_no->anterior = NULL;
+    }
+    novo_no->proximo = *lista;
+    (*lista)->anterior = novo_no;
+    
+    
+}
+
 void printar_lista_duplamente_encadeada(Lista_duplamente_encadeada *lista)
 {
     Lista_duplamente_encadeada *aux = lista;
@@ -150,8 +198,10 @@ void remover_elemento_duplamente_encadeada_por_endereco(Lista_duplamente_encadea
         aux->anterior->proximo = NULL;
     }
 
+    
     liberar_INFO(&aux->informacoes);
     free(aux);
+    
 }
 
 Lista_duplamente_encadeada *buscar_elemento_duplamente_encadeada_por_ID(Lista_duplamente_encadeada *lista, int ID)

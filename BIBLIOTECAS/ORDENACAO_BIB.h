@@ -17,9 +17,16 @@ short int comparar_data_entrega(INFO *info1, INFO *info2);
 
 short int comparar_data_criacao(INFO *info1, INFO *info2);
 
+void trocar_nos(Lista_duplamente_encadeada **no1, Lista_duplamente_encadeada **no2);
 
 
-void bubble_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada *inicio, short int (*comparar)(INFO *info1, INFO *info2));
+void bubble_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2));
+
+void selection_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2));
+
+void insertion_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2));
+
+void quick_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2));
 
 
 
