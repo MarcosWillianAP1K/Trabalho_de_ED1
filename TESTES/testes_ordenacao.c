@@ -20,10 +20,10 @@ int main()
     atribuir_nome(&teste3->nome, "teste3");
     atribuir_nome(&teste4->nome, "teste4");
 
-    teste1->ID = 4;
-    teste2->ID = 3;
-    teste3->ID = 2;
-    teste4->ID = 1;
+    teste1->ID = 1;
+    teste2->ID = 1;
+    teste3->ID = 3;
+    teste4->ID = 4;
 
     adicionar_elemento_duplamente_encadeada(&lista, teste1, true);
     adicionar_elemento_duplamente_encadeada(&lista, teste2, true);

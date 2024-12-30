@@ -17,9 +17,7 @@ typedef struct Lista_duplamente_encadeada
 
 void adicionar_elemento_duplamente_encadeada(Lista_duplamente_encadeada **lista, INFO *informacao, bool frente_tras);
 
-void adicionar_a_frente_duplamente_encadeada(Lista_duplamente_encadeada **lista, Lista_duplamente_encadeada *novo_no);
-
-void adicionar_atras_duplamente_encadeada(Lista_duplamente_encadeada **lista, Lista_duplamente_encadeada *novo_no);
+void adicionar_no_duplamente_encadeada(Lista_duplamente_encadeada **lista, Lista_duplamente_encadeada *novo_no, bool frente_tras);
 
 void printar_lista_duplamente_encadeada(Lista_duplamente_encadeada *lista);
 

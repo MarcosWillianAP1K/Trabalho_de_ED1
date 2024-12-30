@@ -304,7 +304,7 @@ void insertion_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inic
 // }
 
 
-void organizar_pivo(Lista_duplamente_encadeada *pivo,  Lista_duplamente_encadeada *maior, Lista_duplamente_encadeada *menor, short int (*comparar)(INFO *info1, INFO *info2))
+void organizar_pivo(Lista_duplamente_encadeada *pivo,  Lista_duplamente_encadeada **maior, Lista_duplamente_encadeada **menor, short int (*comparar)(INFO *info1, INFO *info2))
 {
     if (pivo == NULL)
     {
@@ -313,6 +313,8 @@ void organizar_pivo(Lista_duplamente_encadeada *pivo,  Lista_duplamente_encadead
 
     
     Lista_duplamente_encadeada *aux = pivo->proximo;
+    pivo->anterior = NULL;
+    pivo->proximo = NULL;
     Lista_duplamente_encadeada *Adicionar = NULL;
 
     while (aux != NULL)
@@ -320,75 +322,83 @@ void organizar_pivo(Lista_duplamente_encadeada *pivo,  Lista_duplamente_encadead
         Adicionar = aux;
         aux = aux->proximo;
 
-        if (comparar(Adicionar->informacoes, pivo->informacoes) > 0)
+        if (comparar(Adicionar->informacoes, pivo->informacoes) >= 0 && Adicionar != pivo)
         {
-            adicionar_a_frente_duplamente_encadeada(&maior, Adicionar);
+            adicionar_no_duplamente_encadeada(maior, Adicionar, true);
         }
         else
         {
-            adicionar_a_frente_duplamente_encadeada(&menor, Adicionar);
+            adicionar_no_duplamente_encadeada(menor, Adicionar, true);
         }
     }
 }
 
-void contatenar_listas(Lista_duplamente_encadeada **inicio, Lista_duplamente_encadeada *maior, Lista_duplamente_encadeada *pivo)
+Lista_duplamente_encadeada *contatenar_listas(Lista_duplamente_encadeada *menor, Lista_duplamente_encadeada *maior, Lista_duplamente_encadeada *pivo)
 {
-    
+    Lista_duplamente_encadeada *lista = pivo;
 
-    Lista_duplamente_encadeada *aux = *inicio;
-
-    while (aux->proximo != NULL)
+    if (menor != NULL)
     {
-        aux = aux->proximo;
+        
+        Lista_duplamente_encadeada *aux = menor;
+
+        while (aux->proximo != NULL)
+        {
+            aux = aux->proximo;
+        }
+
+        aux->proximo = pivo;
+        pivo->anterior = aux;
+        lista = menor;
     }
 
-    aux->proximo = pivo;
-    pivo->anterior = aux;
-
    
-    pivo->proximo = maior;
-        
+    if (maior != NULL)
+    {
+        pivo->proximo = maior;
+        maior->anterior = pivo;
+    }
     
+    return lista;
 }
 
 
-void quick_sort_lista_duplamente_encadeada_recursivo(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2))
+Lista_duplamente_encadeada *quick_sort_lista_duplamente_encadeada_recursivo(Lista_duplamente_encadeada *inicio, short int (*comparar)(INFO *info1, INFO *info2))
 {
-    if (*inicio == NULL || (*inicio)->proximo == NULL)
+    if (inicio == NULL || inicio->proximo == NULL)
     {
-        printf("Voltando tudo\n");
-        return;
+        return inicio;
     }
 
-    Lista_duplamente_encadeada *pivo = *inicio;
+    Lista_duplamente_encadeada *pivo = inicio;
 
     Lista_duplamente_encadeada *maior = NULL;
     Lista_duplamente_encadeada *menor = NULL;
 
-    organizar_pivo(pivo, maior, menor, comparar);
+    organizar_pivo(pivo, &maior, &menor, comparar);
 
     if (menor != NULL)
     {
-        quick_sort_lista_duplamente_encadeada_recursivo(&menor, comparar);
+        menor = quick_sort_lista_duplamente_encadeada_recursivo(menor, comparar);
     }
     
     if (maior != NULL)
     {
-        quick_sort_lista_duplamente_encadeada_recursivo(&maior, comparar);
+        maior = quick_sort_lista_duplamente_encadeada_recursivo(maior, comparar);
     }
+        
     //Problema pra contatenar
-    
-
+    return contatenar_listas(menor, maior, pivo);
 }
 
 void quick_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2))
 {
-    if (*inicio == NULL)
+    if (*inicio == NULL || (*inicio)->proximo == NULL)
     {
         return;
     }
 
-    quick_sort_lista_duplamente_encadeada_recursivo(*inicio, comparar);
+    *inicio = quick_sort_lista_duplamente_encadeada_recursivo(*inicio, comparar);
 
     
 }

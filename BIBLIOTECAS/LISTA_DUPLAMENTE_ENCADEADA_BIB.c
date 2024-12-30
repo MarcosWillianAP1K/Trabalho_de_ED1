@@ -10,6 +10,8 @@ typedef struct aux_thread
     Lista_duplamente_encadeada **meio;
 } aux_thread;
 
+//TRUE = FRENTE
+//FALSE = TRAS
 void adicionar_elemento_duplamente_encadeada(Lista_duplamente_encadeada **lista, INFO *informacao, bool frente_tras)
 {
     if (*lista == NULL)
@@ -26,9 +28,9 @@ void adicionar_elemento_duplamente_encadeada(Lista_duplamente_encadeada **lista,
     novo_no->proximo = NULL;
     novo_no->anterior = NULL;
 
+    Lista_duplamente_encadeada *aux = *lista;
     if (frente_tras)
     {
-        Lista_duplamente_encadeada *aux = *lista;
         while (aux->proximo != NULL)
         {
             aux = aux->proximo;
@@ -38,13 +40,18 @@ void adicionar_elemento_duplamente_encadeada(Lista_duplamente_encadeada **lista,
     }
     else
     {
-        novo_no->proximo = *lista;
-        (*lista)->anterior = novo_no;
+        while(aux->anterior != NULL)
+        {
+            aux = aux->anterior;
+        }
+
+        aux->anterior = novo_no;
+        novo_no->proximo = aux;
         *lista = novo_no;
     }
 }
 
-void adicionar_a_frente_duplamente_encadeada(Lista_duplamente_encadeada **lista, Lista_duplamente_encadeada *novo_no)
+void adicionar_no_duplamente_encadeada(Lista_duplamente_encadeada **lista, Lista_duplamente_encadeada *novo_no, bool frente_tras)
 {
     if (*lista == NULL)
     {
@@ -54,42 +61,30 @@ void adicionar_a_frente_duplamente_encadeada(Lista_duplamente_encadeada **lista,
         return;
     }
 
-    if ((*lista)->proximo != NULL)
+    novo_no->proximo = NULL;
+    novo_no->anterior = NULL;
+    Lista_duplamente_encadeada *aux = *lista;
+
+    if (frente_tras)
     {
-        (*lista)->proximo->anterior = novo_no;
-        novo_no->proximo = (*lista)->proximo;
+        while (aux->proximo != NULL)
+        {
+            aux = aux->proximo;
+        }
+        aux->proximo = novo_no;
+        novo_no->anterior = aux;
     }
     else
     {
-        novo_no->proximo = NULL;
-    }
-    novo_no->anterior = *lista;
-    (*lista)->proximo = novo_no;
-}
-
-void adicionar_atras_duplamente_encadeada(Lista_duplamente_encadeada **lista, Lista_duplamente_encadeada *novo_no)
-{
-    if (*lista == NULL)
-    {
+        while (aux->anterior != NULL)
+        {
+            aux = aux->anterior;
+        }
+        
+        aux->anterior = novo_no;
+        novo_no->proximo = aux;
         *lista = novo_no;
-        novo_no->proximo = NULL;
-        novo_no->anterior = NULL;
-        return;
     }
-
-    if ((*lista)->anterior != NULL)
-    {
-        (*lista)->anterior->proximo = novo_no;
-        novo_no->anterior = (*lista)->anterior;
-    }
-    else
-    {
-        novo_no->anterior = NULL;
-    }
-    novo_no->proximo = *lista;
-    (*lista)->anterior = novo_no;
-    
-    
 }
 
 void printar_lista_duplamente_encadeada(Lista_duplamente_encadeada *lista)
