@@ -28,6 +28,7 @@ void insertion_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inic
 
 void quick_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2));
 
+void merge_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2));
 
 
 

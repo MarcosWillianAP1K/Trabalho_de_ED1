@@ -287,31 +287,13 @@ void insertion_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inic
     // }
 }
 
-// Lista_duplamente_encadeada *buscar_meio_lista_duplamente_encadeada(Lista_duplamente_encadeada *inicio, Lista_duplamente_encadeada *fim)
-// {
-//     if (inicio == NULL)
-//     {
-//         return NULL;
-//     }
-
-//     while(inicio != fim && inicio->proximo != fim)
-//     {
-//         inicio = inicio->proximo;
-//         fim = fim->anterior;
-//     }
-
-//     return inicio;
-// }
-
-
-void organizar_pivo(Lista_duplamente_encadeada *pivo,  Lista_duplamente_encadeada **maior, Lista_duplamente_encadeada **menor, short int (*comparar)(INFO *info1, INFO *info2))
+void organizar_pivo(Lista_duplamente_encadeada *pivo, Lista_duplamente_encadeada **maior, Lista_duplamente_encadeada **menor, short int (*comparar)(INFO *info1, INFO *info2))
 {
     if (pivo == NULL)
     {
         return;
     }
 
-    
     Lista_duplamente_encadeada *aux = pivo->proximo;
     pivo->anterior = NULL;
     pivo->proximo = NULL;
@@ -339,7 +321,7 @@ Lista_duplamente_encadeada *contatenar_listas(Lista_duplamente_encadeada *menor,
 
     if (menor != NULL)
     {
-        
+
         Lista_duplamente_encadeada *aux = menor;
 
         while (aux->proximo != NULL)
@@ -352,16 +334,14 @@ Lista_duplamente_encadeada *contatenar_listas(Lista_duplamente_encadeada *menor,
         lista = menor;
     }
 
-   
     if (maior != NULL)
     {
         pivo->proximo = maior;
         maior->anterior = pivo;
     }
-    
+
     return lista;
 }
-
 
 Lista_duplamente_encadeada *quick_sort_lista_duplamente_encadeada_recursivo(Lista_duplamente_encadeada *inicio, short int (*comparar)(INFO *info1, INFO *info2))
 {
@@ -381,13 +361,13 @@ Lista_duplamente_encadeada *quick_sort_lista_duplamente_encadeada_recursivo(List
     {
         menor = quick_sort_lista_duplamente_encadeada_recursivo(menor, comparar);
     }
-    
+
     if (maior != NULL)
     {
         maior = quick_sort_lista_duplamente_encadeada_recursivo(maior, comparar);
     }
-        
-    //Problema pra contatenar
+
+    // Problema pra contatenar
     return contatenar_listas(menor, maior, pivo);
 }
 
@@ -399,6 +379,74 @@ void quick_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, 
     }
 
     *inicio = quick_sort_lista_duplamente_encadeada_recursivo(*inicio, comparar);
+}
 
-    
+Lista_duplamente_encadeada *buscar_meio_lista_duplamente_encadeada(Lista_duplamente_encadeada *inicio, Lista_duplamente_encadeada *fim)
+{
+    if (inicio == NULL)
+    {
+        return NULL;
+    }
+    Lista_duplamente_encadeada *aux = inicio;
+
+    while (aux != fim && aux->proximo != fim)
+    {
+        inicio = inicio->proximo;
+        aux = aux->proximo->proximo;
+    }
+
+    return inicio;
+}
+
+Lista_duplamente_encadeada *merge(Lista_duplamente_encadeada *esquerda, Lista_duplamente_encadeada *direita, short int (*comparar)(INFO *info1, INFO *info2))
+{
+    if (esquerda == NULL)
+        return direita;
+    if (direita == NULL)
+        return esquerda;
+
+    if (comparar(esquerda->informacoes, direita->informacoes) <= 0)
+    {
+        esquerda->proximo = merge(esquerda->proximo, direita, comparar);
+        esquerda->proximo->anterior = esquerda;
+        esquerda->anterior = NULL;
+        return esquerda;
+    }
+    else
+    {
+        direita->proximo = merge(esquerda, direita->proximo, comparar);
+        direita->proximo->anterior = direita;
+        direita->anterior = NULL;
+        return direita;
+    }
+}
+
+Lista_duplamente_encadeada *merge_sort_lista_duplamente_encadeada_recursivo(Lista_duplamente_encadeada *inicio, short int (*comparar)(INFO *info1, INFO *info2))
+{
+    if (inicio == NULL || inicio->proximo == NULL)
+        return inicio;
+
+    Lista_duplamente_encadeada *meio = buscar_meio_lista_duplamente_encadeada(inicio, NULL);
+
+    if (meio->anterior != NULL)
+    {
+        meio->anterior->proximo = NULL;
+    }
+
+    meio->anterior = NULL;
+
+    Lista_duplamente_encadeada *esquerda = merge_sort_lista_duplamente_encadeada_recursivo(inicio, comparar);
+    Lista_duplamente_encadeada *direita = merge_sort_lista_duplamente_encadeada_recursivo(meio, comparar);
+
+    return merge(esquerda, direita, comparar);
+}
+
+void merge_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2))
+{
+    if (*inicio == NULL || (*inicio)->proximo == NULL)
+    {
+        return;
+    }
+
+    *inicio = merge_sort_lista_duplamente_encadeada_recursivo(*inicio, comparar);
 }
