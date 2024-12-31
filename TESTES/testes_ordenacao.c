@@ -42,7 +42,7 @@ int main()
     // selection_sort_lista_duplamente_encadeada(&lista, comparar_ID);
     // insertion_sort_lista_duplamente_encadeada(&lista, comparar_ID);
     // quick_sort_lista_duplamente_encadeada(&lista, comparar_ID);
-    merge_sort_lista_duplamente_encadeada(&lista, comparar_data_entrega);
+    merge_sort_lista_duplamente_encadeada(&lista, comparar_ID);
 
     printf("Depois de ordenar\n");
     printar_lista_duplamente_encadeada(lista);

@@ -52,8 +52,6 @@ bool validar_data(DATA_HORA *data)
     // Pega a data atual
     struct tm tempo_atual = *localtime(&t);
 
-    
-
     // Verificar se o mes é valido
     if (data->mes == 2)
     {
@@ -113,8 +111,6 @@ bool reescrever_dados()
     return selecionar_s_ou_n();
 }
 
-
-
 void verificar_alocacao(void *ponteiro)
 {
     if (ponteiro == NULL)
@@ -155,8 +151,6 @@ char *criar_nome(int tam)
     return nome;
 }
 
-
-
 DATA_HORA *criar_data_hora()
 {
     DATA_HORA *data = (DATA_HORA *)malloc(sizeof(DATA_HORA));
@@ -190,8 +184,6 @@ INFO *criar_info()
     return info;
 }
 
-
-
 void atribuir_nome(char **nome1, char *nome2)
 {
     if (nome2 == NULL)
@@ -217,7 +209,6 @@ void copiar_infos(INFO **info1, INFO *info2)
         *info1 = criar_info();
     }
 
-    
     (*info1)->ID = info2->ID;
     atribuir_nome(&(*info1)->nome, info2->nome);
 
@@ -251,7 +242,6 @@ void printar_dados(INFO *info)
     printf("Data de Criacao: %02d/%02d/%04d\n", info->data_criacao->dia, info->data_criacao->mes, info->data_criacao->ano);
     printf("Hora de Criacao: %02d:%02d\n", info->data_criacao->hora, info->data_criacao->minuto);
 }
-
 
 // Sequencia de funções para digitar os dados
 
@@ -416,14 +406,12 @@ short int digitar_ano()
     return n;
 }
 
-
-
 // Seguinte, essa função permite escrever os dados e retorna um ponteiro com o endereços dos dados, ja tem as blindagens necessarias
 INFO *escrever_dados()
 {
     INFO *info = criar_info();
 
-    while(1)
+    while (1)
     {
         // info->ID = digitar_ID();
 
@@ -490,7 +478,6 @@ void editar_dados(INFO **info)
         printf("\nNao ha dados para editar.\n");
         return;
     }
-    
 
     INFO *nova_info = criar_info();
 

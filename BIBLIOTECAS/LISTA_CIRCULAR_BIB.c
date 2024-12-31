@@ -4,7 +4,6 @@
 
 void adicionar_elemento_circular(Lista_circular **lista, INFO *informacoes)
 {
-
     if (*lista == NULL)
     {
         *lista = (Lista_circular *)malloc(sizeof(Lista_circular));
