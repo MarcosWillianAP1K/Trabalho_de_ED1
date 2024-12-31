@@ -25,6 +25,11 @@ int main()
     teste3->ID = 2;
     teste4->ID = 1;
 
+    teste1->nivel_prioridade = 1;
+    teste2->nivel_prioridade = 2;
+    teste3->nivel_prioridade = 3;
+    teste4->nivel_prioridade = 4;
+
     adicionar_elemento_duplamente_encadeada(&lista, teste1, true);
     adicionar_elemento_duplamente_encadeada(&lista, teste2, true);
     adicionar_elemento_duplamente_encadeada(&lista, teste3, true);
@@ -37,7 +42,7 @@ int main()
     // selection_sort_lista_duplamente_encadeada(&lista, comparar_ID);
     // insertion_sort_lista_duplamente_encadeada(&lista, comparar_ID);
     // quick_sort_lista_duplamente_encadeada(&lista, comparar_ID);
-    merge_sort_lista_duplamente_encadeada(&lista, comparar_ID);
+    merge_sort_lista_duplamente_encadeada(&lista, comparar_data_entrega);
 
     printf("Depois de ordenar\n");
     printar_lista_duplamente_encadeada(lista);
