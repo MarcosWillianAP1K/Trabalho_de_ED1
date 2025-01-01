@@ -8,7 +8,7 @@
 typedef struct Fila_encadeada
 {
     INFO *info;
-    struct Fila_encadeada *prox;
+    struct Fila_encadeada *proximo;
 } Fila_encadeada;
 
 typedef struct Fila
@@ -17,6 +17,11 @@ typedef struct Fila
     Fila_encadeada *fim;
 } Fila;
 
+void adicionar_elemento_fila(Fila *f, INFO *info);
+
+INFO *remover_elemento_fila(Fila *f);
+
+void liberar_fila(Fila **f);
 
 
 #endif // FILA_BIB_H
