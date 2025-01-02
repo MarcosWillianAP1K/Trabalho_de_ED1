@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../BIBLIOTECAS/Struct_info.h"
+#include "../BIBLIOTECAS_LISTAS/Struct_info.h"
 
 // Comando para rodar esse teste
-// gcc -o teste -pthread ../TESTES/testes_Struct_info.c ../BIBLIOTECAS/Struct_info.c
+// gcc -o teste -pthread ../TESTES/testes_Struct_info.c ../BIBLIOTECAS_LISTAS/Struct_info.c
 
 int main()
 {

@@ -1,10 +1,10 @@
-#include "../BIBLIOTECAS/LISTA_DUPLAMENTE_ENCADEADA_BIB.h"
-#include "../BIBLIOTECAS/ORDENACAO_BIB.h"
+#include "../BIBLIOTECAS_LISTAS/LISTA_DUPLAMENTE_ENCADEADA_BIB.h"
+#include "../BIBLIOTECAS_LISTAS/ORDENACAO_BIB.h"
 
 #include <stdio.h>
 
 //comando para compilar
-//gcc -o teste -pthread ../TESTES/testes_ordenacao.c ../BIBLIOTECAS/ORDENACAO_BIB.c ../BIBLIOTECAS/LISTA_DUPLAMENTE_ENCADEADA_BIB.c ../BIBLIOTECAS/Struct_info.c
+// gcc -o teste -pthread ../TESTES/testes_ordenacao.c ../BIBLIOTECAS_LISTAS/Struct_info.c ../BIBLIOTECAS_LISTAS/LISTA_DUPLAMENTE_ENCADEADA_BIB.c ../BIBLIOTECAS_LISTAS/ORDENACAO_BIB.c
 
 int main()
 {
