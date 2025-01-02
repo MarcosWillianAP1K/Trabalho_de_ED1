@@ -1,5 +1,4 @@
 #include "LISTA_ENCADEADA_BIB.h"
-#include "../BIBLIOTECAS_SISTEMA/Struct_info.h"
 
 
 #ifndef PILHA_BIB_H
@@ -12,19 +11,17 @@ typedef struct Pilha
 } Pilha;
 
 
-void adicionar_elemento_pilha(Pilha **p, INFO *info);
+void adicionar_elemento_pilha(Pilha **p, void *info, TIPO_INFO tipo);
 
 void atribuir_Lista_encadeada_a_pilha(Lista_encadeada *lista, Pilha **p);
 
-INFO *remover_elemento_pilha(Pilha *p);
-
-INFO *remover_elemento_pilha(Pilha *p);
+void *remover_elemento_pilha(Pilha *p);
 
 void printar_topo_pilha(Pilha *p);
 
 void printar_pilha(Pilha *p);
 
-void liberar_pilha(Pilha **p);
+void liberar_pilha(Pilha **p, bool liberar_info);
 
 
 

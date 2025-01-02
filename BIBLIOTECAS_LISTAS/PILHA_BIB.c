@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include "PILHA_BIB.h"
 
-void adicionar_elemento_pilha(Pilha **p, INFO *info)
+void adicionar_elemento_pilha(Pilha **p, void *info, TIPO_INFO tipo)
 {
     Lista_encadeada *novo = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
     novo->informacoes = info;
+    novo->tipo = tipo;
     novo->proximo = NULL;
 
     if (*p == NULL)
@@ -34,16 +35,17 @@ void atribuir_Lista_encadeada_a_pilha(Lista_encadeada *lista, Pilha **p)
         return;
     }
 
-    if (*p != NULL)
+    if (*p != NULL && (*p)->topo != NULL)
     {
-        liberar_pilha(p);
+        printf("\nPilha ja possui elementos.\n");
+        return;
     }
-
+    free(*p);
     *p = (Pilha *)malloc(sizeof(Pilha));
     (*p)->topo = lista;
 }
 
-INFO *remover_elemento_pilha(Pilha *p)
+void *remover_elemento_pilha(Pilha *p)
 {
     if (p == NULL || p->topo == NULL)
     {
@@ -51,11 +53,16 @@ INFO *remover_elemento_pilha(Pilha *p)
     }
 
     Lista_encadeada *removido = p->topo;
-    INFO *info = removido->informacoes;
     p->topo = p->topo->proximo;
+
+    void *info = removido->informacoes;
+    TIPO_INFO tipo = removido->tipo;
     free(removido);
 
-    return info;
+
+   
+
+    return retorna_info_convertida(tipo, info);
 }
 
 void printar_topo_pilha(Pilha *p)
@@ -66,7 +73,7 @@ void printar_topo_pilha(Pilha *p)
         return;
     }
 
-    printar_dados(p->topo->informacoes);
+    printar_INFO_convertido(p->topo->tipo, p->topo->informacoes);
     printf("\n");
 }
 
@@ -82,13 +89,13 @@ void printar_pilha(Pilha *p)
 
     while (aux != NULL)
     {
-        printar_dados(aux->informacoes);
+        printar_INFO_convertido(aux->tipo, aux->informacoes);
         printf("\n");
         aux = aux->proximo;
     }
 }
 
-void liberar_pilha(Pilha **p)
+void liberar_pilha(Pilha **p, bool liberar_info)
 {
     if (*p == NULL)
     {
@@ -101,7 +108,8 @@ void liberar_pilha(Pilha **p)
     {
         aux = (*p)->topo;
         (*p)->topo = (*p)->topo->proximo;
-        liberar_INFO(&aux->informacoes);
-        free(aux);
+        liberar_no_encadeada(aux, liberar_info);
     }
+    free(*p);
+    *p = NULL;
 }

@@ -1,17 +1,18 @@
 #include <stdio.h>
 #include "../BIBLIOTECAS_LISTAS/PILHA_BIB.h"
+#include "../BIBLIOTECAS_SISTEMA/Struct_tarefa.h"
 
 // Comando para rodar esse teste
-// gcc -o teste -pthread ../TESTES/testes_pilha.c ../BIBLIOTECAS_SISTEMA/Struct_info.c ../BIBLIOTECAS_LISTAS/LISTA_ENCADEADA_BIB.c ../BIBLIOTECAS_LISTAS/PILHA_BIB.c
+// gcc -o teste -pthread ../TESTES/testes_pilha.c ../BIBLIOTECAS_SISTEMA/Struct_tarefa.c ../BIBLIOTECAS_LISTAS/PILHA_BIB.c ../BIBLIOTECAS_SISTEMA/Tipos_bib.c ../BIBLIOTECAS_LISTAS/LISTA_ENCADEADA_BIB.c
 
 int main()
 {
     Pilha *pilha = NULL;
 
-    INFO *teste1 = criar_info();
-    INFO *teste2 = criar_info();
-    INFO *teste3 = criar_info();
-    INFO *teste4 = criar_info();
+    TAREFA *teste1 = criar_tarefa();
+    TAREFA *teste2 = criar_tarefa();
+    TAREFA *teste3 = criar_tarefa();
+    TAREFA *teste4 = criar_tarefa();
 
 
     atribuir_nome(&teste1->nome, "teste1");
@@ -24,27 +25,27 @@ int main()
     teste3->ID = 3;
     teste4->ID = 4;
 
-    adicionar_elemento_pilha(&pilha, teste1);
-    adicionar_elemento_pilha(&pilha, teste2);
+    adicionar_elemento_pilha(&pilha, teste1, INFO_TAREFA);
+    adicionar_elemento_pilha(&pilha, teste2, INFO_TAREFA);
 
     printf("Topo da pilha\n");
     printar_topo_pilha(pilha);
 
-    adicionar_elemento_pilha(&pilha, teste3);
-    adicionar_elemento_pilha(&pilha, teste4);
+    adicionar_elemento_pilha(&pilha, teste3, INFO_TAREFA);
+    adicionar_elemento_pilha(&pilha, teste4, INFO_TAREFA);
 
     printf("\nPilha\n");
     printar_pilha(pilha);
 
-    INFO *removido = remover_elemento_pilha(pilha);
+    TAREFA *removido = remover_elemento_pilha(pilha);
 
     printf("\nRemovido\n");
-    printar_dados(removido);
+    printar_tarefa(removido);
 
     printf("\nPilha\n");
     printar_pilha(pilha);
 
-    liberar_pilha(&pilha);
+    liberar_pilha(&pilha, true);
 
 
     return 0;
