@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 //comando para compilar
-// gcc -o teste -pthread ../TESTES/testes_ordenacao.c ../BIBLIOTECAS_LISTAS/Struct_info.c ../BIBLIOTECAS_LISTAS/LISTA_DUPLAMENTE_ENCADEADA_BIB.c ../BIBLIOTECAS_LISTAS/ORDENACAO_BIB.c
+// gcc -o teste -pthread ../TESTES/testes_ordenacao.c ../BIBLIOTECAS_SISTEMA/Struct_info.c ../BIBLIOTECAS_LISTAS/LISTA_DUPLAMENTE_ENCADEADA_BIB.c ../BIBLIOTECAS_LISTAS/ORDENACAO_BIB.c
 
 int main()
 {

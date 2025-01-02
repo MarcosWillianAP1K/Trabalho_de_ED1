@@ -1,9 +1,9 @@
-#include "../BIBLIOTECAS/FILA_BIB.h"
+#include "../BIBLIOTECAS_LISTAS/FILA_BIB.h"
 
 #include <stdio.h>
 
 // Comando para rodar esse teste
-// gcc -o teste -pthread ../TESTES/testes_fila.c ../BIBLIOTECAS/Struct_info.c ../BIBLIOTECAS/LISTA_ENCADEADA_BIB.c ../BIBLIOTECAS/FILA_BIB.c
+// gcc -o teste -pthread ../TESTES/testes_fila.c ../BIBLIOTECAS_SISTEMA/Struct_info.c ../BIBLIOTECAS_LISTAS/FILA_BIB.c
 
 int main()
 {

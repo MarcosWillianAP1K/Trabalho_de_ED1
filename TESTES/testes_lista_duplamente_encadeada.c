@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 // Comando para rodar esse teste
-// gcc -o teste -pthread ../TESTES/testes_lista_duplamente_encadeada.c ../BIBLIOTECAS_LISTAS/Struct_info.c ../BIBLIOTECAS_LISTAS/LISTA_DUPLAMENTE_ENCADEADA_BIB.c
+// gcc -o teste -pthread ../TESTES/testes_lista_duplamente_encadeada.c ../BIBLIOTECAS_SISTEMA/Struct_info.c ../BIBLIOTECAS_LISTAS/LISTA_DUPLAMENTE_ENCADEADA_BIB.c
 
 int main()
 {

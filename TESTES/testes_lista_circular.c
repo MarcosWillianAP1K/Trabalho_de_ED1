@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 // Comando para rodar esse teste
-// gcc -o teste -pthread ../TESTES/testes_lista_circular.c ../BIBLIOTECAS_LISTAS/Struct_info.c ../BIBLIOTECAS_LISTAS/LISTA_CIRCULAR_BIB.c
+// gcc -o teste -pthread ../TESTES/testes_lista_circular.c ../BIBLIOTECAS_SISTEMA/Struct_info.c ../BIBLIOTECAS_LISTAS/LISTA_CIRCULAR_BIB.c
 
 int main()
 {

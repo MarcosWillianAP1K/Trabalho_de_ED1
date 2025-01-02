@@ -2,7 +2,7 @@
 #include "../BIBLIOTECAS_LISTAS/PILHA_BIB.h"
 
 // Comando para rodar esse teste
-// gcc -o teste -pthread ../TESTES/testes_pilha.c ../BIBLIOTECAS_LISTAS/Struct_info.c ../BIBLIOTECAS_LISTAS/LISTA_ENCADEADA_BIB.c ../BIBLIOTECAS_LISTAS/PILHA_BIB.c
+// gcc -o teste -pthread ../TESTES/testes_pilha.c ../BIBLIOTECAS_SISTEMA/Struct_info.c ../BIBLIOTECAS_LISTAS/LISTA_ENCADEADA_BIB.c ../BIBLIOTECAS_LISTAS/PILHA_BIB.c
 
 int main()
 {
