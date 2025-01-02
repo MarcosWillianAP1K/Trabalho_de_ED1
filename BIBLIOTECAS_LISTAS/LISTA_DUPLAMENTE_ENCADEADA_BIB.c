@@ -10,14 +10,32 @@ typedef struct aux_thread
     Lista_duplamente_encadeada **meio;
 } aux_thread;
 
+
+void liberar_no_duplamente_encadeada(Lista_duplamente_encadeada *lista, bool liberar_info)
+{
+
+    if (lista == NULL)
+    {
+        return;
+    }
+
+    if (liberar_info)
+    {
+        liberar_INFO_convertido(lista->tipo, &lista->informacoes);
+    }
+
+    free(lista);
+}
+
 //TRUE = FRENTE
 //FALSE = TRAS
-void adicionar_elemento_duplamente_encadeada(Lista_duplamente_encadeada **lista, INFO *informacao, bool frente_tras)
+void adicionar_elemento_duplamente_encadeada(Lista_duplamente_encadeada **lista, void *informacao, TIPO_INFO tipo , bool frente_tras)
 {
     if (*lista == NULL)
     {
         *lista = (Lista_duplamente_encadeada *)malloc(sizeof(Lista_duplamente_encadeada));
         (*lista)->informacoes = informacao;
+        (*lista)->tipo = tipo;
         (*lista)->proximo = NULL;
         (*lista)->anterior = NULL;
         return;
@@ -25,6 +43,7 @@ void adicionar_elemento_duplamente_encadeada(Lista_duplamente_encadeada **lista,
 
     Lista_duplamente_encadeada *novo_no = (Lista_duplamente_encadeada *)malloc(sizeof(Lista_duplamente_encadeada));
     novo_no->informacoes = informacao;
+    novo_no->tipo = tipo;
     novo_no->proximo = NULL;
     novo_no->anterior = NULL;
 
@@ -92,14 +111,14 @@ void printar_lista_duplamente_encadeada(Lista_duplamente_encadeada *lista)
     Lista_duplamente_encadeada *aux = lista;
     while (aux != NULL)
     {
-        printar_dados(aux->informacoes);
+        printar_INFO_convertido(aux->tipo, aux->informacoes);
         printf("\n");
         aux = aux->proximo;
     }
     printf("\n");
 }
 
-void liberar_memoria_duplamente_encadeada(Lista_duplamente_encadeada **lista)
+void liberar_memoria_duplamente_encadeada(Lista_duplamente_encadeada **lista, bool liberar_info)
 {
     if (*lista == NULL)
     {
@@ -111,15 +130,14 @@ void liberar_memoria_duplamente_encadeada(Lista_duplamente_encadeada **lista)
     while (*lista != NULL)
     {
         *lista = (*lista)->proximo;
-        liberar_INFO(&anterior->informacoes);
-        free(anterior);
+        liberar_no_duplamente_encadeada(anterior, liberar_info);
         anterior = *lista;
     }
 
     *lista = NULL;
 }
 
-void remover_elemento_duplamente_encadeada_por_ID(Lista_duplamente_encadeada **lista, int ID)
+void remover_elemento_duplamente_encadeada_por_ID(Lista_duplamente_encadeada **lista, int ID, TIPO_INFO tipo , bool liberar_info)
 {
     if (*lista == NULL)
     {
@@ -127,17 +145,31 @@ void remover_elemento_duplamente_encadeada_por_ID(Lista_duplamente_encadeada **l
     }
 
     Lista_duplamente_encadeada *aux = *lista;
+    short int ID_aux = retornar_ID_convertido(aux->tipo, aux->informacoes);
 
-    while (aux != NULL && aux->informacoes->ID != ID)
+    while (aux != NULL)
     {
-
+        if ( ID_aux == ID && aux->tipo == tipo)
+        {
+            break;
+        }
+        
         aux = aux->proximo;
+        ID_aux = retornar_ID_convertido(aux->tipo, aux->informacoes);
     }
 
     if (aux == NULL)
     {
         return;
     }
+    
+    if (aux->anterior == NULL && aux->proximo == NULL)
+    {
+        liberar_no_duplamente_encadeada(aux, liberar_info);
+        *lista = NULL;
+        return;
+    }
+    
 
     if (aux->anterior != NULL)
     {
@@ -158,19 +190,29 @@ void remover_elemento_duplamente_encadeada_por_ID(Lista_duplamente_encadeada **l
         aux->anterior->proximo = NULL;
     }
 
-    liberar_INFO(&aux->informacoes);
-    free(aux);
+    liberar_no_duplamente_encadeada(aux, liberar_info);
 }
 
 // Essa funciona diferente das outras bibliotecas, ela ja remove o elemento direto
-void remover_elemento_duplamente_encadeada_por_endereco(Lista_duplamente_encadeada *lista, Lista_duplamente_encadeada **inicio)
+void remover_elemento_duplamente_encadeada_por_endereco(Lista_duplamente_encadeada *lista, Lista_duplamente_encadeada **inicio, bool liberar_info)
 {
     if (lista == NULL)
     {
         return;
     }
+   
 
     Lista_duplamente_encadeada *aux = lista;
+
+    if (aux == *inicio && aux->proximo == NULL)
+    {
+        liberar_no_duplamente_encadeada(aux, liberar_info);
+        *inicio = NULL;
+        return;
+    }
+
+   
+
 
     // Se anterior for null, este no é o primeiro da lista
     if (aux->anterior != NULL)
@@ -183,6 +225,7 @@ void remover_elemento_duplamente_encadeada_por_endereco(Lista_duplamente_encadea
         lista->anterior = NULL;
         *inicio = lista;
     }
+    
 
     if (aux->proximo != NULL)
     {
@@ -192,20 +235,28 @@ void remover_elemento_duplamente_encadeada_por_endereco(Lista_duplamente_encadea
     {
         aux->anterior->proximo = NULL;
     }
+    
 
     
-    liberar_INFO(&aux->informacoes);
-    free(aux);
+    liberar_no_duplamente_encadeada(aux, liberar_info);
     
+
 }
 
-Lista_duplamente_encadeada *buscar_elemento_duplamente_encadeada_por_ID(Lista_duplamente_encadeada *lista, int ID)
+Lista_duplamente_encadeada *buscar_elemento_duplamente_encadeada_por_ID(Lista_duplamente_encadeada *lista, int ID,  TIPO_INFO tipo_info)
 {
     Lista_duplamente_encadeada *aux = lista;
 
-    while (aux != NULL && aux->informacoes->ID != ID)
+    short int ID_aux = retornar_ID_convertido(aux->tipo, aux->informacoes);
+
+    while (aux != NULL )
     {
+        if (ID_aux == ID && aux->tipo == tipo_info)
+        {
+            return aux;
+        }
         aux = aux->proximo;
+        ID_aux = retornar_ID_convertido(aux->tipo, aux->informacoes);
     }
 
     return aux;
@@ -223,7 +274,7 @@ Lista_duplamente_encadeada *buscar_meio(Lista_duplamente_encadeada *inicio, List
     return inicio;
 }
 
-Lista_duplamente_encadeada *busca_binaria_recursiva(Lista_duplamente_encadeada *inicio, Lista_duplamente_encadeada *fim, int *ID)
+Lista_duplamente_encadeada *busca_binaria_recursiva(Lista_duplamente_encadeada *inicio, Lista_duplamente_encadeada *fim, int *ID, TIPO_INFO tipo)
 {
     if (inicio == NULL)
     {
@@ -231,24 +282,26 @@ Lista_duplamente_encadeada *busca_binaria_recursiva(Lista_duplamente_encadeada *
     }
 
     Lista_duplamente_encadeada *meio = buscar_meio(inicio, fim);
+    short int ID_meio = retornar_ID_convertido(meio->tipo, meio->informacoes);
 
-    if (meio->informacoes->ID == *ID)
+
+    if ( ID_meio == *ID && meio->tipo == tipo)
     {
         return meio;
     }
-    else if (meio->informacoes->ID < *ID && meio->proximo != NULL)
+    else if (ID_meio != -1 && ID_meio < *ID && meio->proximo != NULL)
     {
-        return busca_binaria_recursiva(meio->proximo, fim, ID);
+        return busca_binaria_recursiva(meio->proximo, fim, ID, tipo);
     }
-    else if (meio->informacoes->ID > *ID && meio->anterior != NULL)
+    else if (ID_meio > *ID && meio->anterior != NULL)
     {
-        return busca_binaria_recursiva(inicio, meio->anterior, ID);
+        return busca_binaria_recursiva(inicio, meio->anterior, ID, tipo);
     }
 
     return NULL;
 }
 
-Lista_duplamente_encadeada *busca_binaria_duplamente_encadeada(Lista_duplamente_encadeada *lista, int ID)
+Lista_duplamente_encadeada *busca_binaria_duplamente_encadeada(Lista_duplamente_encadeada *lista, int ID, TIPO_INFO tipo)
 {
     if (lista == NULL)
     {
@@ -259,18 +312,19 @@ Lista_duplamente_encadeada *busca_binaria_duplamente_encadeada(Lista_duplamente_
     Lista_duplamente_encadeada *fim = NULL;
 
     Lista_duplamente_encadeada *meio = buscar_meio(inicio, fim);
+    short int ID_meio = retornar_ID_convertido(meio->tipo, meio->informacoes);
 
-    if (meio->informacoes->ID == ID)
+    if ( ID_meio == ID && meio->tipo == tipo)
     {
         return meio;
     }
-    else if (meio->informacoes->ID < ID && meio->proximo != NULL)
+    else if (ID_meio < ID && meio->proximo != NULL)
     {
-        return busca_binaria_recursiva(meio->proximo, fim, &ID);
+        return busca_binaria_recursiva(meio->proximo, fim, &ID, tipo);
     }
-    else if (meio->informacoes->ID > ID && meio->anterior != NULL)
+    else if (ID_meio > ID && meio->anterior != NULL)
     {
-        return busca_binaria_recursiva(inicio, meio->anterior, &ID);
+        return busca_binaria_recursiva(inicio, meio->anterior, &ID, tipo);
     }
 
     return NULL;
