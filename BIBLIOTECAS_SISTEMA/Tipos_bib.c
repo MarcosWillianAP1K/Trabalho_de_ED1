@@ -13,6 +13,11 @@ void error_tipo()
 
 void conferir_tipos(TIPO_INFO tipo1, TIPO_INFO tipo2, void *info1, void *info2)
 {
+    if (info1 == NULL || info2 == NULL)
+    {
+        return;
+    }
+
     if (tipo1 != tipo2)
     {
         error_tipo();
@@ -21,6 +26,12 @@ void conferir_tipos(TIPO_INFO tipo1, TIPO_INFO tipo2, void *info1, void *info2)
 
 short int retornar_ID_convertido(TIPO_INFO tipo, void *info)
 {
+    if (info == NULL)
+    {
+        return -1;
+    }
+    
+
     switch (tipo)
     {
     case INFO_TAREFA:
@@ -39,6 +50,11 @@ short int retornar_ID_convertido(TIPO_INFO tipo, void *info)
 
 void atribuir_ID_convertido(TIPO_INFO tipo, void *info, short int ID)
 {
+    if (info == NULL)
+    {
+        return;
+    }
+
     switch (tipo)
     {
     case INFO_TAREFA:
@@ -57,6 +73,11 @@ void atribuir_ID_convertido(TIPO_INFO tipo, void *info, short int ID)
 
 void liberar_INFO_convertido(TIPO_INFO tipo, void **info)
 {
+    if (*info == NULL)
+    {
+        return;
+    }
+
     switch (tipo)
     {
     case INFO_TAREFA:
@@ -75,6 +96,11 @@ void liberar_INFO_convertido(TIPO_INFO tipo, void **info)
 
 void printar_INFO_convertido(TIPO_INFO tipo, void *info)
 {
+    if (info == NULL)
+    {
+        return;
+    }
+
     switch (tipo)
     {
     case INFO_TAREFA:

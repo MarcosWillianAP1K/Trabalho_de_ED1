@@ -35,10 +35,10 @@ int main()
     printf("Antes de remover\n");
     printar_lista_encadeada(lista);
 
-    remover_elemento_encadeada_por_endereco(&lista, buscar_lista_encadeada(lista, 1), true);
-    // remover_elemento_encadeada_por_ID(&lista, 4, true);
-    remover_elemento_encadeada_por_ID(&lista, 3, true);
-    remover_elemento_encadeada_por_ID(&lista, 2, true);
+    remover_elemento_encadeada_por_endereco(&lista, buscar_lista_encadeada(lista, 1, INFO_TAREFA), true);
+    // remover_elemento_encadeada_por_ID(&lista, 4, INFO_TAREFA, true);
+    remover_elemento_encadeada_por_ID(&lista, 3, INFO_TAREFA, true);
+    remover_elemento_encadeada_por_ID(&lista, 2, INFO_TAREFA, true);
 
     printf("Depois de remover\n");
 

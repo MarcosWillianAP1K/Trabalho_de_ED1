@@ -19,6 +19,21 @@ typedef struct thread_verificar_ID
     Lista_encadeada *lista;
 } thread_verificar_ID;
 
+void liberar_no_encadeada(Lista_encadeada *no, bool liberar_info)
+{
+    if (no == NULL)
+    {
+        return;
+    }
+
+    if (liberar_info)
+    {
+        liberar_INFO_convertido(no->tipo, &no->informacoes);
+    }
+
+    free(no);
+}
+
 void *verificar_ID(void *arg)
 {
     if (arg == NULL)
@@ -152,7 +167,7 @@ void adicionar_elemento_encadeada_ordernadado_por_ID(Lista_encadeada **lista, vo
 }
 
 // Fornece o ID do elemento a ser removido
-void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID, bool liberar_info)
+void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID, TIPO_INFO tipo ,bool liberar_info)
 {
     if (lista == NULL)
     {
@@ -164,8 +179,12 @@ void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID, bool lib
 
     short int ID_atual = retornar_ID_convertido(atual->tipo, atual->informacoes);
 
-    while (atual != NULL && ID_atual != ID)
+    while (atual != NULL )
     {
+        if (ID_atual == ID && atual->tipo == tipo)
+        {
+            break;
+        }
         anterior = atual;
         atual = atual->proximo;
         ID_atual = retornar_ID_convertido(atual->tipo, atual->informacoes);
@@ -174,13 +193,8 @@ void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID, bool lib
     if (atual == *lista)
     {
         *lista = atual->proximo;
+        liberar_no_encadeada(atual, liberar_info);
 
-        if (liberar_info)
-        {
-            liberar_INFO_convertido(atual->tipo, &atual->informacoes);
-        }
-
-        free(atual);
         return;
     }
 
@@ -191,11 +205,7 @@ void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID, bool lib
     }
 
     anterior->proximo = atual->proximo;
-    if (liberar_info)
-    {
-        liberar_INFO_convertido(atual->tipo, &atual->informacoes);
-    }
-    free(atual);
+    liberar_no_encadeada(atual, liberar_info);
 }
 
 // Fornece o endereço do elemento a ser removido, pode ser usado em conjunto com buscar_lista_encadeada
@@ -212,11 +222,7 @@ void remover_elemento_encadeada_por_endereco(Lista_encadeada **lista, Lista_enca
     if (atual == endereco)
     {
         *lista = atual->proximo;
-        if (liberar_info)
-        {
-            liberar_INFO_convertido(atual->tipo, &atual->informacoes);
-        }
-        free(atual);
+        liberar_no_encadeada(atual, liberar_info);
         return;
     }
 
@@ -233,11 +239,7 @@ void remover_elemento_encadeada_por_endereco(Lista_encadeada **lista, Lista_enca
     }
 
     anterior->proximo = atual->proximo;
-    if (liberar_info)
-    {
-        liberar_INFO_convertido(atual->tipo, &atual->informacoes);
-    }
-    free(atual);
+    liberar_no_encadeada(atual, liberar_info);
 }
 
 void liberar_memoria_encadeada(Lista_encadeada **lista, bool liberar_info)
@@ -254,11 +256,7 @@ void liberar_memoria_encadeada(Lista_encadeada **lista, bool liberar_info)
 
         *lista = (*lista)->proximo;
 
-        if (liberar_info)
-        {
-            liberar_INFO_convertido(anterior->tipo, &anterior->informacoes);
-        }
-        free(anterior);
+        liberar_no_encadeada(anterior, liberar_info);
         anterior = *lista;
     }
 
@@ -281,7 +279,7 @@ void printar_lista_encadeada(Lista_encadeada *list)
     }
 }
 
-Lista_encadeada *buscar_lista_encadeada(Lista_encadeada *list, int ID)
+Lista_encadeada *buscar_lista_encadeada(Lista_encadeada *list, int ID, TIPO_INFO tipo)
 {
     if (list == NULL)
     {
@@ -290,8 +288,12 @@ Lista_encadeada *buscar_lista_encadeada(Lista_encadeada *list, int ID)
 
     short int ID_atual = retornar_ID_convertido(list->tipo, list->informacoes);
 
-    while (list != NULL && ID_atual != ID)
+    while (list != NULL )
     {
+        if (ID_atual == ID  && list->tipo == tipo)
+        {
+            return list;
+        }
         list = list->proximo;
         ID_atual = retornar_ID_convertido(list->tipo, list->informacoes);
     }
