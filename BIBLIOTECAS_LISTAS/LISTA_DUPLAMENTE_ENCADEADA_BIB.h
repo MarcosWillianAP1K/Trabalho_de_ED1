@@ -1,4 +1,4 @@
-#include "Struct_info.h"
+#include "../BIBLIOTECAS_SISTEMA/Struct_info.h"
 #include <stdbool.h>
 
 #ifndef LISTA_DUPLAMENTE_ENCADEADA_BIB_H

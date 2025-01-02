@@ -1,5 +1,5 @@
 
-#include "Struct_info.h"
+#include "../BIBLIOTECAS_SISTEMA/Struct_info.h"
 
 
 #ifndef LISTA_ENCADEADA_BIB_H

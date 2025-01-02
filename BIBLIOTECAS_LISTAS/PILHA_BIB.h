@@ -1,5 +1,5 @@
 #include "LISTA_ENCADEADA_BIB.h"
-#include "Struct_info.h"
+#include "../BIBLIOTECAS_SISTEMA/Struct_info.h"
 
 
 #ifndef PILHA_BIB_H

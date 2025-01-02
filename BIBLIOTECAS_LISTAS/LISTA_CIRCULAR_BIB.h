@@ -1,4 +1,4 @@
-#include "Struct_info.h"
+#include "../BIBLIOTECAS_SISTEMA/Struct_info.h"
 
 
 #ifndef LISTA_CIRCULAR_BIB_H
