@@ -1,7 +1,8 @@
 {
     "files.associations": {
-        "lista_encadeada_bib.h": "c",
-        "struct_info.h": "c",
+        "Lista_encadeada_bib.h": "c",
+        "Struct_tarefa.h": "c",
         "pthread.h": "c"
-    }
+    },
+    
 }

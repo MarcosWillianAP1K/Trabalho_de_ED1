@@ -13,29 +13,29 @@ typedef struct DATA_HORA
 
 } DATA_HORA;
 
-typedef struct INFO
+typedef struct TAREFA
 {
     signed short int ID;
     char *nome;
     signed short int nivel_prioridade;
     DATA_HORA *data_entrega;
     DATA_HORA *data_criacao;
-} INFO;
+} TAREFA;
 
 DATA_HORA *criar_data_hora();
 
-INFO *criar_info();
+TAREFA *criar_tarefa();
 
 void atribuir_nome(char **nome1, char *nome2);
 
-void copiar_infos(INFO **info1, INFO *info2);
+void copiar_tarefas(TAREFA **info1, TAREFA *info2);
 
-void liberar_INFO(INFO **info);
+void liberar_TAREFA(TAREFA **info);
 
-void printar_dados(INFO *info);
+void printar_tarefa(TAREFA *info);
 
-INFO *escrever_dados();
+TAREFA *escrever_tarefa();
 
-void editar_dados(INFO **info);
+void editar_tarefa(TAREFA **info);
 
 #endif // STRUCT_INFO_H

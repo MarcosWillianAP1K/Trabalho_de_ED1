@@ -1,28 +1,31 @@
 #include "../BIBLIOTECAS_LISTAS/LISTA_ENCADEADA_BIB.h"
+#include "../BIBLIOTECAS_SISTEMA/Struct_tarefa.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
 // Comando para rodar esse teste
-// gcc -o teste -pthread ../TESTES/testes_lista_encadeada.c ../BIBLIOTECAS_SISTEMA/Struct_info.c ../BIBLIOTECAS_LISTAS/LISTA_ENCADEADA_BIB.c
+// gcc -o teste -pthread ../TESTES/testes_lista_encadeada.c ../BIBLIOTECAS_SISTEMA/Struct_tarefa.c ../BIBLIOTECAS_LISTAS/LISTA_ENCADEADA_BIB.c ../BIBLIOTECAS_SISTEMA/Tipos_bib.c
 
 int main()
 {
     Lista_encadeada *lista = NULL;
 
-    INFO *teste1 = criar_info();
-    INFO *teste2 = criar_info();
-    INFO *teste3 = criar_info();
-    INFO *teste4 = criar_info();
+    TAREFA *teste1 = criar_tarefa();
+    TAREFA *teste2 = criar_tarefa();
+    TAREFA *teste3 = criar_tarefa();
+    TAREFA *teste4 = criar_tarefa();
 
     atribuir_nome(&teste1->nome, "teste1");
     atribuir_nome(&teste2->nome, "teste2");
     atribuir_nome(&teste3->nome, "teste3");
     atribuir_nome(&teste4->nome, "teste4");
 
-    adicionar_elemento_encadeada(&lista, teste1);
-    adicionar_elemento_encadeada(&lista, teste2);
-    adicionar_elemento_encadeada(&lista, teste3);
-    adicionar_elemento_encadeada(&lista, teste4);
+    adicionar_elemento_encadeada(&lista, teste1, INFO_TAREFA);
+    adicionar_elemento_encadeada(&lista, teste2, INFO_TAREFA);
+    adicionar_elemento_encadeada(&lista, teste3, INFO_TAREFA);
+    adicionar_elemento_encadeada(&lista, teste4, INFO_TAREFA);
+    
 
     teste1->ID = 1;
     teste2->ID = 2;
@@ -32,16 +35,16 @@ int main()
     printf("Antes de remover\n");
     printar_lista_encadeada(lista);
 
-    remover_elemento_encadeada_por_endereco(&lista, buscar_lista_encadeada(lista, 1));
-    remover_elemento_encadeada_por_ID(&lista, 4);
-    remover_elemento_encadeada_por_ID(&lista, 3);
-    remover_elemento_encadeada_por_ID(&lista, 2);
+    remover_elemento_encadeada_por_endereco(&lista, buscar_lista_encadeada(lista, 1), true);
+    // remover_elemento_encadeada_por_ID(&lista, 4, true);
+    remover_elemento_encadeada_por_ID(&lista, 3, true);
+    remover_elemento_encadeada_por_ID(&lista, 2, true);
 
     printf("Depois de remover\n");
 
     printar_lista_encadeada(lista);
 
-    liberar_memoria_encadeada(&lista);
+    liberar_memoria_encadeada(&lista, true);
 
     return 0;
 }

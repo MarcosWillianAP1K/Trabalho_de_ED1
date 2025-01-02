@@ -4,15 +4,15 @@
 #include <stdbool.h>
 #include <time.h>
 
-#include "Struct_info.h"
+#include "Struct_tarefa.h"
 
-void liberar_INFO(INFO **info)
+void liberar_TAREFA(TAREFA **tarefa)
 {
-    free((*info)->nome);
-    free((*info)->data_entrega);
-    free((*info)->data_criacao);
-    free(*info);
-    *info = NULL;
+    free((*tarefa)->nome);
+    free((*tarefa)->data_entrega);
+    free((*tarefa)->data_criacao);
+    free(*tarefa);
+    *tarefa = NULL;
 }
 
 void limpar_buffer()
@@ -95,18 +95,18 @@ bool validar_data(DATA_HORA *data)
     return true;
 }
 
-bool confirmar_dados(INFO *info)
+bool confirmar_tarefa(TAREFA *tarefa)
 {
-    printar_dados(info);
+    printar_tarefa(tarefa);
 
-    printf("\nDeseja confirmar os dados? (s/n): ");
+    printf("\nDeseja confirmar a tarefa? (s/n): ");
 
     return selecionar_s_ou_n();
 }
 
-bool reescrever_dados()
+bool reescrever_tarefa()
 {
-    printf("\nDeseja reescrever os dados? (s/n): ");
+    printf("\nDeseja reescrever a tarefa? (s/n): ");
 
     return selecionar_s_ou_n();
 }
@@ -166,22 +166,22 @@ DATA_HORA *criar_data_hora()
     return data;
 }
 
-INFO *criar_info()
+TAREFA *criar_tarefa()
 {
-    INFO *info = (INFO *)malloc(sizeof(INFO));
+    TAREFA *tarefa = (TAREFA *)malloc(sizeof(TAREFA));
 
-    verificar_alocacao(info);
+    verificar_alocacao(tarefa);
 
-    info->ID = 0;
-    info->nome = criar_nome(1);
-    info->nome[0] = '\0';
-    info->nivel_prioridade = 0;
-    info->data_criacao = criar_data_hora();
-    info->data_entrega = criar_data_hora();
+    tarefa->ID = 0;
+    tarefa->nome = criar_nome(1);
+    tarefa->nome[0] = '\0';
+    tarefa->nivel_prioridade = 0;
+    tarefa->data_criacao = criar_data_hora();
+    tarefa->data_entrega = criar_data_hora();
 
-    pegar_data_atual(info->data_criacao);
+    pegar_data_atual(tarefa->data_criacao);
 
-    return info;
+    return tarefa;
 }
 
 void atribuir_nome(char **nome1, char *nome2)
@@ -196,54 +196,54 @@ void atribuir_nome(char **nome1, char *nome2)
     strcpy(*nome1, nome2);
 }
 
-void copiar_infos(INFO **info1, INFO *info2)
+void copiar_tarefas(TAREFA **tarefa1, TAREFA *tarefa2)
 {
 
-    if (info2 == NULL)
+    if (tarefa2 == NULL)
     {
         return;
     }
 
-    if (*info1 == NULL)
+    if (*tarefa1 == NULL)
     {
-        *info1 = criar_info();
+        *tarefa1 = criar_tarefa();
     }
 
-    (*info1)->ID = info2->ID;
-    atribuir_nome(&(*info1)->nome, info2->nome);
+    (*tarefa1)->ID = tarefa2->ID;
+    atribuir_nome(&(*tarefa1)->nome, tarefa2->nome);
 
-    (*info1)->nivel_prioridade = info2->nivel_prioridade;
+    (*tarefa1)->nivel_prioridade = tarefa2->nivel_prioridade;
 
-    (*info1)->data_entrega->minuto = info2->data_entrega->minuto;
-    (*info1)->data_entrega->hora = info2->data_entrega->hora;
-    (*info1)->data_entrega->dia = info2->data_entrega->dia;
-    (*info1)->data_entrega->mes = info2->data_entrega->mes;
-    (*info1)->data_entrega->ano = info2->data_entrega->ano;
+    (*tarefa1)->data_entrega->minuto = tarefa2->data_entrega->minuto;
+    (*tarefa1)->data_entrega->hora = tarefa2->data_entrega->hora;
+    (*tarefa1)->data_entrega->dia = tarefa2->data_entrega->dia;
+    (*tarefa1)->data_entrega->mes = tarefa2->data_entrega->mes;
+    (*tarefa1)->data_entrega->ano = tarefa2->data_entrega->ano;
 
-    (*info1)->data_criacao->minuto = info2->data_criacao->minuto;
-    (*info1)->data_criacao->hora = info2->data_criacao->hora;
-    (*info1)->data_criacao->dia = info2->data_criacao->dia;
-    (*info1)->data_criacao->mes = info2->data_criacao->mes;
-    (*info1)->data_criacao->ano = info2->data_criacao->ano;
+    (*tarefa1)->data_criacao->minuto = tarefa2->data_criacao->minuto;
+    (*tarefa1)->data_criacao->hora = tarefa2->data_criacao->hora;
+    (*tarefa1)->data_criacao->dia = tarefa2->data_criacao->dia;
+    (*tarefa1)->data_criacao->mes = tarefa2->data_criacao->mes;
+    (*tarefa1)->data_criacao->ano = tarefa2->data_criacao->ano;
 }
 
-void printar_dados(INFO *info)
+void printar_tarefa(TAREFA *tarefa)
 {
-    if (info == NULL)
+    if (tarefa == NULL)
     {
         return;
     }
 
-    printf("ID: %03d\n", info->ID);
-    printf("Nome: %s\n", info->nome);
-    printf("Nivel de Prioridade: %d\n", info->nivel_prioridade);
-    printf("Data de Entrega: %02d/%02d/%04d\n", info->data_entrega->dia, info->data_entrega->mes, info->data_entrega->ano);
-    printf("Hora de Entrega: %02d:%02d\n", info->data_entrega->hora, info->data_entrega->minuto);
-    printf("Data de Criacao: %02d/%02d/%04d\n", info->data_criacao->dia, info->data_criacao->mes, info->data_criacao->ano);
-    printf("Hora de Criacao: %02d:%02d\n", info->data_criacao->hora, info->data_criacao->minuto);
+    printf("ID: %03d\n", tarefa->ID);
+    printf("Nome: %s\n", tarefa->nome);
+    printf("Nivel de Prioridade: %d\n", tarefa->nivel_prioridade);
+    printf("Data de Entrega: %02d/%02d/%04d\n", tarefa->data_entrega->dia, tarefa->data_entrega->mes, tarefa->data_entrega->ano);
+    printf("Hora de Entrega: %02d:%02d\n", tarefa->data_entrega->hora, tarefa->data_entrega->minuto);
+    printf("Data de Criacao: %02d/%02d/%04d\n", tarefa->data_criacao->dia, tarefa->data_criacao->mes, tarefa->data_criacao->ano);
+    printf("Hora de Criacao: %02d:%02d\n", tarefa->data_criacao->hora, tarefa->data_criacao->minuto);
 }
 
-// Sequencia de funções para digitar os dados
+// Sequencia de funções para digitar a tarefa
 
 // Digitar ID e apenas para testes, não sera implementado no produto final
 short int digitar_ID()
@@ -406,45 +406,45 @@ short int digitar_ano()
     return n;
 }
 
-// Seguinte, essa função permite escrever os dados e retorna um ponteiro com o endereços dos dados, ja tem as blindagens necessarias
-INFO *escrever_dados()
+// Seguinte, essa função permite escrever a tarefa e retorna um ponteiro com o endereços da tarefa, ja tem as blindagens necessarias
+TAREFA *escrever_tarefa()
 {
-    INFO *info = criar_info();
+    TAREFA *tarefa = criar_tarefa();
 
     while (1)
     {
-        // info->ID = digitar_ID();
+        // tarefa->ID = digitar_ID();
 
         // Sera atribuido o ID correto depois
-        info->ID = 0;
+        tarefa->ID = 0;
 
-        // atribuir_nome(&info->nome, digitar_nome());
+        // atribuir_nome(&tarefa->nome, digitar_nome());
 
-        free(info->nome);
-        info->nome = digitar_nome();
+        free(tarefa->nome);
+        tarefa->nome = digitar_nome();
 
-        info->nivel_prioridade = digitar_nivel_prioridade();
+        tarefa->nivel_prioridade = digitar_nivel_prioridade();
 
         while (1)
         {
-            info->data_entrega->minuto = digitar_minuto();
+            tarefa->data_entrega->minuto = digitar_minuto();
 
-            info->data_entrega->hora = digitar_hora();
+            tarefa->data_entrega->hora = digitar_hora();
 
-            info->data_entrega->dia = digitar_dia();
+            tarefa->data_entrega->dia = digitar_dia();
 
-            info->data_entrega->mes = digitar_mes();
+            tarefa->data_entrega->mes = digitar_mes();
 
-            info->data_entrega->ano = digitar_ano();
+            tarefa->data_entrega->ano = digitar_ano();
 
-            if (!validar_data(info->data_entrega))
+            if (!validar_data(tarefa->data_entrega))
             {
                 printf("\nData/hora invalida.");
-                if (!reescrever_dados())
+                if (!reescrever_tarefa())
                 {
-                    liberar_INFO(&info);
+                    liberar_TAREFA(&tarefa);
                     printf("Operacao cancelada.\n");
-                    return info;
+                    return tarefa;
                 }
             }
             else
@@ -454,41 +454,41 @@ INFO *escrever_dados()
         }
         printf("\n");
 
-        if (confirmar_dados(info))
+        if (confirmar_tarefa(tarefa))
         {
-            pegar_data_atual(info->data_criacao);
+            pegar_data_atual(tarefa->data_criacao);
             break;
         }
 
-        if (!reescrever_dados())
+        if (!reescrever_tarefa())
         {
-            liberar_INFO(&info);
+            liberar_TAREFA(&tarefa);
             printf("Operacao cancelada.\n");
             break;
         }
     }
 
-    return info;
+    return tarefa;
 }
 
-void editar_dados(INFO **info)
+void editar_tarefa(TAREFA **tarefa)
 {
-    if (*info == NULL)
+    if (*tarefa == NULL)
     {
-        printf("\nNao ha dados para editar.\n");
+        printf("\nNao ha tarefa para editar.\n");
         return;
     }
 
-    INFO *nova_info = criar_info();
+    TAREFA *nova_tarefa = criar_tarefa();
 
-    copiar_infos(&nova_info, *info);
+    copiar_tarefas(&nova_tarefa, *tarefa);
 
     char c;
 
     do
     {
-        printar_dados(nova_info);
-        // printar_dados(*info);
+        printar_tarefa(nova_tarefa);
+        // printar_tarefa(*tarefa);
 
         printf("\nSelecione o que deseja editar:\n");
         printf("1 - Nome\n");
@@ -505,21 +505,21 @@ void editar_dados(INFO **info)
         switch (c)
         {
         case '1':
-            // atribuir_nome(&nova_info->nome, digitar_nome());
-            free(nova_info->nome);
-            nova_info->nome = digitar_nome();
+            // atribuir_nome(&nova_tarefa->nome, digitar_nome());
+            free(nova_tarefa->nome);
+            nova_tarefa->nome = digitar_nome();
             break;
 
         case '2':
-            nova_info->nivel_prioridade = digitar_nivel_prioridade();
+            nova_tarefa->nivel_prioridade = digitar_nivel_prioridade();
             break;
 
         case '3':
         {
             DATA_HORA *data = criar_data_hora();
 
-            data->minuto = nova_info->data_entrega->minuto;
-            data->hora = nova_info->data_entrega->hora;
+            data->minuto = nova_tarefa->data_entrega->minuto;
+            data->hora = nova_tarefa->data_entrega->hora;
 
             while (1)
             {
@@ -531,9 +531,9 @@ void editar_dados(INFO **info)
 
                 if (validar_data(data))
                 {
-                    nova_info->data_entrega->dia = data->dia;
-                    nova_info->data_entrega->mes = data->mes;
-                    nova_info->data_entrega->ano = data->ano;
+                    nova_tarefa->data_entrega->dia = data->dia;
+                    nova_tarefa->data_entrega->mes = data->mes;
+                    nova_tarefa->data_entrega->ano = data->ano;
                     free(data);
                     break;
                 }
@@ -556,9 +556,9 @@ void editar_dados(INFO **info)
         {
             DATA_HORA *data = criar_data_hora();
 
-            data->dia = nova_info->data_entrega->dia;
-            data->mes = nova_info->data_entrega->mes;
-            data->ano = nova_info->data_entrega->ano;
+            data->dia = nova_tarefa->data_entrega->dia;
+            data->mes = nova_tarefa->data_entrega->mes;
+            data->ano = nova_tarefa->data_entrega->ano;
 
             while (1)
             {
@@ -568,8 +568,8 @@ void editar_dados(INFO **info)
 
                 if (validar_data(data))
                 {
-                    nova_info->data_entrega->hora = data->hora;
-                    nova_info->data_entrega->minuto = data->minuto;
+                    nova_tarefa->data_entrega->hora = data->hora;
+                    nova_tarefa->data_entrega->minuto = data->minuto;
                     free(data);
                     break;
                 }
@@ -591,11 +591,11 @@ void editar_dados(INFO **info)
 
         case '5':
             printf("\n");
-            if (confirmar_dados(nova_info))
+            if (confirmar_tarefa(nova_tarefa))
             {
-                copiar_infos(info, nova_info);
-                liberar_INFO(&nova_info);
-                printf("Dados alterados com sucesso.\n");
+                copiar_tarefas(tarefa, nova_tarefa);
+                liberar_TAREFA(&nova_tarefa);
+                printf("Tarefa alterada com sucesso.\n");
             }
             else
             {
@@ -611,7 +611,7 @@ void editar_dados(INFO **info)
 
             if (selecionar_s_ou_n())
             {
-                liberar_INFO(&nova_info);
+                liberar_TAREFA(&nova_tarefa);
                 printf("Operacao cancelada.\n");
             }
             else

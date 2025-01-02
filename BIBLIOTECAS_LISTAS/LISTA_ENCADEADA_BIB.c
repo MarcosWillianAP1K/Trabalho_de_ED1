@@ -5,14 +5,12 @@
 #include <string.h>
 #include <pthread.h>
 
-void atribuir_ID(INFO *informacoes)
-{
-    if (informacoes == NULL)
-    {
-        return;
-    }
+#include "../BIBLIOTECAS_SISTEMA/Struct_usuario.h"
+#include "../BIBLIOTECAS_SISTEMA/Struct_tarefa.h"
 
-    informacoes->ID = (rand() % 999) + 1;
+short int atribuir_ID()
+{
+    return rand() % 999 + 1;
 }
 
 typedef struct thread_verificar_ID
@@ -23,19 +21,28 @@ typedef struct thread_verificar_ID
 
 void *verificar_ID(void *arg)
 {
+    if (arg == NULL)
+    {
+        return NULL;
+    }
     thread_verificar_ID *novo_no_thread = (thread_verificar_ID *)arg;
+
+    short int ID_novo_no, ID_atual;
 
     Lista_encadeada *atual = novo_no_thread->lista;
 
     while (1)
     {
-        atribuir_ID(novo_no_thread->novo_no->informacoes);
 
         atual = novo_no_thread->lista;
 
+        ID_novo_no = atribuir_ID();
+
         while (atual != NULL)
         {
-            if (atual->informacoes->ID == novo_no_thread->novo_no->informacoes->ID && atual != novo_no_thread->novo_no)
+            ID_atual = retornar_ID_convertido(atual->tipo, atual->informacoes);
+
+            if (atual->tipo == novo_no_thread->novo_no->tipo && ID_atual == ID_novo_no && atual != novo_no_thread->novo_no)
             {
                 break;
             }
@@ -45,6 +52,7 @@ void *verificar_ID(void *arg)
 
         if (atual == NULL)
         {
+            atribuir_ID_convertido(novo_no_thread->novo_no->tipo, novo_no_thread->novo_no->informacoes, ID_novo_no);
             break;
         }
     }
@@ -52,7 +60,7 @@ void *verificar_ID(void *arg)
     pthread_exit(NULL);
 }
 
-void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes)
+void adicionar_elemento_encadeada(Lista_encadeada **lista, void *informacoes, TIPO_INFO tipo)
 {
     srand(time(NULL));
 
@@ -62,6 +70,7 @@ void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes)
         *lista = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
 
         (*lista)->informacoes = informacoes;
+        (*lista)->tipo = tipo;
         atribuir_ID((*lista)->informacoes);
         (*lista)->proximo = NULL;
     }
@@ -69,6 +78,7 @@ void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes)
     {
         Lista_encadeada *novo_no = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
         novo_no->informacoes = informacoes;
+        novo_no->tipo = tipo;
         novo_no->proximo = NULL;
 
         thread_verificar_ID *novo_no_thread = (thread_verificar_ID *)malloc(sizeof(thread_verificar_ID));
@@ -93,10 +103,12 @@ void adicionar_elemento_encadeada(Lista_encadeada **lista, INFO *informacoes)
     }
 }
 
-// Esse apenas adiciona ja com base no ID fornecido
-void adicionar_elemento_encadeada_ordernadado_por_ID(Lista_encadeada **lista, INFO *informacoes)
+// Esse apenas adiciona em uma lista ja ordernada, ja com base no ID fornecido
+void adicionar_elemento_encadeada_ordernadado_por_ID(Lista_encadeada **lista, void *informacoes, TIPO_INFO tipo)
 {
-    if (informacoes->ID < 1 || informacoes == NULL)
+    short int ID_info = retornar_ID_convertido(tipo, informacoes);
+
+    if (ID_info < 1 || informacoes == NULL)
     {
         printf("ID invalido\n");
         return;
@@ -106,20 +118,25 @@ void adicionar_elemento_encadeada_ordernadado_por_ID(Lista_encadeada **lista, IN
     {
         *lista = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
         (*lista)->informacoes = informacoes;
+        (*lista)->tipo = tipo;
         (*lista)->proximo = NULL;
         return;
     }
 
     Lista_encadeada *novo_no = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
     novo_no->informacoes = informacoes;
+    novo_no->tipo = tipo;
 
     Lista_encadeada *anterior = *lista;
     Lista_encadeada *atual = *lista;
 
-    while (atual != NULL && atual->informacoes->ID < novo_no->informacoes->ID)
+    short int ID_atual = retornar_ID_convertido(atual->tipo, atual->informacoes);
+
+    while (atual != NULL && ID_atual < ID_info)
     {
         anterior = atual;
         atual = atual->proximo;
+        ID_atual = retornar_ID_convertido(atual->tipo, atual->informacoes);
     }
 
     if (atual == *lista)
@@ -135,7 +152,7 @@ void adicionar_elemento_encadeada_ordernadado_por_ID(Lista_encadeada **lista, IN
 }
 
 // Fornece o ID do elemento a ser removido
-void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID)
+void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID, bool liberar_info)
 {
     if (lista == NULL)
     {
@@ -145,18 +162,26 @@ void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID)
     Lista_encadeada *anterior = *lista;
     Lista_encadeada *atual = *lista;
 
-    if (atual->informacoes->ID == ID)
-    {
-        *lista = atual->proximo;
-        liberar_INFO(&atual->informacoes);
-        free(atual);
-        return;
-    }
+    short int ID_atual = retornar_ID_convertido(atual->tipo, atual->informacoes);
 
-    while (atual != NULL && atual->informacoes->ID != ID)
+    while (atual != NULL && ID_atual != ID)
     {
         anterior = atual;
         atual = atual->proximo;
+        ID_atual = retornar_ID_convertido(atual->tipo, atual->informacoes);
+    }
+
+    if (atual == *lista)
+    {
+        *lista = atual->proximo;
+
+        if (liberar_info)
+        {
+            liberar_INFO_convertido(atual->tipo, &atual->informacoes);
+        }
+
+        free(atual);
+        return;
     }
 
     if (atual == NULL)
@@ -166,12 +191,15 @@ void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID)
     }
 
     anterior->proximo = atual->proximo;
-    liberar_INFO(&atual->informacoes);
+    if (liberar_info)
+    {
+        liberar_INFO_convertido(atual->tipo, &atual->informacoes);
+    }
     free(atual);
 }
 
 // Fornece o endereço do elemento a ser removido, pode ser usado em conjunto com buscar_lista_encadeada
-void remover_elemento_encadeada_por_endereco(Lista_encadeada **lista, Lista_encadeada *endereco)
+void remover_elemento_encadeada_por_endereco(Lista_encadeada **lista, Lista_encadeada *endereco, bool liberar_info)
 {
     if (lista == NULL || endereco == NULL)
     {
@@ -184,7 +212,10 @@ void remover_elemento_encadeada_por_endereco(Lista_encadeada **lista, Lista_enca
     if (atual == endereco)
     {
         *lista = atual->proximo;
-        liberar_INFO(&atual->informacoes);
+        if (liberar_info)
+        {
+            liberar_INFO_convertido(atual->tipo, &atual->informacoes);
+        }
         free(atual);
         return;
     }
@@ -202,11 +233,14 @@ void remover_elemento_encadeada_por_endereco(Lista_encadeada **lista, Lista_enca
     }
 
     anterior->proximo = atual->proximo;
-    liberar_INFO(&atual->informacoes);
+    if (liberar_info)
+    {
+        liberar_INFO_convertido(atual->tipo, &atual->informacoes);
+    }
     free(atual);
 }
 
-void liberar_memoria_encadeada(Lista_encadeada **lista)
+void liberar_memoria_encadeada(Lista_encadeada **lista, bool liberar_info)
 {
     if (lista == NULL)
     {
@@ -219,8 +253,11 @@ void liberar_memoria_encadeada(Lista_encadeada **lista)
     {
 
         *lista = (*lista)->proximo;
-        // Temporario, ja que tecnicamente precisamos salvar no historico
-        liberar_INFO(&anterior->informacoes);
+
+        if (liberar_info)
+        {
+            liberar_INFO_convertido(anterior->tipo, &anterior->informacoes);
+        }
         free(anterior);
         anterior = *lista;
     }
@@ -238,7 +275,7 @@ void printar_lista_encadeada(Lista_encadeada *list)
 
     while (list != NULL)
     {
-        printar_dados(list->informacoes);
+        printar_INFO_convertido(list->tipo, list->informacoes);
         printf("\n");
         list = list->proximo;
     }
@@ -251,9 +288,12 @@ Lista_encadeada *buscar_lista_encadeada(Lista_encadeada *list, int ID)
         return NULL;
     }
 
-    while (list != NULL && list->informacoes->ID != ID)
+    short int ID_atual = retornar_ID_convertido(list->tipo, list->informacoes);
+
+    while (list != NULL && ID_atual != ID)
     {
         list = list->proximo;
+        ID_atual = retornar_ID_convertido(list->tipo, list->informacoes);
     }
 
     return list;
