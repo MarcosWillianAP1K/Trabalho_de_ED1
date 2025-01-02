@@ -6,11 +6,11 @@
 
 typedef struct USUARIO
 {
-    char *nome;
     int ID;
+    char *login;
     
     Lista_encadeada *tarefas;
-
+    
 
 } USUARIO;
 

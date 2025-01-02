@@ -14,6 +14,8 @@ void error_tipo();
 
 void conferir_tipos(TIPO_INFO tipo1, TIPO_INFO tipo2, void *info1, void *info2);
 
+void *retorna_info_convertida(TIPO_INFO tipo, void *info);
+
 
 short int retornar_ID_convertido(TIPO_INFO tipo, void *info);
 

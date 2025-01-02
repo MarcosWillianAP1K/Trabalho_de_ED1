@@ -15,7 +15,7 @@ typedef struct Lista_encadeada
 
 } Lista_encadeada;
 
-
+void liberar_no_encadeada(Lista_encadeada *no, bool liberar_info);
  
 void adicionar_elemento_encadeada(Lista_encadeada **lista, void *informacoes, TIPO_INFO tipo);
 

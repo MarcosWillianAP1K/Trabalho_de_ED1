@@ -24,6 +24,24 @@ void conferir_tipos(TIPO_INFO tipo1, TIPO_INFO tipo2, void *info1, void *info2)
     }
 }
 
+void *retorna_info_convertida(TIPO_INFO tipo, void *info)
+{
+    switch (tipo)
+    {
+    case INFO_TAREFA:
+        return (TAREFA *)info;
+        break;
+
+    case INFO_USUARIO:
+        // return (USUARIO *)info;
+        break;
+
+    default:
+        error_tipo();
+        break;
+    }
+}
+
 short int retornar_ID_convertido(TIPO_INFO tipo, void *info)
 {
     if (info == NULL)

@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include "FILA_BIB.h"
 
-void adicionar_elemento_fila(Fila **f, INFO *info)
+void adicionar_elemento_fila(Fila **f, void *info, TIPO_INFO tipo)
 {
     Lista_encadeada *novo = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
     novo->informacoes = info;
+    novo->tipo = tipo;
     novo->proximo = NULL;
 
     // printf("*\n");
@@ -34,15 +35,17 @@ void adicionar_elemento_fila(Fila **f, INFO *info)
 
 void atribuir_Lista_encadeada_a_fila(Lista_encadeada *lista, Fila **f)
 {
-    if (lista == NULL)
+    if (lista == NULL )
     {
         return;
     }
 
-    if (*f != NULL)
+    if (*f != NULL && (*f)->inicio != NULL)
     {
-        liberar_fila(f);
+        printf("Fila ja possui elementos\n");
+        return;
     }
+    free(*f);
 
     *f = (Fila *)malloc(sizeof(Fila));
     (*f)->inicio = lista;
@@ -54,7 +57,7 @@ void atribuir_Lista_encadeada_a_fila(Lista_encadeada *lista, Fila **f)
     (*f)->fim = lista;
 }
 
-INFO *remover_elemento_fila(Fila *f)
+void *remover_elemento_fila(Fila *f)
 {
     if (f == NULL || f->inicio == NULL)
     {
@@ -62,16 +65,16 @@ INFO *remover_elemento_fila(Fila *f)
     }
 
     Lista_encadeada *removido = f->inicio;
-    INFO *info = removido->informacoes;
     f->inicio = f->inicio->proximo;
-    free(removido);
-
     if (f->inicio == NULL)
     {
         f->fim = NULL;
     }
+    TIPO_INFO tipo = removido->tipo;
+    void *info = removido->informacoes;
+    free(removido);
 
-    return info;
+    return retorna_info_convertida(tipo, info);
 }
 
 void printar_inicio_fila(Fila *f)
@@ -82,7 +85,7 @@ void printar_inicio_fila(Fila *f)
         return;
     }
 
-    printar_dados(f->inicio->informacoes);
+    printar_INFO_convertido(f->inicio->tipo, f->inicio->informacoes);
     printf("\n");
 }
 
@@ -94,7 +97,7 @@ void printar_fim_fila(Fila *f)
         return;
     }
 
-    printar_dados(f->fim->informacoes);
+    printar_INFO_convertido(f->fim->tipo, f->fim->informacoes);
     printf("\n");
 }
 
@@ -109,21 +112,20 @@ void printar_fila(Fila *f)
     Lista_encadeada *atual = f->inicio;
     while (atual != NULL)
     {
-        printar_dados(atual->informacoes);
+        printar_INFO_convertido(atual->tipo, atual->informacoes);
         printf("\n");
         atual = atual->proximo;
     }
 }
 
-void liberar_fila(Fila **f)
+void liberar_fila(Fila **f, bool liberar_info)
 {
     Lista_encadeada *atual = (*f)->inicio;
     while (atual != NULL)
     {
         Lista_encadeada *anterior = atual;
         atual = atual->proximo;
-        liberar_INFO(&anterior->informacoes);
-        free(anterior);
+        liberar_no_encadeada(anterior, liberar_info);
     }
     free(*f);
     *f = NULL;
