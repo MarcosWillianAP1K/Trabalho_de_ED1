@@ -4,14 +4,17 @@
 
 #include "ORDENACAO_BIB.h"
 
-short int comparar_ID(INFO *info1, INFO *info2)
+short int comparar_ID(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2)
 {
-    if (info1->ID > info2->ID)
+    short int ID1 = retornar_ID_convertido(tipo1, info1);
+    short int ID2 = retornar_ID_convertido(tipo2, info2);
+
+    if (ID1 > ID2)
     {
         return 1;
     }
 
-    if (info1->ID < info2->ID)
+    if (ID1 < ID2)
     {
         return -1;
     }
@@ -19,25 +22,37 @@ short int comparar_ID(INFO *info1, INFO *info2)
     return 0;
 }
 
-short int comparar_afalbetica(INFO *info1, INFO *info2)
+short int comparar_afalbetica(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2)
 {
-    return strcmp(info1->nome, info2->nome);
+    char *nome1 = retorna_info_convertida(tipo1, info1);
+    char *nome2 = retorna_info_convertida(tipo2, info2);
+
+    return strcmp(nome1, nome2);
 }
 
-short int comparar_prioridade(INFO *info1, INFO *info2)
+short int comparar_prioridade(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2)
 {
-    if (info1->nivel_prioridade > info2->nivel_prioridade)
+    if ( tipo1 == INFO_USUARIO || tipo2 == INFO_USUARIO)
+    {
+        error_tipo();
+    }
+   
+    short int prioridade1 = retornar_ID_convertido(tipo1, info1);
+    short int prioridade2 = retornar_ID_convertido(tipo2, info2);
+
+    if (prioridade1 > prioridade2)
     {
         return 1;
     }
 
-    if (info1->nivel_prioridade < info2->nivel_prioridade)
+    if (prioridade1 < prioridade2)
     {
         return -1;
     }
 
     return 0;
 }
+
 
 // Pésadelo de juliana
 short int comparar_data(DATA_HORA *data1, DATA_HORA *data2)
@@ -95,20 +110,39 @@ short int comparar_data(DATA_HORA *data1, DATA_HORA *data2)
     return 0;
 }
 
-short int comparar_data_entrega(INFO *info1, INFO *info2)
+short int comparar_data_entrega(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2)
 {
-    return comparar_data(info1->data_entrega, info2->data_entrega);
+    if (tipo1 == INFO_USUARIO || tipo2 == INFO_USUARIO)
+    {
+        error_tipo();
+    }
+    
+
+    DATA_HORA *data1 = retorna_info_convertida(tipo1, info1);
+    DATA_HORA *data2 = retorna_info_convertida(tipo2, info2);
+
+    return comparar_data(data1, data2);
 }
 
-short int comparar_data_criacao(INFO *info1, INFO *info2)
+short int comparar_data_criacao(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2)
 {
-    return comparar_data(info1->data_criacao, info2->data_criacao);
+    if (tipo1 == INFO_USUARIO || tipo2 == INFO_USUARIO)
+    {
+        error_tipo();
+    }
+    
+
+    DATA_HORA *data1 = retorna_info_convertida(tipo1, info1);
+    DATA_HORA *data2 = retorna_info_convertida(tipo2, info2);
+
+    return comparar_data(data1, data2);
 }
 
-void printar_no_teste(Lista_duplamente_encadeada *anterior, Lista_duplamente_encadeada *no, Lista_duplamente_encadeada *proximo, char *nome)
-{
-    printf("anterior: %s  %s: %s  proximo:  %s\n", anterior == NULL ? "NULL" : anterior->informacoes->nome, nome, no == NULL ? "NULL" : no->informacoes->nome, proximo == NULL ? "NULL" : proximo->informacoes->nome);
-}
+
+// void printar_no_teste(Lista_duplamente_encadeada *anterior, Lista_duplamente_encadeada *no, Lista_duplamente_encadeada *proximo, char *nome)
+// {
+//     printf("anterior: %s  %s: %s  proximo:  %s\n", anterior == NULL ? "NULL" : anterior->informacoes->nome, nome, no == NULL ? "NULL" : no->informacoes->nome, proximo == NULL ? "NULL" : proximo->informacoes->nome);
+// }
 
 void trocar_nos(Lista_duplamente_encadeada **no1, Lista_duplamente_encadeada **no2)
 {
@@ -183,7 +217,7 @@ void trocar_nos(Lista_duplamente_encadeada **no1, Lista_duplamente_encadeada **n
     *no2 = aux;
 }
 
-void bubble_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2))
+void bubble_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2))
 {
     if (inicio == NULL)
     {
@@ -200,7 +234,7 @@ void bubble_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio,
         while (aux2 != NULL)
         {
             // printf("Comparando %s com %s\n", aux1->informacoes->nome, aux2->informacoes->nome);
-            if (comparar(aux1->informacoes, aux2->informacoes) > 0)
+            if (comparar(aux1->informacoes, aux2->informacoes, aux1->tipo, aux2->tipo) > 0)
             {
                 trocar_nos(&aux1, &aux2);
             }
@@ -216,7 +250,7 @@ void bubble_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio,
     }
 }
 
-void selection_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2))
+void selection_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2))
 {
     if (*inicio == NULL)
     {
@@ -234,7 +268,7 @@ void selection_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inic
 
         while (aux2 != NULL)
         {
-            if (comparar(menor->informacoes, aux2->informacoes) > 0)
+            if (comparar(menor->informacoes, aux2->informacoes, aux1->tipo, aux2->tipo) > 0)
             {
                 menor = aux2;
             }
@@ -252,7 +286,7 @@ void selection_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inic
     }
 }
 
-void insertion_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2))
+void insertion_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2))
 {
     if (*inicio == NULL)
     {
@@ -268,9 +302,9 @@ void insertion_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inic
         aux2 = aux1->proximo;
         aux3 = aux1;
 
-        while (aux3 != NULL && comparar(aux3->informacoes, aux2->informacoes) > 0)
+        while (aux3 != NULL && comparar(aux3->informacoes, aux2->informacoes, aux1->tipo, aux2->tipo) > 0)
         {
-            INFO *aux_info = aux3->informacoes;
+            void *aux_info = aux3->informacoes;
             aux3->informacoes = aux2->informacoes;
             aux2->informacoes = aux_info;
 
@@ -287,7 +321,8 @@ void insertion_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inic
     // }
 }
 
-void organizar_pivo(Lista_duplamente_encadeada *pivo, Lista_duplamente_encadeada **maior, Lista_duplamente_encadeada **menor, short int (*comparar)(INFO *info1, INFO *info2))
+
+void organizar_pivo(Lista_duplamente_encadeada *pivo, Lista_duplamente_encadeada **maior, Lista_duplamente_encadeada **menor, short int (*comparar)(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2))
 {
     if (pivo == NULL)
     {
@@ -304,7 +339,7 @@ void organizar_pivo(Lista_duplamente_encadeada *pivo, Lista_duplamente_encadeada
         Adicionar = aux;
         aux = aux->proximo;
 
-        if (comparar(Adicionar->informacoes, pivo->informacoes) >= 0 && Adicionar != pivo)
+        if (comparar(Adicionar->informacoes, pivo->informacoes, pivo->tipo, pivo->tipo) >= 0 && Adicionar != pivo)
         {
             adicionar_no_duplamente_encadeada(maior, Adicionar, true);
         }
@@ -343,7 +378,7 @@ Lista_duplamente_encadeada *contatenar_listas(Lista_duplamente_encadeada *menor,
     return lista;
 }
 
-Lista_duplamente_encadeada *quick_sort_lista_duplamente_encadeada_recursivo(Lista_duplamente_encadeada *inicio, short int (*comparar)(INFO *info1, INFO *info2))
+Lista_duplamente_encadeada *quick_sort_lista_duplamente_encadeada_recursivo(Lista_duplamente_encadeada *inicio, short int (*comparar)(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2))
 {
     if (inicio == NULL || inicio->proximo == NULL)
     {
@@ -371,7 +406,7 @@ Lista_duplamente_encadeada *quick_sort_lista_duplamente_encadeada_recursivo(List
     return contatenar_listas(menor, maior, pivo);
 }
 
-void quick_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2))
+void quick_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2))
 {
     if (*inicio == NULL || (*inicio)->proximo == NULL)
     {
@@ -398,14 +433,14 @@ Lista_duplamente_encadeada *buscar_meio_lista_duplamente_encadeada(Lista_duplame
     return inicio;
 }
 
-Lista_duplamente_encadeada *merge(Lista_duplamente_encadeada *esquerda, Lista_duplamente_encadeada *direita, short int (*comparar)(INFO *info1, INFO *info2))
+Lista_duplamente_encadeada *merge(Lista_duplamente_encadeada *esquerda, Lista_duplamente_encadeada *direita, short int (*comparar)(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2))
 {
     if (esquerda == NULL)
         return direita;
     if (direita == NULL)
         return esquerda;
 
-    if (comparar(esquerda->informacoes, direita->informacoes) <= 0)
+    if (comparar(esquerda->informacoes, direita->informacoes, esquerda->tipo, direita->tipo) <= 0)
     {
         esquerda->proximo = merge(esquerda->proximo, direita, comparar);
         esquerda->proximo->anterior = esquerda;
@@ -421,7 +456,7 @@ Lista_duplamente_encadeada *merge(Lista_duplamente_encadeada *esquerda, Lista_du
     }
 }
 
-Lista_duplamente_encadeada *merge_sort_lista_duplamente_encadeada_recursivo(Lista_duplamente_encadeada *inicio, short int (*comparar)(INFO *info1, INFO *info2))
+Lista_duplamente_encadeada *merge_sort_lista_duplamente_encadeada_recursivo(Lista_duplamente_encadeada *inicio, short int (*comparar)(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2))
 {
     if (inicio == NULL || inicio->proximo == NULL)
         return inicio;
@@ -441,7 +476,7 @@ Lista_duplamente_encadeada *merge_sort_lista_duplamente_encadeada_recursivo(List
     return merge(esquerda, direita, comparar);
 }
 
-void merge_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2))
+void merge_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2))
 {
     if (*inicio == NULL || (*inicio)->proximo == NULL)
     {

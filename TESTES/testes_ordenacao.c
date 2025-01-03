@@ -1,19 +1,21 @@
 #include "../BIBLIOTECAS_LISTAS/LISTA_DUPLAMENTE_ENCADEADA_BIB.h"
 #include "../BIBLIOTECAS_LISTAS/ORDENACAO_BIB.h"
 
+#include "../BIBLIOTECAS_SISTEMA/Struct_tarefa.h"
+
 #include <stdio.h>
 
 //comando para compilar
-// gcc -o teste -pthread ../TESTES/testes_ordenacao.c ../BIBLIOTECAS_SISTEMA/Struct_info.c ../BIBLIOTECAS_LISTAS/LISTA_DUPLAMENTE_ENCADEADA_BIB.c ../BIBLIOTECAS_LISTAS/ORDENACAO_BIB.c
+// gcc -o teste -pthread ../TESTES/testes_ordenacao.c ../BIBLIOTECAS_SISTEMA/Struct_tarefa.c ../BIBLIOTECAS_SISTEMA/Struct_data_hora.c ../BIBLIOTECAS_SISTEMA/Tipos_bib.c ../BIBLIOTECAS_LISTAS/LISTA_DUPLAMENTE_ENCADEADA_BIB.c ../BIBLIOTECAS_LISTAS/ORDENACAO_BIB.c
 
 int main()
 {
     Lista_duplamente_encadeada *lista = NULL;
 
-    INFO *teste1 = criar_info();
-    INFO *teste2 = criar_info();
-    INFO *teste3 = criar_info();
-    INFO *teste4 = criar_info();
+    TAREFA *teste1 = criar_tarefa();
+    TAREFA *teste2 = criar_tarefa();
+    TAREFA *teste3 = criar_tarefa();
+    TAREFA *teste4 = criar_tarefa();
 
     atribuir_nome(&teste1->nome, "teste1");
     atribuir_nome(&teste2->nome, "teste2");
@@ -30,10 +32,10 @@ int main()
     teste3->nivel_prioridade = 3;
     teste4->nivel_prioridade = 4;
 
-    adicionar_elemento_duplamente_encadeada(&lista, teste1, true);
-    adicionar_elemento_duplamente_encadeada(&lista, teste2, true);
-    adicionar_elemento_duplamente_encadeada(&lista, teste3, true);
-    adicionar_elemento_duplamente_encadeada(&lista, teste4, true);
+    adicionar_elemento_duplamente_encadeada(&lista, teste1, INFO_TAREFA,true);
+    adicionar_elemento_duplamente_encadeada(&lista, teste2, INFO_TAREFA, true);
+    adicionar_elemento_duplamente_encadeada(&lista, teste3, INFO_TAREFA, true);
+    adicionar_elemento_duplamente_encadeada(&lista, teste4, INFO_TAREFA, true);
 
     // printf("Antes de ordenar\n");
     // printar_lista_duplamente_encadeada(lista);
@@ -48,7 +50,7 @@ int main()
     printar_lista_duplamente_encadeada(lista);
 
 
-    liberar_memoria_duplamente_encadeada(&lista);
+    liberar_memoria_duplamente_encadeada(&lista, true);
 
     return 0; 
 }

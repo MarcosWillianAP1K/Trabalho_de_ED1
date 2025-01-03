@@ -1,34 +1,37 @@
 //Essa biblioteca ordena apenas listas duplamente encadeadas
 #include "LISTA_DUPLAMENTE_ENCADEADA_BIB.h"
 
+#include "../BIBLIOTECAS_SISTEMA/Tipos_bib.h"
+#include "../BIBLIOTECAS_SISTEMA/Struct_data_hora.h"
+
 #ifndef ORDENACAO_BIB_H
 #define ORDENACAO_BIB_H
 
 
-short int comparar_ID(INFO *info1, INFO *info2);
+short int comparar_ID(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2);
 
-short int comparar_afalbetica(INFO *info1, INFO *info2);
+short int comparar_afalbetica(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2);
 
-short int comparar_prioridade(INFO *info1, INFO *info2);
+short int comparar_prioridade(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2);
 
 short int comparar_data(DATA_HORA *data1, DATA_HORA *data2);
 
-short int comparar_data_entrega(INFO *info1, INFO *info2);
+short int comparar_data_entrega(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2);
 
-short int comparar_data_criacao(INFO *info1, INFO *info2);
+short int comparar_data_criacao(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2);
 
 void trocar_nos(Lista_duplamente_encadeada **no1, Lista_duplamente_encadeada **no2);
 
 
-void bubble_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2));
+void bubble_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2));
 
-void selection_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2));
+void selection_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2));
 
-void insertion_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2));
+void insertion_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2));
 
-void quick_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2));
+void quick_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2));
 
-void merge_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(INFO *info1, INFO *info2));
+void merge_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2));
 
 
 
