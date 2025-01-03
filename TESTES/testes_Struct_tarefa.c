@@ -4,7 +4,7 @@
 #include "../BIBLIOTECAS_SISTEMA/Struct_tarefa.h"
 
 // Comando para rodar esse teste
-// gcc -o teste -pthread ../TESTES/testes_Struct_tarefa.c ../BIBLIOTECAS_SISTEMA/Struct_tarefa.c
+// gcc -o teste -pthread ../TESTES/testes_Struct_tarefa.c ../BIBLIOTECAS_SISTEMA/Struct_tarefa.c ../BIBLIOTECAS_SISTEMA/Struct_data_hora.c
 
 int main()
 {
