@@ -178,6 +178,7 @@ TAREFA *criar_tarefa()
     tarefa->nivel_prioridade = 0;
     tarefa->data_criacao = criar_data_hora();
     tarefa->data_entrega = criar_data_hora();
+    tarefa->usuarios_associados = NULL;
 
     pegar_data_atual(tarefa->data_criacao);
 

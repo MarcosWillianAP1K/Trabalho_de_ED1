@@ -75,7 +75,7 @@ void *verificar_ID(void *arg)
     pthread_exit(NULL);
 }
 
-void adicionar_elemento_encadeada(Lista_encadeada **lista, void *informacoes, TIPO_INFO tipo)
+void adicionar_elemento_encadeada_atribuir_ID(Lista_encadeada **lista, void *informacoes, TIPO_INFO tipo)
 {
     srand(time(NULL));
 
@@ -118,53 +118,36 @@ void adicionar_elemento_encadeada(Lista_encadeada **lista, void *informacoes, TI
     }
 }
 
-// Esse apenas adiciona em uma lista ja ordernada, ja com base no ID fornecido
-void adicionar_elemento_encadeada_ordernadado_por_ID(Lista_encadeada **lista, void *informacoes, TIPO_INFO tipo)
+
+void adicionar_elemento_encadeada(Lista_encadeada **lista, void *informacoes, TIPO_INFO tipo)
 {
-    short int ID_info = retornar_ID_convertido(tipo, informacoes);
-
-    if (ID_info < 1 || informacoes == NULL)
-    {
-        printf("ID invalido\n");
-        return;
-    }
-
+    // vazia
     if (*lista == NULL)
     {
         *lista = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
+
         (*lista)->informacoes = informacoes;
         (*lista)->tipo = tipo;
         (*lista)->proximo = NULL;
-        return;
-    }
-
-    Lista_encadeada *novo_no = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
-    novo_no->informacoes = informacoes;
-    novo_no->tipo = tipo;
-
-    Lista_encadeada *anterior = *lista;
-    Lista_encadeada *atual = *lista;
-
-    short int ID_atual = retornar_ID_convertido(atual->tipo, atual->informacoes);
-
-    while (atual != NULL && ID_atual < ID_info)
-    {
-        anterior = atual;
-        atual = atual->proximo;
-        ID_atual = retornar_ID_convertido(atual->tipo, atual->informacoes);
-    }
-
-    if (atual == *lista)
-    {
-        novo_no->proximo = *lista;
-        *lista = novo_no;
     }
     else
     {
-        novo_no->proximo = anterior->proximo;
-        anterior->proximo = novo_no;
+        Lista_encadeada *novo_no = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
+        novo_no->informacoes = informacoes;
+        novo_no->tipo = tipo;
+        novo_no->proximo = NULL;
+
+        Lista_encadeada *atual = *lista;
+
+        while (atual->proximo != NULL)
+        {
+            atual = atual->proximo;
+        }
+
+        atual->proximo = novo_no;
     }
 }
+
 
 // Fornece o ID do elemento a ser removido
 void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID, TIPO_INFO tipo ,bool liberar_info)

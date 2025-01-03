@@ -1,5 +1,5 @@
 #include "../BIBLIOTECAS_SISTEMA/Tipos_bib.h"
-
+#include "../BIBLIOTECAS_SISTEMA/Struct_data_hora.h"
 #include <stdbool.h>
 
 #ifndef LISTA_CIRCULAR_BIB_H
@@ -9,6 +9,7 @@ typedef struct Lista_circular
 {
     void *info;
     TIPO_INFO tipo;
+    DATA_HORA *data;
     struct Lista_circular *prox;
 } Lista_circular;
 

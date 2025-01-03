@@ -21,10 +21,10 @@ int main()
     atribuir_nome(&teste3->nome, "teste3");
     atribuir_nome(&teste4->nome, "teste4");
 
-    adicionar_elemento_encadeada(&lista, teste1, INFO_TAREFA);
-    adicionar_elemento_encadeada(&lista, teste2, INFO_TAREFA);
-    adicionar_elemento_encadeada(&lista, teste3, INFO_TAREFA);
-    adicionar_elemento_encadeada(&lista, teste4, INFO_TAREFA);
+    adicionar_elemento_encadeada_atribuir_ID(&lista, teste1, INFO_TAREFA);
+    adicionar_elemento_encadeada_atribuir_ID(&lista, teste2, INFO_TAREFA);
+    adicionar_elemento_encadeada_atribuir_ID(&lista, teste3, INFO_TAREFA);
+    adicionar_elemento_encadeada_atribuir_ID(&lista, teste4, INFO_TAREFA);
     
 
     teste1->ID = 1;

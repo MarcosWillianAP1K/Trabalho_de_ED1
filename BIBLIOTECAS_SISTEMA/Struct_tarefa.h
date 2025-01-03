@@ -1,17 +1,8 @@
-
+#include "Struct_data_hora.h"
+#include "../BIBLIOTECAS_LISTAS/LISTA_ENCADEADA_BIB.h"
 
 #ifndef STRUCT_INFO_H
 #define STRUCT_INFO_H
-
-typedef struct DATA_HORA
-{
-    signed short int minuto;
-    signed short int hora;
-    signed short int dia;
-    signed short int mes;
-    signed short int ano;
-
-} DATA_HORA;
 
 typedef struct TAREFA
 {
@@ -20,6 +11,10 @@ typedef struct TAREFA
     signed short int nivel_prioridade;
     DATA_HORA *data_entrega;
     DATA_HORA *data_criacao;
+    // char *descricao;????
+
+    Lista_encadeada *usuarios_associados;
+
 } TAREFA;
 
 DATA_HORA *criar_data_hora();
