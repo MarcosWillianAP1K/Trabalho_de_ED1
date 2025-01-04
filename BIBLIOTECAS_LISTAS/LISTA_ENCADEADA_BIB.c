@@ -271,7 +271,7 @@ Lista_encadeada *buscar_lista_encadeada_por_nome(Lista_encadeada *list, char *no
 
     while (list != NULL )
     {
-        if (strstr(nome, retornar_nome_convertido(list->tipo, list->informacoes)) && list->tipo == tipo)
+        if (strstr(nome, retornar_nome_convertido(list->tipo, list->informacoes)) != NULL && list->tipo == tipo)
         {
             return list;
         }
