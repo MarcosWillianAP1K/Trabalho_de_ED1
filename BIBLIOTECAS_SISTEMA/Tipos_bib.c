@@ -33,7 +33,7 @@ void *retorna_info_convertida(TIPO_INFO tipo, void *info)
         break;
 
     case INFO_USUARIO:
-        // return (USUARIO *)info;
+        return (USUARIO *)info;
         break;
 
     default:
@@ -58,6 +58,29 @@ short int retornar_ID_convertido(TIPO_INFO tipo, void *info)
 
     case INFO_USUARIO:
         return ((USUARIO *)info)->ID;
+        break;
+
+    default:
+        error_tipo();
+        break;
+    }
+}
+
+char *retornar_nome_convertido(TIPO_INFO tipo, void *info)
+{
+    if (info == NULL)
+    {
+        return NULL;
+    }
+
+    switch (tipo)
+    {
+    case INFO_TAREFA:
+        return ((TAREFA *)info)->nome;
+        break;
+
+    case INFO_USUARIO:
+        return ((USUARIO *)info)->login;
         break;
 
     default:

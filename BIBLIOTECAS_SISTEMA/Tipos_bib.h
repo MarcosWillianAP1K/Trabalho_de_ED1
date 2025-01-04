@@ -19,6 +19,8 @@ void *retorna_info_convertida(TIPO_INFO tipo, void *info);
 
 short int retornar_ID_convertido(TIPO_INFO tipo, void *info);
 
+char *retornar_nome_convertido(TIPO_INFO tipo, void *info);
+
 void atribuir_ID_convertido(TIPO_INFO tipo, void *info, short int ID);
 
 void liberar_INFO_convertido(TIPO_INFO tipo, void **info);

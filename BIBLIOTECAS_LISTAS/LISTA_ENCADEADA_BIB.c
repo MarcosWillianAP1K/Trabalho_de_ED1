@@ -262,6 +262,25 @@ void printar_lista_encadeada(Lista_encadeada *list)
     }
 }
 
+Lista_encadeada *buscar_lista_encadeada_por_nome(Lista_encadeada *list, char *nome, TIPO_INFO tipo)
+{
+    if (list == NULL)
+    {
+        return NULL;
+    }
+
+    while (list != NULL )
+    {
+        if (strstr(nome, retornar_nome_convertido(list->tipo, list->informacoes)) && list->tipo == tipo)
+        {
+            return list;
+        }
+        list = list->proximo;
+    }
+
+    return list;
+}
+
 Lista_encadeada *buscar_lista_encadeada(Lista_encadeada *list, int ID, TIPO_INFO tipo)
 {
     if (list == NULL)

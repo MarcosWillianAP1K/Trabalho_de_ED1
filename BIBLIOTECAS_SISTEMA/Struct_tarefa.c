@@ -309,7 +309,7 @@ TAREFA *escrever_tarefa()
     return tarefa;
 }
 
-void editar_tarefa(TAREFA **tarefa)
+TAREFA *editar_tarefa(TAREFA **tarefa, bool liberar_tarefa_antiga)
 {
     if (*tarefa == NULL)
     {
@@ -431,14 +431,26 @@ void editar_tarefa(TAREFA **tarefa)
             printf("\n");
             if (confirmar_tarefa(nova_tarefa))
             {
-                copiar_tarefas(tarefa, nova_tarefa);
-                liberar_TAREFA(&nova_tarefa);
-                printf("Tarefa alterada com sucesso.\n");
-            }
-            else
-            {
+                
 
-                c = '0';
+                if (liberar_tarefa_antiga)
+                {
+                    copiar_tarefas(tarefa, nova_tarefa);
+                    liberar_TAREFA(nova_tarefa);
+                }
+                else
+                {
+                    TAREFA *temp = NULL;
+                    copiar_tarefas(&temp, tarefa);
+                    copiar_tarefas(tarefa, nova_tarefa);
+                    copiar_tarefas(&nova_tarefa, temp);
+                    liberar_TAREFA(&temp);
+                }
+                
+                
+                printf("Tarefa alterada com sucesso.\n");
+
+                return nova_tarefa;
             }
 
             break;
@@ -449,6 +461,7 @@ void editar_tarefa(TAREFA **tarefa)
 
             if (selecionar_s_ou_n())
             {
+                
                 liberar_TAREFA(&nova_tarefa);
                 printf("Operacao cancelada.\n");
             }
@@ -464,5 +477,7 @@ void editar_tarefa(TAREFA **tarefa)
             break;
         }
 
-    } while (c != '5' && c != '6');
+    } while ( c != '6');
+
+    return NULL;
 }

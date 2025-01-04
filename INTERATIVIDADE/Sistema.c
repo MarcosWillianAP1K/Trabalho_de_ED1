@@ -8,11 +8,26 @@ void inicializacao_do_sistema(GERENTE **gerente)
     (*gerente)->tarefas = NULL;
     (*gerente)->usuarios = NULL;
 
-    printf("Sistema inicializado\n");
+    // printf("Sistema inicializado\n");
 }
 
 
-void menu_gerente()
+
+void criar_tarefa_gerente(Lista_encadeada **lista)
+{
+    TAREFA *nova_tarefa = escrever_tarefa();
+
+    if (nova_tarefa == NULL)
+    {
+        return;
+    }
+
+    adicionar_elemento_encadeada_atribuir_ID(lista, nova_tarefa, INFO_TAREFA);
+}
+
+
+
+void menu_gerente(GERENTE **gerente)
 {
     printf("Menu do gerente\n");
     char opcao;
@@ -32,7 +47,7 @@ void menu_gerente()
 
         switch(opcao) {
             case '1':
-                
+                criar_tarefa_gerente(&(*gerente)->tarefas);
                 
                 break;
             case '2':

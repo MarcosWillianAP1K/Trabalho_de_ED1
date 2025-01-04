@@ -24,8 +24,8 @@ short int comparar_ID(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2
 
 short int comparar_afalbetica(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2)
 {
-    char *nome1 = retorna_info_convertida(tipo1, info1);
-    char *nome2 = retorna_info_convertida(tipo2, info2);
+    char *nome1 = retornar_nome_convertido(tipo1, info1);
+    char *nome2 = retornar_nome_convertido(tipo2, info2);
 
     return strcmp(nome1, nome2);
 }

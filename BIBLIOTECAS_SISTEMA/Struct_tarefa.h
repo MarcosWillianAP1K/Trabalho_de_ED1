@@ -1,5 +1,6 @@
 #include "Struct_data_hora.h"
 #include "../BIBLIOTECAS_LISTAS/LISTA_ENCADEADA_BIB.h"
+#include <stdbool.h>
 
 #ifndef STRUCT_INFO_H
 #define STRUCT_INFO_H
@@ -31,6 +32,6 @@ void printar_tarefa(TAREFA *info);
 
 TAREFA *escrever_tarefa();
 
-void editar_tarefa(TAREFA **info);
+void editar_tarefa(TAREFA **info, bool liberar_tarefa_antiga); 
 
 #endif // STRUCT_INFO_H
