@@ -1,5 +1,0 @@
-#include "LISTA_CIRCULAR_BIB.h"
-#include "LISTA_ENCADEADA_BIB.h"
-#include "LISTA_DUPLAMENTE_ENCADEADA_BIB.h"
-#include "ORDENACAO_BIB.h"
-#include "FILA_BIB.h"

@@ -84,12 +84,12 @@ void liberar_USUARIO(USUARIO **info)
 
     if ((*info)->tarefas_associadas != NULL)
     {
-        liberar_lista_encadeada(&(*info)->tarefas_associadas, false);
+        liberar_memoria_encadeada(&(*info)->tarefas_associadas, false);
     }
 
     if ((*info)->historico != NULL)
     {
-        liberar_lista_circular(&(*info)->historico, false);
+        liberar_memoria_circular(&(*info)->historico, false);
     }
 
     free(*info);
