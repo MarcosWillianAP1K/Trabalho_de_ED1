@@ -29,6 +29,8 @@ void liberar_memoria_encadeada(Lista_encadeada **lista, bool liberar_info);
 
 void printar_lista_encadeada(Lista_encadeada *list);
 
+Lista_encadeada *buscar_lista_encadeada_por_nome(Lista_encadeada *list, char *nome, TIPO_INFO tipo);
+
 Lista_encadeada *buscar_lista_encadeada(Lista_encadeada *list, int ID, TIPO_INFO tipo);
 
 #endif // LISTA_ENCADEADA_BIB_H
