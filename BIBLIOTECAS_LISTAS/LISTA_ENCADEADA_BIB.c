@@ -19,6 +19,17 @@ typedef struct thread_verificar_ID
     Lista_encadeada *lista;
 } thread_verificar_ID;
 
+void liberar_endereco_lista_encadeada(Endereco_lista_encadeada **endereco)
+{
+    if (*endereco == NULL)
+    {
+        return;
+    }
+
+    free(*endereco);
+    *endereco = NULL;
+}
+
 void liberar_no_encadeada(Lista_encadeada *no, bool liberar_info)
 {
     if (no == NULL)
@@ -192,37 +203,26 @@ void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID, TIPO_INF
 }
 
 // Fornece o endereço do elemento a ser removido, pode ser usado em conjunto com buscar_lista_encadeada
-void remover_elemento_encadeada_por_endereco(Lista_encadeada **lista, Lista_encadeada *endereco, bool liberar_info)
+void remover_elemento_encadeada_por_endereco(Endereco_lista_encadeada *endereco, Lista_encadeada **lista, bool liberar_info)
 {
-    if (lista == NULL || endereco == NULL)
+    if (endereco == NULL || *lista == NULL || endereco->no == NULL)
     {
         return;
     }
 
-    Lista_encadeada *anterior = *lista;
-    Lista_encadeada *atual = *lista;
-
-    if (atual == endereco)
+    if (endereco->anterior == endereco->no)
     {
-        *lista = atual->proximo;
-        liberar_no_encadeada(atual, liberar_info);
+        *lista = (*lista)->proximo;
+        liberar_no_encadeada(endereco->no, liberar_info);
+        liberar_endereco_lista_encadeada(&endereco);
         return;
     }
 
-    while (atual != NULL && atual != endereco)
-    {
-        anterior = atual;
-        atual = atual->proximo;
-    }
+    endereco->anterior->proximo = endereco->no->proximo;
 
-    if (atual == NULL)
-    {
-        printf("Endereco nao encontrado\n");
-        return;
-    }
-
-    anterior->proximo = atual->proximo;
-    liberar_no_encadeada(atual, liberar_info);
+    liberar_no_encadeada(endereco->no, liberar_info);
+    liberar_endereco_lista_encadeada(&endereco);
+    
 }
 
 void liberar_memoria_encadeada(Lista_encadeada **lista, bool liberar_info)
@@ -262,43 +262,57 @@ void printar_lista_encadeada(Lista_encadeada *list)
     }
 }
 
-Lista_encadeada *buscar_lista_encadeada_por_nome(Lista_encadeada *list, char *nome, TIPO_INFO tipo)
+Endereco_lista_encadeada *buscar_lista_encadeada_por_nome(Lista_encadeada *list, char *nome, TIPO_INFO tipo)
 {
     if (list == NULL)
     {
         return NULL;
     }
 
+    Lista_encadeada *anterior = list;
+
     while (list != NULL )
     {
+
         if (strstr(nome, retornar_nome_convertido(list->tipo, list->informacoes)) != NULL && list->tipo == tipo)
         {
-            return list;
+            break;
         }
+        anterior = list;
         list = list->proximo;
     }
 
-    return list;
+    Endereco_lista_encadeada *Endereco = (Endereco_lista_encadeada *)malloc(sizeof(Endereco_lista_encadeada));
+
+    Endereco->anterior = anterior;
+    Endereco->no = list;
+
+    return Endereco;
 }
 
-Lista_encadeada *buscar_lista_encadeada(Lista_encadeada *list, int ID, TIPO_INFO tipo)
+Endereco_lista_encadeada *buscar_lista_encadeada(Lista_encadeada *list, int ID, TIPO_INFO tipo)
 {
     if (list == NULL)
     {
         return NULL;
     }
 
-    short int ID_atual = retornar_ID_convertido(list->tipo, list->informacoes);
+    Lista_encadeada *anterior = list;
 
     while (list != NULL )
     {
-        if (ID_atual == ID  && list->tipo == tipo)
+        if (retornar_ID_convertido(list->tipo, list->informacoes) == ID  && list->tipo == tipo)
         {
-            return list;
+            break;
         }
+        anterior = list;
         list = list->proximo;
-        ID_atual = retornar_ID_convertido(list->tipo, list->informacoes);
+        
     }
 
-    return list;
+    Endereco_lista_encadeada *Endereco = (Endereco_lista_encadeada *)malloc(sizeof(Endereco_lista_encadeada));
+    Endereco->anterior = anterior;
+    Endereco->no = list;
+
+    return Endereco;
 }
