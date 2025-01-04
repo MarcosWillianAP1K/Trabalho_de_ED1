@@ -2,6 +2,7 @@
     "files.associations": {
         "Lista_encadeada_bib.h": "c",
         "Struct_tarefa.h": "c",
+        "Sistema.h": "c",
         "pthread.h": "c"
     },
     

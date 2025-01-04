@@ -32,6 +32,6 @@ void printar_tarefa(TAREFA *info);
 
 TAREFA *escrever_tarefa();
 
-void editar_tarefa(TAREFA **info, bool liberar_tarefa_antiga); 
+TAREFA *editar_tarefa(TAREFA **info, bool liberar_tarefa_antiga); 
 
 #endif // STRUCT_INFO_H

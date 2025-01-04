@@ -126,7 +126,7 @@ void liberar_INFO_convertido(TIPO_INFO tipo, void **info)
         break;
 
     case INFO_USUARIO:
-        // liberar_USUARIO((USUARIO **)info);
+        liberar_USUARIO((USUARIO **)info);
         break;
 
     default:

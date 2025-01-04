@@ -11,6 +11,7 @@ void liberar_TAREFA(TAREFA **tarefa)
     free((*tarefa)->nome);
     liberar_DATA_HORA(&(*tarefa)->data_entrega);
     liberar_DATA_HORA(&(*tarefa)->data_criacao);
+    liberar_memoria_encadeada(&(*tarefa)->usuarios_associados, false);
     free(*tarefa);
     *tarefa = NULL;
 }
@@ -184,6 +185,7 @@ short int digitar_ID()
 
 char *digitar_nome()
 {
+limpar_buffer();
 #define TAM_PADRAO 20
 
     int tam, cont = 0;
@@ -222,6 +224,7 @@ char *digitar_nome()
     }
 
     // printf("\nNome: %s\n\nFoi realocado %d\nTamanho %d\n\n", nome, cont, tam);
+    limpar_buffer();
 
     return nome;
 }
@@ -314,7 +317,7 @@ TAREFA *editar_tarefa(TAREFA **tarefa, bool liberar_tarefa_antiga)
     if (*tarefa == NULL)
     {
         printf("\nNao ha tarefa para editar.\n");
-        return;
+        return NULL;
     }
 
     TAREFA *nova_tarefa = criar_tarefa();
@@ -436,12 +439,12 @@ TAREFA *editar_tarefa(TAREFA **tarefa, bool liberar_tarefa_antiga)
                 if (liberar_tarefa_antiga)
                 {
                     copiar_tarefas(tarefa, nova_tarefa);
-                    liberar_TAREFA(nova_tarefa);
+                    liberar_TAREFA(&nova_tarefa);
                 }
                 else
                 {
                     TAREFA *temp = NULL;
-                    copiar_tarefas(&temp, tarefa);
+                    copiar_tarefas(&temp, *tarefa);
                     copiar_tarefas(tarefa, nova_tarefa);
                     copiar_tarefas(&nova_tarefa, temp);
                     liberar_TAREFA(&temp);

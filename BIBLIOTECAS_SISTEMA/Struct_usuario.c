@@ -89,7 +89,7 @@ void liberar_USUARIO(USUARIO **info)
 
     if ((*info)->historico != NULL)
     {
-        liberar_memoria_circular(&(*info)->historico, false);
+        liberar_memoria_circular(&(*info)->historico, true);
     }
 
     free(*info);
