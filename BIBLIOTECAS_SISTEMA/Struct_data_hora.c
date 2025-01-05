@@ -10,11 +10,6 @@ void liberar_DATA_HORA(DATA_HORA **data)
     *data = NULL;
 }
 
-void limpar_buffer()
-{
-    fflush(stdin);
-}
-
 
 bool validar_data(DATA_HORA *data)
 {

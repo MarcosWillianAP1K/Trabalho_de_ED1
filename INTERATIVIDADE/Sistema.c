@@ -1,7 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <windows.h>
 
 #include "Sistema.h"
+
+void msg_saindo()
+{
+    printf("Saindo...\n");
+    Sleep(100);
+}
 
 void inicializacao_do_sistema(GERENTE **gerente)
 {
@@ -31,6 +38,8 @@ void liberacao_da_memoria_sistema(GERENTE **gerente)
 
 void criar_tarefa_gerente(Lista_encadeada **lista)
 {
+    limpar_terminal();
+    printf("Criando tarefa tarefa\n\n");
     TAREFA *nova_tarefa = escrever_tarefa();
 
     if (nova_tarefa == NULL)
@@ -53,11 +62,28 @@ void criar_usuario_gerente(Lista_encadeada **lista)
     adicionar_elemento_encadeada_atribuir_ID(lista, novo_usuario, INFO_USUARIO);
 }
 
+void listar_tarefas(Lista_encadeada **lista)
+{
+    limpar_terminal();
+
+    if (*lista == NULL)
+    {
+        printf("Nao ha tarefas\n");
+        return;
+    }
+
+    printar_lista_encadeada(*lista);
+
+    pausar_terminal();
+}
+
 void buscar_por_ID(Lista_encadeada **lista, TIPO_INFO tipo)
 {
+    limpar_terminal();
     if (*lista == NULL)
     {
         printf("Nao ha elementos\n");
+        pausar_terminal();
         return;
     }
 
@@ -84,9 +110,11 @@ void buscar_por_ID(Lista_encadeada **lista, TIPO_INFO tipo)
 
 void menu_buscar_tarefa(Lista_encadeada **tarefas)
 {
+    limpar_terminal();
     if (tarefas == NULL)
     {
         printf("Nao ha tarefas\n");
+        pausar_terminal();
         return;
     }
 
@@ -98,33 +126,38 @@ void menu_buscar_tarefa(Lista_encadeada **tarefas)
         printf("2. Buscar por nome\n");
         printf("0. Voltar\n");
         printf("Escolha uma opcao: ");
+        limpar_buffer();
         scanf(" %c", &opcao);
+        limpar_buffer();
 
         switch (opcao)
         {
         case '1':
-
+            buscar_por_ID(tarefas, INFO_TAREFA);
             break;
         case '2':
             // Implementar busca por nome
             break;
         case '0':
-            printf("Voltando...\n");
+
             break;
         default:
             printf("\nOpcao invalida, tente novamente.\n");
+            pausar_terminal();
             break;
         }
+        limpar_terminal();
     } while (opcao != '0');
 }
 
 void menu_gerente(GERENTE **gerente)
 {
-    printf("Menu do gerente\n");
     char opcao;
 
     do
     {
+        limpar_terminal();
+        printf("Menu do gerente\n");
         printf("1. Criar tarefa\n");
         printf("2. Buscar tarefa\n");
         printf("3. Listar tarefas\n");
@@ -135,7 +168,9 @@ void menu_gerente(GERENTE **gerente)
         printf("8. Desfazer ultima acao\n");
         printf("0. Sair\n");
         printf("Escolha uma opcao: ");
+        limpar_buffer();
         scanf(" %c", &opcao);
+        limpar_buffer();
 
         switch (opcao)
         {
@@ -143,10 +178,10 @@ void menu_gerente(GERENTE **gerente)
             criar_tarefa_gerente(&(*gerente)->tarefas);
             break;
         case '2':
-
+            menu_buscar_tarefa(&(*gerente)->tarefas);
             break;
         case '3':
-
+            listar_tarefas(&(*gerente)->tarefas);
             break;
         case '4':
             criar_usuario_gerente(&(*gerente)->usuarios);
@@ -165,22 +200,25 @@ void menu_gerente(GERENTE **gerente)
 
             break;
         case '0':
-            printf("Saindo...\n");
+            msg_saindo();
             break;
         default:
             printf("\nOpcao invalida, tente novamente.\n");
+            pausar_terminal();
             break;
         }
+
     } while (opcao != '0');
 }
 
-void menu_usuario()
+void menu_usuario(USUARIO **usuario)
 {
-    printf("Menu do usuario\n");
     char opcao;
 
     do
     {
+        limpar_terminal();
+        printf("Menu do usuario\n");
         printf("1. Buscar tarefa\n");
         printf("2. Organizar tarefas\n");
         printf("3. Ver proxima tarefa\n");
@@ -188,7 +226,9 @@ void menu_usuario()
         printf("5. Trocar de conta\n");
         printf("0. Sair\n");
         printf("Escolha uma opcao: ");
+        limpar_buffer();
         scanf(" %c", &opcao);
+        limpar_buffer();
 
         switch (opcao)
         {
@@ -208,27 +248,32 @@ void menu_usuario()
 
             break;
         case '0':
-            printf("Saindo...\n");
+            msg_saindo();
             break;
         default:
             printf("\nOpcao invalida, tente novamente.\n");
+            pausar_terminal();
             break;
         }
+
     } while (opcao != '0');
 }
 
 void menu_inicial(GERENTE **gerente)
 {
-    printf("Menu inicial\n");
     char opcao;
 
     do
     {
+        limpar_terminal();
+        printf("Menu inicial\n");
         printf("1. Gerente\n");
         printf("2. Usuario\n");
         printf("0. Sair\n");
         printf("Escolha uma opcao: ");
+        limpar_buffer();
         scanf(" %c", &opcao);
+        limpar_buffer();
 
         switch (opcao)
         {
@@ -236,14 +281,17 @@ void menu_inicial(GERENTE **gerente)
             menu_gerente(gerente);
             break;
         case '2':
-            menu_usuario();
+            // menu_usuario();
             break;
         case '0':
-            printf("Saindo...\n");
+            msg_saindo();
+
             break;
         default:
             printf("\nOpcao invalida, tente novamente.\n");
+            pausar_terminal();
             break;
         }
+
     } while (opcao != '0');
 }

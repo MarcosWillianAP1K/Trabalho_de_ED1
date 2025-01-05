@@ -97,7 +97,7 @@ void adicionar_elemento_encadeada_atribuir_ID(Lista_encadeada **lista, void *inf
 
         (*lista)->informacoes = informacoes;
         (*lista)->tipo = tipo;
-        atribuir_ID((*lista)->informacoes);
+        atribuir_ID_convertido(tipo, (*lista)->informacoes, atribuir_ID());
         (*lista)->proximo = NULL;
     }
     else

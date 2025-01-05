@@ -25,6 +25,7 @@ void adicionar_elemento_circular(Lista_circular **lista, void *informacoes, TIPO
         (*lista)->info = informacoes;
         (*lista)->tipo = tipo;
         (*lista)->prox = *lista;
+        pegar_data_atual((*lista)->data);
 
     }
     else
@@ -33,6 +34,7 @@ void adicionar_elemento_circular(Lista_circular **lista, void *informacoes, TIPO
         novo_no->info = informacoes;
         novo_no->tipo = tipo;
         novo_no->prox = *lista;
+        pegar_data_atual(novo_no->data);
 
         Lista_circular *atual = *lista;
 

@@ -54,28 +54,11 @@ bool confirmar_tarefa(TAREFA *tarefa)
 
 bool reescrever_tarefa()
 {
-    printf("\nDeseja reescrever a tarefa? (s/n): ");
+    printf("\nDeseja reescrever os dados? (s/n): ");
 
     return selecionar_s_ou_n();
 }
 
-void verificar_alocacao(void *ponteiro)
-{
-    if (ponteiro == NULL)
-    {
-        printf("Erro na alocacao de memoria\n");
-        exit(1);
-    }
-}
-
-void verificar_realocacao(void *ponteiro)
-{
-    if (ponteiro == NULL)
-    {
-        printf("Erro na realocacao de memoria\n");
-        exit(1);
-    }
-}
 
 char *criar_nome(int tam)
 {

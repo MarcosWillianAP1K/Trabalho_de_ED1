@@ -1,5 +1,6 @@
 #include "Struct_data_hora.h"
 #include "../BIBLIOTECAS_LISTAS/LISTA_ENCADEADA_BIB.h"
+#include "Utilidades_sistema.h"
 #include <stdbool.h>
 
 #ifndef STRUCT_INFO_H
