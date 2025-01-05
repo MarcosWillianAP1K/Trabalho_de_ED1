@@ -13,6 +13,7 @@ void liberar_no_circular(Lista_circular *no, bool liberar_info)
     {
         liberar_INFO_convertido(no->tipo, &no->info);
     }
+    liberar_DATA_HORA(&no->data);
 
     free(no);
 }

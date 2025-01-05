@@ -62,6 +62,92 @@ void criar_usuario_gerente(Lista_encadeada **lista)
     adicionar_elemento_encadeada_atribuir_ID(lista, novo_usuario, INFO_USUARIO);
 }
 
+void editar_INFO(void *info, TIPO_INFO tipo)
+{
+    //Depois implementar um desfazer aqui
+    editar_INFO_convertido(tipo, info, true);
+
+}
+
+void excluir_INFO(Endereco_lista_encadeada *endereco, Lista_encadeada **lista ,TIPO_INFO tipo)
+{
+    //Depois implementar um desfazer aqui
+
+    if (endereco == NULL || endereco->no == NULL)
+    {
+        return;
+    }
+    
+    if(tipo == INFO_TAREFA)
+    {
+        TAREFA *tarefa = (TAREFA *)endereco->no->informacoes;
+        Lista_encadeada *usuarios = tarefa->usuarios_associados;
+
+        if (usuarios != NULL)
+        {
+            while (usuarios != NULL)
+            {
+                USUARIO *usuario = (USUARIO *)usuarios->informacoes;
+                Lista_encadeada *proximo = usuarios->proximo;
+                remover_elemento_encadeada_por_endereco(buscar_lista_encadeada(usuario->tarefas_associadas, tarefa->ID, INFO_TAREFA), &usuario->tarefas_associadas, false);
+                usuarios = proximo;
+            }
+
+            liberar_memoria_encadeada(&usuarios, false);
+        }
+
+        remover_elemento_encadeada_por_endereco(endereco, lista, true);
+        
+
+    }
+    else if(tipo == INFO_USUARIO)
+    {
+        
+    }
+
+
+
+    
+}
+
+void menu_oque_fazer_com_a_INFO(Endereco_lista_encadeada *endereco, Lista_circular **lista, TIPO_INFO tipo)
+{
+    char opcao;
+    
+    do
+    {
+        limpar_terminal();
+        printar_INFO_convertido(tipo, endereco->no->informacoes);
+
+        printf("O que deseja fazer com a informacao?\n");
+
+        printf("1. Editar\n");
+        printf("2. Excluir\n");
+        printf("0. Voltar\n");
+        printf("Escolha uma opcao: ");
+        limpar_buffer();
+        scanf(" %c", &opcao);
+        limpar_buffer();
+
+        switch (opcao)
+        {
+        case '1':
+            editar_INFO(endereco->no->informacoes, tipo);
+            break;
+        case '2':
+            excluir_INFO(endereco, lista,tipo);
+            break;
+        case '0':
+            break;
+        default:
+            printf("\nOpcao invalida, tente novamente.\n");
+            pausar_terminal();
+            break;
+        }
+    } while (opcao != '0');
+}
+
+
 void listar_tarefas(Lista_encadeada **lista)
 {
     limpar_terminal();
@@ -104,8 +190,7 @@ void buscar_por_ID(Lista_encadeada **lista, TIPO_INFO tipo)
         return;
     }
 
-    printar_INFO_convertido(tipo, endereco->no->informacoes);
-    liberar_endereco_lista_encadeada(&endereco);
+    menu_oque_fazer_com_a_INFO(endereco, lista, tipo);
 }
 
 void menu_buscar_tarefa(Lista_encadeada **tarefas)

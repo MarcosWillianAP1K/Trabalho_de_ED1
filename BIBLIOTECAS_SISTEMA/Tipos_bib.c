@@ -157,3 +157,26 @@ void printar_INFO_convertido(TIPO_INFO tipo, void *info)
         break;
     }
 }
+
+void *editar_INFO_convertido(TIPO_INFO tipo, void *info, bool liberar_info_antiga)
+{
+    if (info == NULL)
+    {
+        return;
+    }
+
+    switch (tipo)
+    {
+    case INFO_TAREFA:
+        return editar_tarefa((TAREFA **)info, liberar_info_antiga);
+        break;
+
+    case INFO_USUARIO:
+        // return editar_usuario((USUARIO **)info, liberar_info_antiga);
+        break;
+
+    default:
+        error_tipo();
+        break;
+    }
+}
