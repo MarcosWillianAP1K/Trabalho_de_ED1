@@ -21,6 +21,8 @@ void adicionar_no_duplamente_encadeada(Lista_duplamente_encadeada **lista, Lista
 
 void printar_lista_duplamente_encadeada(Lista_duplamente_encadeada *lista);
 
+void printar_reverso_lista_duplamente_encadeada(Lista_duplamente_encadeada *lista);
+
 void liberar_memoria_duplamente_encadeada(Lista_duplamente_encadeada **lista, bool liberar_info);
 
 void remover_elemento_duplamente_encadeada_por_ID(Lista_duplamente_encadeada **lista, int ID, TIPO_INFO tipo_info, bool liberar_info);

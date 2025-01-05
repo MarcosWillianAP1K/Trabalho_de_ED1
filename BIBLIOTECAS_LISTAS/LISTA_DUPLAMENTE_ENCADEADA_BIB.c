@@ -118,6 +118,24 @@ void printar_lista_duplamente_encadeada(Lista_duplamente_encadeada *lista)
     printf("\n");
 }
 
+void printar_reverso_lista_duplamente_encadeada(Lista_duplamente_encadeada *lista)
+{
+    Lista_duplamente_encadeada *aux = lista;
+    while (aux->proximo != NULL)
+    {
+        aux = aux->proximo;
+    }
+
+    while (aux != NULL)
+    {
+        printar_INFO_convertido(aux->tipo, aux->informacoes);
+        printf("\n");
+        aux = aux->anterior;
+    }
+    printf("\n");
+}
+
+
 void liberar_memoria_duplamente_encadeada(Lista_duplamente_encadeada **lista, bool liberar_info)
 {
     if (*lista == NULL)

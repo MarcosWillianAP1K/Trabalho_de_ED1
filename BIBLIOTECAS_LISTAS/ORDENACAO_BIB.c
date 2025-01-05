@@ -271,12 +271,13 @@ void selection_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inic
             aux2 = aux2->proximo;
         }
 
+        if (menor != aux1 && menor != NULL && aux1->anterior == NULL)
+        {
+            *inicio = menor;
+        }
+        
         trocar_nos(&aux1, &menor);
 
-        if (aux1->anterior == NULL)
-        {
-            *inicio = aux1;
-        }
 
         aux1 = aux1->proximo;
     }

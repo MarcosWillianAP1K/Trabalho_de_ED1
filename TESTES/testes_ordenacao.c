@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 //comando para compilar
-// gcc -o teste -pthread ../TESTES/testes_ordenacao.c ../BIBLIOTECAS_SISTEMA/Struct_tarefa.c ../BIBLIOTECAS_SISTEMA/Struct_data_hora.c ../BIBLIOTECAS_SISTEMA/Tipos_bib.c ../BIBLIOTECAS_LISTAS/LISTA_DUPLAMENTE_ENCADEADA_BIB.c ../BIBLIOTECAS_LISTAS/ORDENACAO_BIB.c
+// gcc -o teste -pthread ../BIBLIOTECAS_LISTAS/LISTA_CIRCULAR_BIB.c ../BLIOTECAS_SISTEMA/Struct_usuario.c ../BIBLIOTECAS_SISTEMA/Utilidades_sistema.c ../TESTES/testes_ordenacao.c ../BIBLIOTECAS_SISTEMA/Struct_tarefa.c ../BIBLIOTECAS_SISTEMA/Struct_data_hora.c ../BIBLIOTECAS_SISTEMA/Tipos_bib.c ../BIBLIOTECAS_LISTAS/LISTA_DUPLAMENTE_ENCADEADA_BIB.c ../BIBLIOTECAS_LISTAS/ORDENACAO_BIB.c
 
 int main()
 {
@@ -17,10 +17,10 @@ int main()
     TAREFA *teste3 = criar_tarefa();
     TAREFA *teste4 = criar_tarefa();
 
-    atribuir_nome(&teste1->nome, "teste1");
-    atribuir_nome(&teste2->nome, "teste2");
-    atribuir_nome(&teste3->nome, "teste3");
-    atribuir_nome(&teste4->nome, "teste4");
+    atribuir_nome(&teste1->nome, "b");
+    atribuir_nome(&teste2->nome, "a");
+    atribuir_nome(&teste3->nome, "c");
+    atribuir_nome(&teste4->nome, "d");
 
     teste1->ID = 4;
     teste2->ID = 3;
@@ -41,10 +41,10 @@ int main()
     // printar_lista_duplamente_encadeada(lista);
 
     // bubble_sort_lista_duplamente_encadeada(&lista, comparar_ID);
-    // selection_sort_lista_duplamente_encadeada(&lista, comparar_ID);
+    selection_sort_lista_duplamente_encadeada(&lista, comparar_afalbetica);
     // insertion_sort_lista_duplamente_encadeada(&lista, comparar_ID);
     // quick_sort_lista_duplamente_encadeada(&lista, comparar_ID);
-    merge_sort_lista_duplamente_encadeada(&lista, comparar_ID);
+    // merge_sort_lista_duplamente_encadeada(&lista, comparar_ID);
 
     printf("Depois de ordenar\n");
     printar_lista_duplamente_encadeada(lista);
