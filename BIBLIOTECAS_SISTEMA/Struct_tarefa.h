@@ -19,6 +19,8 @@ typedef struct TAREFA
 
 } TAREFA;
 
+char *digitar_nome();
+
 DATA_HORA *criar_data_hora();
 
 TAREFA *criar_tarefa();
@@ -30,6 +32,7 @@ void copiar_tarefas(TAREFA **info1, TAREFA *info2);
 void liberar_TAREFA(TAREFA **info);
 
 void printar_tarefa(TAREFA *info);
+
 
 TAREFA *escrever_tarefa();
 

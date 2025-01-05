@@ -21,5 +21,7 @@ void liberar_USUARIO(USUARIO **info);
 
 USUARIO *escrever_usuario();
 
+void printar_usuario(USUARIO *info);
+
 
 #endif // Struct_usuario_h

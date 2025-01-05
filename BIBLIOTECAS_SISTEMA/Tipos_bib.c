@@ -150,7 +150,7 @@ void printar_INFO_convertido(TIPO_INFO tipo, void *info)
         break;
 
     case INFO_USUARIO:
-        // printar_usuario((USUARIO *)info);
+        printar_usuario((USUARIO *)info);
         break;
 
     default:

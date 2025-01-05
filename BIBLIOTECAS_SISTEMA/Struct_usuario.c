@@ -119,5 +119,19 @@ USUARIO *escrever_usuario()
 }
 
 
+void printar_usuario(USUARIO *info)
+{
+    if (info == NULL)
+    {
+        return;
+    }
+
+    printf("ID: %d\n", info->ID);
+    printf("Login: %s\n", info->login);
+    printf("Tarefas associadas: \n");
+    printar_lista_encadeada(info->tarefas_associadas);
+    printf("Historico: \n");
+    printar_lista_circular(info->historico);
+}
 
 

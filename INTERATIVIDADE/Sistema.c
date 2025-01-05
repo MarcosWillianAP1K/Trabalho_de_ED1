@@ -65,25 +65,40 @@ void criar_usuario_gerente(Lista_encadeada **lista)
     adicionar_elemento_encadeada_atribuir_ID(lista, novo_usuario, INFO_USUARIO);
 }
 
+short int digitar_ID()
+{
+    short int n;
+    printf("Digite o ID: ");
+
+    while (scanf("%hd", &n) != 1 || n < 0)
+    {
+        printf("Digite um valor valido: ");
+        limpar_buffer();
+    }
+
+    limpar_buffer();
+
+    return n;
+}
+
 void editar_INFO(void **info, TIPO_INFO tipo)
 {
     limpar_terminal();
-    
+
     // Mexer no desfazer aqui, tem o problema se n editar nada, vai ter um desfazer
     editar_INFO_convertido(tipo, info, true);
-    
 }
 
 void excluir_INFO(Endereco_lista_encadeada *endereco, TIPO_INFO tipo)
 {
-    if (endereco == NULL)
+    if (endereco == NULL || endereco->no == NULL)
     {
         printf("Nao foi possivel encontrar a informacao\n");
         pausar_terminal();
         return;
     }
 
-    //Mexer no desfazer aqui
+    // Mexer no desfazer aqui
 
     if (tipo == INFO_TAREFA)
     {
@@ -128,16 +143,18 @@ void excluir_INFO(Endereco_lista_encadeada *endereco, TIPO_INFO tipo)
 
         remover_elemento_encadeada_por_endereco(endereco, &(*geral)->usuarios, true);
     }
+
+    liberar_endereco_lista_encadeada(&endereco);
 }
 
-void menu_oque_fazer_com_a_INFO(Endereco_lista_encadeada *endereco, TIPO_INFO tipo)
+void menu_oque_fazer_com_a_INFO(void *info, TIPO_INFO tipo)
 {
     char opcao;
 
     do
     {
         limpar_terminal();
-        printar_INFO_convertido(tipo, endereco->no->informacoes);
+        printar_INFO_convertido(tipo, info);
 
         printf("O que deseja fazer com a informacao?\n");
 
@@ -152,10 +169,10 @@ void menu_oque_fazer_com_a_INFO(Endereco_lista_encadeada *endereco, TIPO_INFO ti
         switch (opcao)
         {
         case '1':
-            editar_INFO(&endereco->no->informacoes, tipo);
+            editar_INFO(&info, tipo);
             break;
         case '2':
-            excluir_INFO(endereco, tipo);
+            excluir_INFO(buscar_lista_encadeada((*geral)->tarefas, retornar_ID_convertido(tipo, info), tipo), tipo);
             break;
         case '0':
             break;
@@ -164,16 +181,17 @@ void menu_oque_fazer_com_a_INFO(Endereco_lista_encadeada *endereco, TIPO_INFO ti
             pausar_terminal();
             break;
         }
-    } while (opcao != '0');
+    } while (opcao != '0' && opcao != '2');
 }
 
-void listar_tarefas(Lista_encadeada **lista)
+void listar(Lista_encadeada **lista, TIPO_INFO tipo)
 {
     limpar_terminal();
 
     if (*lista == NULL)
     {
-        printf("Nao ha tarefas\n");
+        printf("Nao ha informacoes\n");
+        pausar_terminal();
         return;
     }
 
@@ -182,21 +200,82 @@ void listar_tarefas(Lista_encadeada **lista)
     pausar_terminal();
 }
 
-short int digitar_ID()
+void buscar_nomes_parecidos(Lista_encadeada *list, char *nome, TIPO_INFO tipo)
 {
-    short int n;
-    printf("Digite o ID: ");
-
-    while (scanf("%hd", &n) != 1 || n < 0)
+    if (list == NULL)
     {
-        printf("Digite um valor valido: ");
-        limpar_buffer();
+        return;
+    }
+    // printar_lista_encadeada(list);
+    // pausar_terminal();
+    // limpar_terminal();
+
+    Lista_encadeada *aux = NULL;
+
+    while (list != NULL)
+    {
+        Endereco_lista_encadeada *endereco = buscar_lista_encadeada_por_nome(list, nome, tipo);
+        list = endereco->no;
+
+        // printf("Informacoes encontradas:\n");
+        // printar_INFO_convertido(tipo, endereco->no->informacoes);
+
+        if (endereco->no != NULL)
+        {
+            // printf("adicionou\n");
+            adicionar_elemento_encadeada(&aux, endereco->no->informacoes, tipo);
+            list = endereco->no->proximo;
+        }
+        liberar_endereco_lista_encadeada(&endereco);
     }
 
-    limpar_buffer();
+    if (aux == NULL)
+    {
+        printf("Nao foi possivel encontrar informacoes\n");
+        pausar_terminal();
+        return;
+    }
 
-    return n;
+    do
+    {
+        printf("Informacoes encontradas\n");
+        printar_lista_encadeada(aux);
+
+        printf("Digite o ID da informacao que desejas.\n");
+
+        Endereco_lista_encadeada *endereco = buscar_lista_encadeada(aux, digitar_ID(), tipo);
+
+        if (endereco != NULL && endereco->no != NULL)
+        {
+            menu_oque_fazer_com_a_INFO(endereco->no->informacoes, tipo);
+            liberar_memoria_encadeada(&aux, false);
+        }
+        else
+        {
+            printf("Digite um ID valido\n");
+            pausar_terminal();
+        }
+        liberar_endereco_lista_encadeada(&endereco);
+
+    } while (aux != NULL);
 }
+
+void buscar_por_ID(Lista_encadeada *list, short int ID, TIPO_INFO tipo)
+{
+    Endereco_lista_encadeada *endereco = buscar_lista_encadeada(list, ID, tipo);
+
+    if (endereco == NULL || endereco->no == NULL)
+    {
+        printf("Nao foi possivel encontrar a informacao\n");
+        pausar_terminal();
+        return;
+    }
+
+    menu_oque_fazer_com_a_INFO(endereco->no->informacoes, tipo);
+
+    liberar_endereco_lista_encadeada(&endereco);
+}
+
 
 void menu_buscar(TIPO_INFO tipo)
 {
@@ -235,11 +314,37 @@ void menu_buscar(TIPO_INFO tipo)
         switch (opcao)
         {
         case '1':
-            menu_oque_fazer_com_a_INFO(buscar_lista_encadeada((*geral)->tarefas, digitar_ID(), tipo), tipo);
+
+            if (tipo == INFO_TAREFA)
+            {
+                buscar_por_ID((*geral)->tarefas, digitar_ID(), tipo);
+            }
+            else
+            {
+                buscar_por_ID((*geral)->usuarios, digitar_ID(), tipo);
+            }
             break;
         case '2':
-            // Implementar busca por nome
-            break;
+        {
+            char *nome = digitar_nome();
+
+            if (nome == NULL)
+            {
+                break;
+            }
+
+            if (tipo == INFO_TAREFA)
+            {
+                buscar_nomes_parecidos((*geral)->tarefas, nome, tipo);
+            }
+            else
+            {
+                buscar_nomes_parecidos((*geral)->usuarios, nome, tipo);
+            }
+
+            free(nome);
+        }
+        break;
         case '0':
 
             break;
@@ -283,7 +388,7 @@ void menu_gerente()
             menu_buscar(INFO_TAREFA);
             break;
         case '3':
-            listar_tarefas(&(*geral)->tarefas);
+            listar(&(*geral)->tarefas, INFO_TAREFA);
             break;
         case '4':
             criar_usuario_gerente(&(*geral)->usuarios);

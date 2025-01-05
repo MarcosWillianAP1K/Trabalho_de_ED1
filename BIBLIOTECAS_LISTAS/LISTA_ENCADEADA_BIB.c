@@ -47,6 +47,8 @@ void liberar_no_encadeada(Lista_encadeada *no, bool liberar_info)
 
 void *verificar_ID(void *arg)
 {
+    srand(time(NULL));
+
     if (arg == NULL)
     {
         return NULL;
@@ -273,9 +275,15 @@ Endereco_lista_encadeada *buscar_lista_encadeada_por_nome(Lista_encadeada *list,
 
     while (list != NULL )
     {
+        // if (list != NULL)
+        // {
+        //     printar_INFO_convertido(list->tipo, list->informacoes);
+        // }
+        
 
-        if (strstr(nome, retornar_nome_convertido(list->tipo, list->informacoes)) != NULL && list->tipo == tipo)
+        if (strstr( retornar_nome_convertido(list->tipo, list->informacoes), nome) != NULL && list->tipo == tipo)
         {
+            // printf("brekou\n");
             break;
         }
         anterior = list;
