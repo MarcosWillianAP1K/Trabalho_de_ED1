@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <windows.h>
 
 #include "Sistema.h"
+
+GERENTE **geral = NULL;
 
 void msg_saindo()
 {
@@ -62,58 +65,75 @@ void criar_usuario_gerente(Lista_encadeada **lista)
     adicionar_elemento_encadeada_atribuir_ID(lista, novo_usuario, INFO_USUARIO);
 }
 
-void editar_INFO(void *info, TIPO_INFO tipo)
+void editar_INFO(void **info, TIPO_INFO tipo)
 {
-    //Depois implementar um desfazer aqui
+    limpar_terminal();
+    
+    // Mexer no desfazer aqui, tem o problema se n editar nada, vai ter um desfazer
     editar_INFO_convertido(tipo, info, true);
-
+    
 }
 
-void excluir_INFO(Endereco_lista_encadeada *endereco, Lista_encadeada **lista ,TIPO_INFO tipo)
+void excluir_INFO(Endereco_lista_encadeada *endereco, TIPO_INFO tipo)
 {
-    //Depois implementar um desfazer aqui
-
-    if (endereco == NULL || endereco->no == NULL)
+    if (endereco == NULL)
     {
+        printf("Nao foi possivel encontrar a informacao\n");
+        pausar_terminal();
         return;
     }
-    
-    if(tipo == INFO_TAREFA)
+
+    //Mexer no desfazer aqui
+
+    if (tipo == INFO_TAREFA)
     {
         TAREFA *tarefa = (TAREFA *)endereco->no->informacoes;
         Lista_encadeada *usuarios = tarefa->usuarios_associados;
 
         if (usuarios != NULL)
         {
+
             while (usuarios != NULL)
             {
                 USUARIO *usuario = (USUARIO *)usuarios->informacoes;
-                Lista_encadeada *proximo = usuarios->proximo;
-                remover_elemento_encadeada_por_endereco(buscar_lista_encadeada(usuario->tarefas_associadas, tarefa->ID, INFO_TAREFA), &usuario->tarefas_associadas, false);
-                usuarios = proximo;
+
+                if (usuario != NULL)
+                {
+                    remover_elemento_encadeada_por_ID(&usuario->tarefas_associadas, tarefa->ID, INFO_TAREFA, false);
+                }
+                usuarios = usuarios->proximo;
             }
 
-            liberar_memoria_encadeada(&usuarios, false);
+            liberar_memoria_encadeada(&tarefa->usuarios_associados, false);
         }
 
-        remover_elemento_encadeada_por_endereco(endereco, lista, true);
-        
-
+        remover_elemento_encadeada_por_endereco(endereco, &(*geral)->tarefas, true);
     }
-    else if(tipo == INFO_USUARIO)
+    else if (tipo == INFO_USUARIO)
     {
-        
+        USUARIO *usuario = (USUARIO *)endereco->no->informacoes;
+        Lista_encadeada *tarefas = usuario->tarefas_associadas;
+
+        if (tarefas != NULL)
+        {
+            while (tarefas != NULL)
+            {
+                TAREFA *tarefa = (TAREFA *)tarefas->informacoes;
+                remover_elemento_encadeada_por_ID(&tarefa->usuarios_associados, usuario->ID, INFO_USUARIO, false);
+                tarefas = tarefas->proximo;
+            }
+
+            liberar_memoria_encadeada(&usuario->tarefas_associadas, false);
+        }
+
+        remover_elemento_encadeada_por_endereco(endereco, &(*geral)->usuarios, true);
     }
-
-
-
-    
 }
 
-void menu_oque_fazer_com_a_INFO(Endereco_lista_encadeada *endereco, Lista_circular **lista, TIPO_INFO tipo)
+void menu_oque_fazer_com_a_INFO(Endereco_lista_encadeada *endereco, TIPO_INFO tipo)
 {
     char opcao;
-    
+
     do
     {
         limpar_terminal();
@@ -132,10 +152,10 @@ void menu_oque_fazer_com_a_INFO(Endereco_lista_encadeada *endereco, Lista_circul
         switch (opcao)
         {
         case '1':
-            editar_INFO(endereco->no->informacoes, tipo);
+            editar_INFO(&endereco->no->informacoes, tipo);
             break;
         case '2':
-            excluir_INFO(endereco, lista,tipo);
+            excluir_INFO(endereco, tipo);
             break;
         case '0':
             break;
@@ -146,7 +166,6 @@ void menu_oque_fazer_com_a_INFO(Endereco_lista_encadeada *endereco, Lista_circul
         }
     } while (opcao != '0');
 }
-
 
 void listar_tarefas(Lista_encadeada **lista)
 {
@@ -163,44 +182,42 @@ void listar_tarefas(Lista_encadeada **lista)
     pausar_terminal();
 }
 
-void buscar_por_ID(Lista_encadeada **lista, TIPO_INFO tipo)
+short int digitar_ID()
 {
-    limpar_terminal();
-    if (*lista == NULL)
-    {
-        printf("Nao ha elementos\n");
-        pausar_terminal();
-        return;
-    }
-
-    short int ID;
+    short int n;
     printf("Digite o ID: ");
-    while (scanf("%hd", &ID) != 1 || ID < 0)
+
+    while (scanf("%hd", &n) != 1 || n < 0)
     {
         printf("Digite um valor valido: ");
         limpar_buffer();
     }
 
-    Endereco_lista_encadeada *endereco = buscar_lista_encadeada(*lista, ID, tipo);
+    limpar_buffer();
 
-    if (endereco == NULL || endereco->no == NULL)
-    {
-        printf("Elemento nao encontrado\n");
-        liberar_endereco_lista_encadeada(&endereco);
-        return;
-    }
-
-    menu_oque_fazer_com_a_INFO(endereco, lista, tipo);
+    return n;
 }
 
-void menu_buscar_tarefa(Lista_encadeada **tarefas)
+void menu_buscar(TIPO_INFO tipo)
 {
     limpar_terminal();
-    if (tarefas == NULL)
+    if (tipo == INFO_TAREFA)
     {
-        printf("Nao ha tarefas\n");
-        pausar_terminal();
-        return;
+        if ((*geral)->tarefas == NULL)
+        {
+            printf("Nao ha tarefas\n");
+            pausar_terminal();
+            return;
+        }
+    }
+    else
+    {
+        if ((*geral)->usuarios == NULL)
+        {
+            printf("Nao ha usuarios\n");
+            pausar_terminal();
+            return;
+        }
     }
 
     char opcao;
@@ -218,7 +235,7 @@ void menu_buscar_tarefa(Lista_encadeada **tarefas)
         switch (opcao)
         {
         case '1':
-            buscar_por_ID(tarefas, INFO_TAREFA);
+            menu_oque_fazer_com_a_INFO(buscar_lista_encadeada((*geral)->tarefas, digitar_ID(), tipo), tipo);
             break;
         case '2':
             // Implementar busca por nome
@@ -235,7 +252,7 @@ void menu_buscar_tarefa(Lista_encadeada **tarefas)
     } while (opcao != '0');
 }
 
-void menu_gerente(GERENTE **gerente)
+void menu_gerente()
 {
     char opcao;
 
@@ -260,16 +277,16 @@ void menu_gerente(GERENTE **gerente)
         switch (opcao)
         {
         case '1':
-            criar_tarefa_gerente(&(*gerente)->tarefas);
+            criar_tarefa_gerente(&(*geral)->tarefas);
             break;
         case '2':
-            menu_buscar_tarefa(&(*gerente)->tarefas);
+            menu_buscar(INFO_TAREFA);
             break;
         case '3':
-            listar_tarefas(&(*gerente)->tarefas);
+            listar_tarefas(&(*geral)->tarefas);
             break;
         case '4':
-            criar_usuario_gerente(&(*gerente)->usuarios);
+            criar_usuario_gerente(&(*geral)->usuarios);
 
             break;
         case '5':
@@ -296,7 +313,7 @@ void menu_gerente(GERENTE **gerente)
     } while (opcao != '0');
 }
 
-void menu_usuario(USUARIO **usuario)
+void menu_usuario(USUARIO *usuario)
 {
     char opcao;
 
@@ -346,6 +363,8 @@ void menu_usuario(USUARIO **usuario)
 
 void menu_inicial(GERENTE **gerente)
 {
+    geral = gerente;
+
     char opcao;
 
     do
@@ -363,7 +382,7 @@ void menu_inicial(GERENTE **gerente)
         switch (opcao)
         {
         case '1':
-            menu_gerente(gerente);
+            menu_gerente();
             break;
         case '2':
             // menu_usuario();

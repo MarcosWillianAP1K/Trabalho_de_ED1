@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 void error_tipo()
 {
     printf("Tipo invalido\n");
@@ -158,16 +159,19 @@ void printar_INFO_convertido(TIPO_INFO tipo, void *info)
     }
 }
 
-void *editar_INFO_convertido(TIPO_INFO tipo, void *info, bool liberar_info_antiga)
+void *editar_INFO_convertido(TIPO_INFO tipo, void **info, bool liberar_info_antiga)
 {
+    
     if (info == NULL)
     {
-        return;
+        return NULL;
     }
+   
 
     switch (tipo)
     {
     case INFO_TAREFA:
+
         return editar_tarefa((TAREFA **)info, liberar_info_antiga);
         break;
 
@@ -179,4 +183,6 @@ void *editar_INFO_convertido(TIPO_INFO tipo, void *info, bool liberar_info_antig
         error_tipo();
         break;
     }
+
+    return NULL;
 }

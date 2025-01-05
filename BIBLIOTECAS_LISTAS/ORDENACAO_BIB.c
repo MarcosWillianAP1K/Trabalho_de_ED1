@@ -32,11 +32,11 @@ short int comparar_afalbetica(void *info1, void *info2, TIPO_INFO tipo1, TIPO_IN
 
 short int comparar_prioridade(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2)
 {
-    if ( tipo1 == INFO_USUARIO || tipo2 == INFO_USUARIO)
+    if (tipo1 == INFO_USUARIO || tipo2 == INFO_USUARIO)
     {
         error_tipo();
     }
-   
+
     short int prioridade1 = retornar_ID_convertido(tipo1, info1);
     short int prioridade2 = retornar_ID_convertido(tipo2, info2);
 
@@ -52,7 +52,6 @@ short int comparar_prioridade(void *info1, void *info2, TIPO_INFO tipo1, TIPO_IN
 
     return 0;
 }
-
 
 // Pésadelo de juliana
 short int comparar_data(DATA_HORA *data1, DATA_HORA *data2)
@@ -116,7 +115,6 @@ short int comparar_data_entrega(void *info1, void *info2, TIPO_INFO tipo1, TIPO_
     {
         error_tipo();
     }
-    
 
     DATA_HORA *data1 = retorna_info_convertida(tipo1, info1);
     DATA_HORA *data2 = retorna_info_convertida(tipo2, info2);
@@ -130,14 +128,12 @@ short int comparar_data_criacao(void *info1, void *info2, TIPO_INFO tipo1, TIPO_
     {
         error_tipo();
     }
-    
 
     DATA_HORA *data1 = retorna_info_convertida(tipo1, info1);
     DATA_HORA *data2 = retorna_info_convertida(tipo2, info2);
 
     return comparar_data(data1, data2);
 }
-
 
 // void printar_no_teste(Lista_duplamente_encadeada *anterior, Lista_duplamente_encadeada *no, Lista_duplamente_encadeada *proximo, char *nome)
 // {
@@ -320,7 +316,6 @@ void insertion_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inic
     //     *inicio = (*inicio)->anterior;
     // }
 }
-
 
 void organizar_pivo(Lista_duplamente_encadeada *pivo, Lista_duplamente_encadeada **maior, Lista_duplamente_encadeada **menor, short int (*comparar)(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2))
 {

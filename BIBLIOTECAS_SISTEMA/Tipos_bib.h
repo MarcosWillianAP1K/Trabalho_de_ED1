@@ -1,4 +1,4 @@
-
+#include <stdbool.h>
 
 
 #ifndef Tipos_bib_h
@@ -27,7 +27,7 @@ void liberar_INFO_convertido(TIPO_INFO tipo, void **info);
 
 void printar_INFO_convertido(TIPO_INFO tipo, void *info);
 
-void *editar_INFO_convertido(TIPO_INFO tipo, void *info, bool liberar_info_antiga);
+void *editar_INFO_convertido(TIPO_INFO tipo, void **info, bool liberar_info_antiga);
 
 
 #endif // Tipos_bib_h

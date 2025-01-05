@@ -3,7 +3,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-
 #include "Struct_tarefa.h"
 
 void liberar_TAREFA(TAREFA **tarefa)
@@ -15,7 +14,6 @@ void liberar_TAREFA(TAREFA **tarefa)
     free(*tarefa);
     *tarefa = NULL;
 }
-
 
 bool selecionar_s_ou_n()
 {
@@ -42,7 +40,6 @@ bool selecionar_s_ou_n()
     return false;
 }
 
-
 bool confirmar_tarefa(TAREFA *tarefa)
 {
     printar_tarefa(tarefa);
@@ -58,7 +55,6 @@ bool reescrever_tarefa()
 
     return selecionar_s_ou_n();
 }
-
 
 char *criar_nome(int tam)
 {
@@ -100,6 +96,29 @@ void atribuir_nome(char **nome1, char *nome2)
     strcpy(*nome1, nome2);
 }
 
+void copiar_lista_encadeada(Lista_encadeada **lista1, Lista_encadeada *lista2, TIPO_INFO tipo)
+{
+    if (lista2 == NULL)
+    {
+        return;
+    }
+
+    if (*lista1 == NULL)
+    {
+        *lista1 = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
+    }
+
+    Lista_encadeada *aux = lista2;
+
+    while (aux != NULL)
+    {
+
+        adicionar_elemento_encadeada(lista1, aux->informacoes, tipo);
+        
+        aux = aux->proximo;
+    }
+}
+
 void copiar_tarefas(TAREFA **tarefa1, TAREFA *tarefa2)
 {
 
@@ -108,27 +127,40 @@ void copiar_tarefas(TAREFA **tarefa1, TAREFA *tarefa2)
         return;
     }
 
+   
+
     if (*tarefa1 == NULL)
     {
         *tarefa1 = criar_tarefa();
     }
+   
 
     (*tarefa1)->ID = tarefa2->ID;
+   
+
     atribuir_nome(&(*tarefa1)->nome, tarefa2->nome);
+    
 
     (*tarefa1)->nivel_prioridade = tarefa2->nivel_prioridade;
+   
 
     (*tarefa1)->data_entrega->minuto = tarefa2->data_entrega->minuto;
     (*tarefa1)->data_entrega->hora = tarefa2->data_entrega->hora;
     (*tarefa1)->data_entrega->dia = tarefa2->data_entrega->dia;
     (*tarefa1)->data_entrega->mes = tarefa2->data_entrega->mes;
     (*tarefa1)->data_entrega->ano = tarefa2->data_entrega->ano;
+    
+
 
     (*tarefa1)->data_criacao->minuto = tarefa2->data_criacao->minuto;
     (*tarefa1)->data_criacao->hora = tarefa2->data_criacao->hora;
     (*tarefa1)->data_criacao->dia = tarefa2->data_criacao->dia;
     (*tarefa1)->data_criacao->mes = tarefa2->data_criacao->mes;
     (*tarefa1)->data_criacao->ano = tarefa2->data_criacao->ano;
+
+   copiar_lista_encadeada(&(*tarefa1)->usuarios_associados, tarefa2->usuarios_associados, INFO_USUARIO);
+
+   
 }
 
 void printar_tarefa(TAREFA *tarefa)
@@ -150,25 +182,25 @@ void printar_tarefa(TAREFA *tarefa)
 // Sequencia de funções para digitar a tarefa
 
 // Digitar ID e apenas para testes, não sera implementado no produto final
-short int digitar_ID()
-{
-    short int n;
-    printf("Digite o ID: ");
+// short int digitar_ID()
+// {
+//     short int n;
+//     printf("Digite o ID: ");
 
-    while (scanf("%hd", &n) != 1 || n < 0)
-    {
-        printf("Digite um valor valido: ");
-        limpar_buffer();
-    }
+//     while (scanf("%hd", &n) != 1 || n < 0)
+//     {
+//         printf("Digite um valor valido: ");
+//         limpar_buffer();
+//     }
 
-    limpar_buffer();
+//     limpar_buffer();
 
-    return n;
-}
+//     return n;
+// }
 
 char *digitar_nome()
 {
-limpar_buffer();
+    limpar_buffer();
 #define TAM_PADRAO 20
 
     int tam, cont = 0;
@@ -280,7 +312,7 @@ TAREFA *escrever_tarefa()
 
         if (confirmar_tarefa(tarefa))
         {
-            
+
             break;
         }
 
@@ -297,6 +329,7 @@ TAREFA *escrever_tarefa()
 
 TAREFA *editar_tarefa(TAREFA **tarefa, bool liberar_tarefa_antiga)
 {
+
     if (*tarefa == NULL)
     {
         printf("\nNao ha tarefa para editar.\n");
@@ -417,7 +450,6 @@ TAREFA *editar_tarefa(TAREFA **tarefa, bool liberar_tarefa_antiga)
             printf("\n");
             if (confirmar_tarefa(nova_tarefa))
             {
-                
 
                 if (liberar_tarefa_antiga)
                 {
@@ -432,8 +464,7 @@ TAREFA *editar_tarefa(TAREFA **tarefa, bool liberar_tarefa_antiga)
                     copiar_tarefas(&nova_tarefa, temp);
                     liberar_TAREFA(&temp);
                 }
-                
-                
+
                 printf("Tarefa alterada com sucesso.\n");
 
                 return nova_tarefa;
@@ -447,7 +478,7 @@ TAREFA *editar_tarefa(TAREFA **tarefa, bool liberar_tarefa_antiga)
 
             if (selecionar_s_ou_n())
             {
-                
+
                 liberar_TAREFA(&nova_tarefa);
                 printf("Operacao cancelada.\n");
             }
@@ -463,7 +494,7 @@ TAREFA *editar_tarefa(TAREFA **tarefa, bool liberar_tarefa_antiga)
             break;
         }
 
-    } while ( c != '6');
+    } while (c != '6');
 
     return NULL;
 }
