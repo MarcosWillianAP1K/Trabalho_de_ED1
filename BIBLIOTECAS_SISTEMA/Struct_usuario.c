@@ -67,9 +67,6 @@ char *digitar_login()
     return nome;
 }
 
-
-
-
 void liberar_USUARIO(USUARIO **info)
 {
     if (*info == NULL)
@@ -96,8 +93,6 @@ void liberar_USUARIO(USUARIO **info)
     *info = NULL;
 }
 
-
-
 USUARIO *escrever_usuario()
 {
     USUARIO *novo = criar_USUARIO();
@@ -118,6 +113,31 @@ USUARIO *escrever_usuario()
     return novo;
 }
 
+void printar_historico(USUARIO *info)
+{
+    if (info == NULL)
+    {
+        return;
+    }
+
+    if (info->historico == NULL)
+    {
+        printf("Historico vazio\n");
+        return;
+    }
+    
+
+    printf("Historico de tarefas: \n");
+
+    Lista_circular *aux = info->historico;
+
+    do
+    {
+        printar_INFO_convertido(INFO_TAREFA, aux->info);
+        aux = aux->prox;
+    } while (aux != info->historico);
+    
+}
 
 void printar_usuario(USUARIO *info)
 {
@@ -126,12 +146,26 @@ void printar_usuario(USUARIO *info)
         return;
     }
 
-    printf("ID: %d\n", info->ID);
+    printf("ID: %03d\n", info->ID);
     printf("Login: %s\n", info->login);
-    printf("Tarefas associadas: \n");
-    printar_lista_encadeada(info->tarefas_associadas);
-    printf("Historico: \n");
-    printar_lista_circular(info->historico);
+    
+    if (info->tarefas_associadas != NULL)
+    {
+        printf("IDs de tarefas associadas: \n");
+        
+        Lista_encadeada *aux = info->tarefas_associadas;
+
+        while (aux != NULL)
+        {
+            printf("%03hd  ", retornar_ID_convertido(INFO_TAREFA, aux->informacoes));
+            aux = aux->proximo;
+        }
+        printf("\n\n");
+    }
+    else
+    {
+        printf("Nenhuma tarefa associada\n\n");
+    }
+
+
 }
-
-
