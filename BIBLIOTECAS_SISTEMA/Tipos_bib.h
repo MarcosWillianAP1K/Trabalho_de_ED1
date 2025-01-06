@@ -5,7 +5,7 @@
 #define Tipos_bib_h
 
 
-typedef enum {
+typedef enum TIPO_INFO{
     INFO_TAREFA,
     INFO_USUARIO
 } TIPO_INFO;

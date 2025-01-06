@@ -118,13 +118,12 @@ void editar_INFO(void **info, TIPO_INFO tipo)
 {
     limpar_terminal();
 
-    if(tipo == INFO_USUARIO)
+    if (tipo == INFO_USUARIO)
     {
         printf("\nEsta versao do sistema nao e possivel editar usuario.\n");
         printf("Sera lancado na proxima atulizacao em breve\n");
         pausar_terminal();
     }
-    
 
     // Mexer no desfazer aqui, tem o problema se n editar nada, vai ter um desfazer
     editar_INFO_convertido(tipo, info, true);
@@ -132,7 +131,7 @@ void editar_INFO(void **info, TIPO_INFO tipo)
 
 void excluir_INFO(Endereco_lista_encadeada *endereco, TIPO_INFO tipo)
 {
-    
+
     if (endereco == NULL || endereco->no == NULL)
     {
         printf("Nao foi possivel encontrar a informacao\n");
@@ -144,7 +143,7 @@ void excluir_INFO(Endereco_lista_encadeada *endereco, TIPO_INFO tipo)
 
     if (tipo == INFO_TAREFA)
     {
-        
+
         TAREFA *tarefa = (TAREFA *)endereco->no->informacoes;
         Lista_encadeada *usuarios = tarefa->usuarios_associados;
 
@@ -169,30 +168,110 @@ void excluir_INFO(Endereco_lista_encadeada *endereco, TIPO_INFO tipo)
     }
     else if (tipo == INFO_USUARIO)
     {
-        
+
         USUARIO *usuario = (USUARIO *)endereco->no->informacoes;
         Lista_encadeada *tarefas = usuario->tarefas_associadas;
 
         if (tarefas != NULL)
         {
-            
+
             while (tarefas != NULL)
             {
-                
+
                 TAREFA *tarefa = (TAREFA *)tarefas->informacoes;
                 remover_elemento_encadeada_por_ID(&tarefa->usuarios_associados, usuario->ID, INFO_USUARIO, false);
                 tarefas = tarefas->proximo;
             }
 
             liberar_memoria_encadeada(&usuario->tarefas_associadas, false);
-            
         }
 
         remover_elemento_encadeada_por_endereco(endereco, &(*geral)->usuarios, true);
     }
 
     liberar_endereco_lista_encadeada(&endereco);
-   
+}
+
+void atribuir_tarefa_usuario(TAREFA *tarefa, Lista_encadeada *usuarios)
+{
+    limpar_terminal();
+
+    if (usuarios == NULL)
+    {
+        printf("Nao ha usuarios\n");
+        pausar_terminal();
+        return;
+    }
+    printar_lista_encadeada(usuarios);
+
+    printf("Atribuir tarefa a um usuario\n");
+
+    printf("Digite o ID do usuario: ");
+    short int ID = digitar_ID();
+
+    Endereco_lista_encadeada *endereco = buscar_lista_encadeada(usuarios, ID, INFO_USUARIO);
+
+    if (endereco == NULL || endereco->no == NULL)
+    {
+        printf("Nao foi possivel encontrar o usuario\n");
+        pausar_terminal();
+        return;
+    }
+
+    USUARIO *usuario = (USUARIO *)endereco->no->informacoes;
+
+    if (usuario == NULL)
+    {
+        printf("Nao foi possivel encontrar o usuario\n");
+        pausar_terminal();
+        return;
+    }
+
+    adicionar_elemento_encadeada(&usuario->tarefas_associadas, tarefa, INFO_TAREFA);
+    adicionar_elemento_encadeada(&tarefa->usuarios_associados, usuario, INFO_USUARIO);
+
+    liberar_endereco_lista_encadeada(&endereco);
+}
+
+void atribuir_usuarior_tarefa(USUARIO *usuario, Lista_encadeada *tarefas)
+{
+    limpar_terminal();
+
+    if (tarefas == NULL)
+    {
+        printf("Nao ha tarefas\n");
+        pausar_terminal();
+        return;
+    }
+    printar_lista_encadeada(tarefas);
+
+    printf("Atribuir usuario a uma tarefa\n");
+
+    printf("Digite o ID da tarefa: ");
+    short int ID = digitar_ID();
+
+    Endereco_lista_encadeada *endereco = buscar_lista_encadeada(tarefas, ID, INFO_TAREFA);
+
+    if (endereco == NULL || endereco->no == NULL)
+    {
+        printf("Nao foi possivel encontrar a tarefa\n");
+        pausar_terminal();
+        return;
+    }
+
+    TAREFA *tarefa = (TAREFA *)endereco->no->informacoes;
+
+    if (tarefa == NULL)
+    {
+        printf("Nao foi possivel encontrar a tarefa\n");
+        pausar_terminal();
+        return;
+    }
+
+    adicionar_elemento_encadeada(&usuario->tarefas_associadas, tarefa, INFO_TAREFA);
+    adicionar_elemento_encadeada(&tarefa->usuarios_associados, usuario, INFO_USUARIO);
+
+    liberar_endereco_lista_encadeada(&endereco);
 }
 
 void menu_oque_fazer_com_a_INFO(void *info, TIPO_INFO tipo)
@@ -208,6 +287,17 @@ void menu_oque_fazer_com_a_INFO(void *info, TIPO_INFO tipo)
 
         printf("1. Editar\n");
         printf("2. Excluir\n");
+
+        if (tipo == INFO_TAREFA)
+        {
+            printf("3. Atribuir a um usuario\n");
+        }
+
+        if (tipo == INFO_USUARIO)
+        {
+            printf("3. Atribuir uma tarefa\n");
+        }
+
         printf("0. Voltar\n");
         printf("Escolha uma opcao: ");
         limpar_buffer();
@@ -226,11 +316,23 @@ void menu_oque_fazer_com_a_INFO(void *info, TIPO_INFO tipo)
             }
             else
             {
-                
+
                 excluir_INFO(buscar_lista_encadeada((*geral)->usuarios, retornar_ID_convertido(tipo, info), tipo), tipo);
-                
             }
             break;
+        case '3':
+
+            if (tipo == INFO_TAREFA)
+            {
+                atribuir_tarefa_usuario((TAREFA *)info, (*geral)->usuarios);
+            }
+            else
+            {
+                atribuir_usuarior_tarefa((USUARIO *)info, (*geral)->tarefas);
+            }
+
+            break;
+
         case '0':
             break;
         default:
@@ -313,7 +415,7 @@ void *ordenar_duplamente_thread(void *arg)
     return NULL;
 }
 
-void listar_tarefas(Lista_encadeada **lista)
+void listar_tarefas(Lista_encadeada **lista, TIPO_CONTA tipo_de_conta)
 {
 #define quant_threads 5
 
@@ -371,109 +473,168 @@ void listar_tarefas(Lista_encadeada **lista)
     }
 
     short int opcao;
-    bool listagem = false;
-    short int qual_lista = 0;
+    
     limpar_terminal();
-    do
+
+    if (tipo_de_conta == CONTA_GERENTE)
     {
+        bool listagem = false;
+    short int qual_lista = 0;
 
-        printf("Como deseja listar as informacoes?\n");
-        printf("1. Por ID\n");
-        printf("2. Alfabetica\n");
-        printf("3. Por prioridade\n");
-        printf("4. Data de criacao\n");
-        printf("5. Data de entrega\n");
-        printf("6. Selecionar por ID\n");
-        printf("0. Voltar\n");
-        printf("Escolha uma opcao: ");
-        limpar_buffer();
-
-        while (scanf("%hd", &opcao) != 1)
+        do
         {
-            printf("Digite um valor valido: ");
+
+            printf("Como deseja listar as informacoes?\n");
+            printf("1. Por ID\n");
+            printf("2. Alfabetica\n");
+            printf("3. Por prioridade\n");
+            printf("4. Data de criacao\n");
+            printf("5. Data de entrega\n");
+                printf("6. Selecionar por ID\n");
+            printf("0. Voltar\n");
+            printf("Escolha uma opcao: ");
             limpar_buffer();
-        }
 
-        switch (opcao)
-        {
-        case 1:
-            limpar_terminal();
-            printar_lista_duplamente_encadeada(lista_dupla[0]);
-            listagem = true;
-            qual_lista = opcao - 1;
-            break;
-        case 2:
-            limpar_terminal();
-            printar_lista_duplamente_encadeada(lista_dupla[1]);
-            listagem = true;
-            qual_lista = opcao - 1;
-            break;
-        case 3:
-            limpar_terminal();
-            printar_lista_duplamente_encadeada(lista_dupla[2]);
-            listagem = true;
-            qual_lista = opcao - 1;
-            break;
-        case 4:
-            limpar_terminal();
-            printar_lista_duplamente_encadeada(lista_dupla[3]);
-            listagem = true;
-            qual_lista = opcao - 1;
-            break;
-        case 5:
-            limpar_terminal();
-            printar_lista_duplamente_encadeada(lista_dupla[4]);
-            listagem = true;
-            qual_lista = opcao - 1;
-            break;
-
-        case 6:
-
-            if (listagem)
+            while (scanf("%hd", &opcao) != 1)
             {
-                Lista_duplamente_encadeada *aux = NULL;
+                printf("Digite um valor valido: ");
+                limpar_buffer();
+            }
 
-                if (opcao == 1)
+            switch (opcao)
+            {
+            case 1:
+                limpar_terminal();
+                printar_lista_duplamente_encadeada(lista_dupla[0]);
+                listagem = true;
+                qual_lista = opcao - 1;
+                break;
+            case 2:
+                limpar_terminal();
+                printar_lista_duplamente_encadeada(lista_dupla[1]);
+                listagem = true;
+                qual_lista = opcao - 1;
+                break;
+            case 3:
+                limpar_terminal();
+                printar_lista_duplamente_encadeada(lista_dupla[2]);
+                listagem = true;
+                qual_lista = opcao - 1;
+                break;
+            case 4:
+                limpar_terminal();
+                printar_lista_duplamente_encadeada(lista_dupla[3]);
+                listagem = true;
+                qual_lista = opcao - 1;
+                break;
+            case 5:
+                limpar_terminal();
+                printar_lista_duplamente_encadeada(lista_dupla[4]);
+                listagem = true;
+                qual_lista = opcao - 1;
+                break;
+
+            case 6:
+
+                if (listagem)
                 {
-                    printf("p2\n");
-                    aux = busca_binaria_duplamente_encadeada(lista_dupla[0], digitar_ID(), INFO_TAREFA);
+                    Lista_duplamente_encadeada *aux = NULL;
+
+                    if (opcao == 1)
+                    {
+                        printf("p2\n");
+                        aux = busca_binaria_duplamente_encadeada(lista_dupla[0], digitar_ID(), INFO_TAREFA);
+                    }
+                    else
+                    {
+
+                        aux = buscar_elemento_duplamente_encadeada_por_ID(lista_dupla[0], digitar_ID(), INFO_TAREFA);
+                    }
+
+                    if (aux != NULL)
+                    {
+
+                        menu_oque_fazer_com_a_INFO(aux->informacoes, INFO_TAREFA);
+                    }
+                    else
+                    {
+                        printf("ID nao encontrado\n");
+                        pausar_terminal();
+                    }
                 }
                 else
                 {
-
-                    aux = buscar_elemento_duplamente_encadeada_por_ID(lista_dupla[0], digitar_ID(), INFO_TAREFA);
-                }
-
-                if (aux != NULL)
-                {
-
-                    menu_oque_fazer_com_a_INFO(aux->informacoes, INFO_TAREFA);
-                }
-                else
-                {
-                    printf("ID nao encontrado\n");
+                    printf("Selecione um metodo de listagem primeiro\n");
                     pausar_terminal();
                 }
-            }
-            else
-            {
-                printf("Selecione um metodo de listagem primeiro\n");
+                limpar_terminal();
+
+                break;
+
+            case 0:
+                break;
+            default:
+                printf("\nOpcao invalida, tente novamente.\n");
                 pausar_terminal();
+                limpar_terminal();
+                break;
             }
-            limpar_terminal();
+        } while (opcao != 0 && opcao != 6);
+    }
+    else
+    {
+        do
+        {
 
-            break;
+            printf("Como deseja listar as informacoes?\n");
+            printf("1. Por ID\n");
+            printf("2. Alfabetica\n");
+            printf("3. Por prioridade\n");
+            printf("4. Data de criacao\n");
+            printf("5. Data de entrega\n");
+            printf("0. Voltar\n");
+            printf("Escolha uma opcao: ");
+            limpar_buffer();
 
-        case 0:
-            break;
-        default:
-            printf("\nOpcao invalida, tente novamente.\n");
-            pausar_terminal();
-            limpar_terminal();
-            break;
-        }
+            while (scanf("%hd", &opcao) != 1)
+            {
+                printf("Digite um valor valido: ");
+                limpar_buffer();
+            }
 
-    } while (opcao != 0 && opcao != 6);
+            switch (opcao)
+            {
+            case 1:
+                limpar_terminal();
+                printar_lista_duplamente_encadeada(lista_dupla[0]);
+                break;
+            case 2:
+                limpar_terminal();
+                printar_lista_duplamente_encadeada(lista_dupla[1]);
+                break;
+            case 3:
+                limpar_terminal();
+                printar_lista_duplamente_encadeada(lista_dupla[2]);
+                break;
+            case 4:
+                limpar_terminal();
+                printar_lista_duplamente_encadeada(lista_dupla[3]);
+                break;
+            case 5:
+                limpar_terminal();
+                printar_lista_duplamente_encadeada(lista_dupla[4]);
+                break;
+
+            case 0:
+                break;
+            default:
+                printf("\nOpcao invalida, tente novamente.\n");
+                pausar_terminal();
+                limpar_terminal();
+                break;
+            }
+        } while (opcao != 0 && opcao != 6);
+    }
 
     for (int i = 0; i < quant_threads; i++)
     {
@@ -499,9 +660,11 @@ void listar_usuarios(Lista_encadeada *lista)
 
     Lista_duplamente_encadeada *lista_ID = NULL;
     Lista_duplamente_encadeada *lista_afalbetica = NULL;
+    Lista_duplamente_encadeada *lista_criacao = NULL;
 
     copiar_lista_para_duplamente(lista, &lista_ID);
     copiar_lista_para_duplamente(lista, &lista_afalbetica);
+    copiar_lista_para_duplamente(lista, &lista_criacao);
 
     selection_sort_lista_duplamente_encadeada(&lista_ID, comparar_ID);
     selection_sort_lista_duplamente_encadeada(&lista_afalbetica, comparar_afalbetica);
@@ -513,7 +676,8 @@ void listar_usuarios(Lista_encadeada *lista)
         printf("Como deseja listar as informacoes?\n");
         printf("1. Por ID\n");
         printf("2. Alfabetica\n");
-        printf("3. Selecionar por ID\n");
+        printf("3. Por criacao\n");
+        printf("4. Selecionar por ID\n");
         printf("0. Voltar\n");
         printf("Escolha uma opcao: ");
         limpar_buffer();
@@ -532,12 +696,14 @@ void listar_usuarios(Lista_encadeada *lista)
             break;
         case 2:
             limpar_terminal();
-            
             printar_lista_duplamente_encadeada(lista_afalbetica);
             break;
         case 3:
+            limpar_terminal();
+            printar_lista_duplamente_encadeada(lista_criacao);
+            break;
+        case 4:
         {
-            
             Lista_duplamente_encadeada *aux = NULL;
 
             if (opcao == 1)
@@ -569,12 +735,10 @@ void listar_usuarios(Lista_encadeada *lista)
             limpar_terminal();
             break;
         }
-    } while (opcao != 0 && opcao != 3);
-
+    } while (opcao != 0 && opcao != 4);
 }
 
-
-void buscar_nomes_parecidos(Lista_encadeada *list, char *nome, TIPO_INFO tipo)
+void buscar_nomes_parecidos(Lista_encadeada *list, char *nome, TIPO_INFO tipo, TIPO_CONTA conta)
 {
     if (list == NULL)
     {
@@ -610,31 +774,42 @@ void buscar_nomes_parecidos(Lista_encadeada *list, char *nome, TIPO_INFO tipo)
         return;
     }
 
-    do
+    if (conta == CONTA_GERENTE)
+    {
+        do
+        {
+            limpar_terminal();
+            printf("Informacoes encontradas\n");
+            printar_lista_encadeada(aux);
+
+            printf("Digite o ID da informacao que desejas.\n");
+
+            Endereco_lista_encadeada *endereco = buscar_lista_encadeada(aux, digitar_ID(), tipo);
+
+            if (endereco != NULL && endereco->no != NULL)
+            {
+                menu_oque_fazer_com_a_INFO(endereco->no->informacoes, tipo);
+                liberar_memoria_encadeada(&aux, false);
+            }
+            else
+            {
+                printf("Digite um ID valido\n");
+                pausar_terminal();
+            }
+            liberar_endereco_lista_encadeada(&endereco);
+
+        } while (aux != NULL);
+    }
+    else
     {
         printf("Informacoes encontradas\n");
         printar_lista_encadeada(aux);
-
-        printf("Digite o ID da informacao que desejas.\n");
-
-        Endereco_lista_encadeada *endereco = buscar_lista_encadeada(aux, digitar_ID(), tipo);
-
-        if (endereco != NULL && endereco->no != NULL)
-        {
-            menu_oque_fazer_com_a_INFO(endereco->no->informacoes, tipo);
-            liberar_memoria_encadeada(&aux, false);
-        }
-        else
-        {
-            printf("Digite um ID valido\n");
-            pausar_terminal();
-        }
-        liberar_endereco_lista_encadeada(&endereco);
-
-    } while (aux != NULL);
+        pausar_terminal();
+        liberar_memoria_encadeada(&aux, false);
+    }
 }
 
-void buscar_por_ID(Lista_encadeada *list, short int ID, TIPO_INFO tipo)
+void buscar_por_ID(Lista_encadeada *list, short int ID, TIPO_INFO tipo, TIPO_CONTA conta)
 {
     Endereco_lista_encadeada *endereco = buscar_lista_encadeada(list, ID, tipo);
 
@@ -645,31 +820,29 @@ void buscar_por_ID(Lista_encadeada *list, short int ID, TIPO_INFO tipo)
         return;
     }
 
-    menu_oque_fazer_com_a_INFO(endereco->no->informacoes, tipo);
+    if (conta == CONTA_GERENTE)
+    {
+        menu_oque_fazer_com_a_INFO(endereco->no->informacoes, tipo);
+    }
+    else
+    {
+        limpar_terminal();
+        printf("Informacao encontrada\n");
+        printar_INFO_convertido(tipo, endereco->no->informacoes);
+        pausar_terminal();
+    }
 
     liberar_endereco_lista_encadeada(&endereco);
 }
 
-void menu_buscar(TIPO_INFO tipo)
+void menu_buscar(Lista_encadeada *lista, TIPO_INFO tipo, TIPO_CONTA conta)
 {
     limpar_terminal();
-    if (tipo == INFO_TAREFA)
+    if (lista == NULL)
     {
-        if ((*geral)->tarefas == NULL)
-        {
-            printf("Nao ha tarefas\n");
-            pausar_terminal();
-            return;
-        }
-    }
-    else
-    {
-        if ((*geral)->usuarios == NULL)
-        {
-            printf("Nao ha usuarios\n");
-            pausar_terminal();
-            return;
-        }
+        printf("Nao ha informacoes\n");
+        pausar_terminal();
+        return;
     }
 
     char opcao;
@@ -688,14 +861,7 @@ void menu_buscar(TIPO_INFO tipo)
         {
         case '1':
 
-            if (tipo == INFO_TAREFA)
-            {
-                buscar_por_ID((*geral)->tarefas, digitar_ID(), tipo);
-            }
-            else
-            {
-                buscar_por_ID((*geral)->usuarios, digitar_ID(), tipo);
-            }
+            buscar_por_ID(lista, digitar_ID(), tipo, conta);
             break;
         case '2':
         {
@@ -706,14 +872,7 @@ void menu_buscar(TIPO_INFO tipo)
                 break;
             }
 
-            if (tipo == INFO_TAREFA)
-            {
-                buscar_nomes_parecidos((*geral)->tarefas, nome, tipo);
-            }
-            else
-            {
-                buscar_nomes_parecidos((*geral)->usuarios, nome, tipo);
-            }
+            buscar_nomes_parecidos(lista, nome, tipo, conta);
 
             free(nome);
         }
@@ -730,7 +889,7 @@ void menu_buscar(TIPO_INFO tipo)
     } while (opcao != '0');
 }
 
-void menu_gerente()
+bool menu_gerente()
 {
     char opcao;
 
@@ -741,12 +900,11 @@ void menu_gerente()
         printf("1. Criar tarefa\n");
         printf("2. Buscar tarefa\n");
         printf("3. Listar tarefas\n");
-        printf("4. Atribuir tarefa\n");
-        printf("5. Adicionar usuario\n");
-        printf("6. Buscar usuario\n");
-        printf("7. Listar usuarios\n");
-        printf("8. Trocar de conta\n");
-        printf("9. Desfazer ultima acao\n");
+        printf("4. Adicionar usuario\n");
+        printf("5. Buscar usuario\n");
+        printf("6. Listar usuarios\n");
+        printf("7. Trocar de conta\n");
+        printf("8. Desfazer ultima acao\n");
         printf("0. Sair\n");
         printf("Escolha uma opcao: ");
         limpar_buffer();
@@ -759,31 +917,28 @@ void menu_gerente()
             criar_tarefa_gerente(&(*geral)->tarefas);
             break;
         case '2':
-            menu_buscar(INFO_TAREFA);
+            menu_buscar((*geral)->tarefas, INFO_TAREFA, CONTA_GERENTE);
             break;
         case '3':
-            listar_tarefas(&(*geral)->tarefas);
+            listar_tarefas(&(*geral)->tarefas, CONTA_GERENTE);
             break;
         case '4':
-            // Implementar função de atribuir tarefa
-            break;
-        case '5':
             criar_usuario_gerente(&(*geral)->usuarios);
             break;
-        case '6':
-            menu_buscar(INFO_USUARIO);
+        case '5':
+            menu_buscar((*geral)->usuarios, INFO_USUARIO, CONTA_GERENTE);
             break;
-        case '7':
+        case '6':
             listar_usuarios((*geral)->usuarios);
             break;
-        case '8':
-            // Implementar função de trocar de conta
+        case '7':
             break;
-        case '9':
+        case '8':
             // Implementar função de desfazer última ação
             break;
         case '0':
             msg_saindo();
+            return true;
             break;
         default:
             printf("\nOpcao invalida, tente novamente.\n");
@@ -791,12 +946,35 @@ void menu_gerente()
             break;
         }
 
-    } while (opcao != '0');
+    } while (opcao != '0' && opcao != '7');
+
+    return false;
 }
 
-void menu_usuario(USUARIO *usuario)
+void ver_proxima_tarefa(Fila *tarefas)
+{
+    limpar_terminal();
+
+    if (tarefas == NULL || tarefas->inicio == NULL)
+    {
+        printf("Nao ha tarefas\n");
+        pausar_terminal();
+        return;
+    }
+
+
+    printar_INFO_convertido(INFO_TAREFA, tarefas->inicio->informacoes);
+
+    pausar_terminal();
+}
+
+bool menu_usuario(USUARIO *usuario)
 {
     char opcao;
+
+    Fila *tarefas = NULL;
+
+    atribuir_Lista_encadeada_a_fila( usuario->tarefas_associadas, &tarefas);
 
     do
     {
@@ -816,22 +994,23 @@ void menu_usuario(USUARIO *usuario)
         switch (opcao)
         {
         case '1':
-
+            menu_buscar(usuario->tarefas_associadas, INFO_TAREFA, CONTA_USUARIO);
             break;
         case '2':
-
+            //  organizar_tarefas(usuario);
             break;
         case '3':
-
+             ver_proxima_tarefa(usuario);
             break;
         case '4':
-
+            listar_tarefas(&usuario->tarefas_associadas, CONTA_USUARIO);
             break;
         case '5':
 
             break;
         case '0':
             msg_saindo();
+            return true;
             break;
         default:
             printf("\nOpcao invalida, tente novamente.\n");
@@ -839,7 +1018,48 @@ void menu_usuario(USUARIO *usuario)
             break;
         }
 
-    } while (opcao != '0');
+    } while (opcao != '0' && opcao != '5');
+
+    return false;
+}
+
+void selecionar_usuario(bool *sair)
+{
+
+    if ((*geral)->usuarios == NULL)
+    {
+        printf("Nao ha usuarios\n");
+        pausar_terminal();
+        return;
+    }
+
+    limpar_terminal();
+
+    printar_lista_encadeada((*geral)->usuarios);
+
+    printf("Selecione um usuario\n");
+
+    Endereco_lista_encadeada *endereco = buscar_lista_encadeada((*geral)->usuarios, digitar_ID(), INFO_USUARIO);
+
+    if (endereco == NULL || endereco->no == NULL)
+    {
+        printf("Nao foi possivel encontrar o usuario\n");
+        pausar_terminal();
+        return;
+    }
+
+    USUARIO *usuario = (USUARIO *)endereco->no->informacoes;
+
+    if (usuario == NULL)
+    {
+        printf("Nao foi possivel encontrar o usuario\n");
+        pausar_terminal();
+        return;
+    }
+
+    *sair = menu_usuario(usuario);
+
+    liberar_endereco_lista_encadeada(&endereco);
 }
 
 void menu_inicial(GERENTE **gerente)
@@ -847,6 +1067,7 @@ void menu_inicial(GERENTE **gerente)
     geral = gerente;
 
     char opcao;
+    bool sair = false;
 
     do
     {
@@ -863,10 +1084,10 @@ void menu_inicial(GERENTE **gerente)
         switch (opcao)
         {
         case '1':
-            menu_gerente();
+            sair = menu_gerente();
             break;
         case '2':
-            // menu_usuario();
+            selecionar_usuario(&sair);
             break;
         case '0':
             msg_saindo();
@@ -876,6 +1097,11 @@ void menu_inicial(GERENTE **gerente)
             printf("\nOpcao invalida, tente novamente.\n");
             pausar_terminal();
             break;
+        }
+
+        if (sair)
+        {
+            return;
         }
 
     } while (opcao != '0');

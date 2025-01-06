@@ -17,6 +17,8 @@ typedef struct USUARIO
 
 USUARIO *criar_USUARIO();
 
+char *digitar_login();
+
 void liberar_USUARIO(USUARIO **info);
 
 USUARIO *escrever_usuario();

@@ -14,6 +14,8 @@ USUARIO *criar_USUARIO()
     return novo;
 }
 
+
+
 char *digitar_login()
 {
 #define TAM_PADRAO 20
@@ -66,6 +68,8 @@ char *digitar_login()
 
     return nome;
 }
+
+
 
 void liberar_USUARIO(USUARIO **info)
 {
@@ -160,11 +164,11 @@ void printar_usuario(USUARIO *info)
             printf("%03hd  ", retornar_ID_convertido(INFO_TAREFA, aux->informacoes));
             aux = aux->proximo;
         }
-        printf("\n\n");
+        printf("\n");
     }
     else
     {
-        printf("Nenhuma tarefa associada\n\n");
+        printf("Nenhuma tarefa associada\n");
     }
 
 
