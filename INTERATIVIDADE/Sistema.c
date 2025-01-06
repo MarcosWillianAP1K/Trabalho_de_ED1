@@ -11,6 +11,31 @@ USUARIO *usuario_logado = NULL;
 Fila *tarefas_do_usuario = NULL;
 char ultima_organizacao_do_usuario = '1';
 
+void apagar_historico(USUARIO *usuario)
+{
+    if (usuario == NULL)
+    {
+        return;
+    }
+
+    liberar_memoria_circular(&usuario->historico, true);
+}
+
+void apagar_historico_geral(Lista_encadeada *usuarios)
+{
+    if (usuarios == NULL)
+    {
+        return;
+    }
+
+    while (usuarios != NULL)
+    {
+        USUARIO *usuario = (USUARIO *)usuarios->informacoes;
+        apagar_historico(usuario);
+        usuarios = usuarios->proximo;
+    }
+}
+
 void msg_saindo()
 {
     printf("Saindo...\n");
@@ -195,6 +220,35 @@ void excluir_INFO(Endereco_lista_encadeada *endereco, TIPO_INFO tipo, bool liber
     liberar_endereco_lista_encadeada(&endereco);
 }
 
+bool verificar_se_usuario_possui_tarefa(USUARIO *usuario, short int *ID)
+{
+    if (usuario == NULL)
+    {
+        return false;
+    }
+
+    Lista_encadeada *tarefas = usuario->tarefas_associadas;
+
+    if (tarefas == NULL)
+    {
+        return false;
+    }
+
+    while (tarefas != NULL)
+    {
+        TAREFA *tarefa = (TAREFA *)tarefas->informacoes;
+
+        if (tarefa->ID == *ID)
+        {
+            return true;
+        }
+
+        tarefas = tarefas->proximo;
+    }
+
+    return false;
+}
+
 void atribuir_tarefa_usuario(TAREFA *tarefa, Lista_encadeada *usuarios)
 {
     limpar_terminal();
@@ -223,10 +277,11 @@ void atribuir_tarefa_usuario(TAREFA *tarefa, Lista_encadeada *usuarios)
 
     USUARIO *usuario = (USUARIO *)endereco->no->informacoes;
 
-    if (usuario == NULL)
+    if (verificar_se_usuario_possui_tarefa(usuario, &tarefa->ID))
     {
-        printf("Nao foi possivel encontrar o usuario\n");
+        printf("O usuario ja possui essa tarefa\n");
         pausar_terminal();
+        liberar_endereco_lista_encadeada(&endereco);
         return;
     }
 
@@ -264,10 +319,11 @@ void atribuir_usuarior_tarefa(USUARIO *usuario, Lista_encadeada *tarefas)
 
     TAREFA *tarefa = (TAREFA *)endereco->no->informacoes;
 
-    if (tarefa == NULL)
+    if (verificar_se_usuario_possui_tarefa(usuario, &tarefa->ID))
     {
-        printf("Nao foi possivel encontrar a tarefa\n");
+        printf("O usuario ja possui essa tarefa\n");
         pausar_terminal();
+        liberar_endereco_lista_encadeada(&endereco);
         return;
     }
 
@@ -288,7 +344,7 @@ void reoganizar_tarefas(Fila **f, char *opcao)
 
     Lista_duplamente_encadeada *aux = NULL;
 
-    copiar_lista_para_duplamente((*f)->inicio, &aux);
+    copiar_lista_para_duplamente(usuario_logado->tarefas_associadas , &aux);
     
 
     switch (*opcao)
@@ -325,7 +381,7 @@ void reoganizar_tarefas(Fila **f, char *opcao)
 
 }
 
-void concluir_tarefa(TAREFA *tarefa)
+void concluir_tarefa(void *tarefa)
 {
     if (tarefa == NULL)
     {
@@ -337,7 +393,7 @@ void concluir_tarefa(TAREFA *tarefa)
         remover_primeiro_elemento_circular(&usuario_logado->historico, true);
     }
 
-    excluir_INFO(buscar_lista_encadeada((*geral)->tarefas, tarefa->ID, INFO_TAREFA), INFO_TAREFA, false);
+    excluir_INFO(buscar_lista_encadeada((*geral)->tarefas, retornar_ID_convertido(INFO_TAREFA, tarefa), INFO_TAREFA), INFO_TAREFA, false);
 
     reoganizar_tarefas(&tarefas_do_usuario, &ultima_organizacao_do_usuario);
 
@@ -364,7 +420,7 @@ void menu_oque_fazer_com_a_INFO_usuario(void *info, TIPO_INFO tipo)
         switch (opcao)
         {
         case '1':
-            concluir_tarefa((TAREFA *)info);
+            concluir_tarefa(info);
             break;
         case '0':
             break;
@@ -944,6 +1000,51 @@ void menu_buscar(Lista_encadeada *lista, TIPO_INFO tipo, TIPO_CONTA conta)
     } while (opcao != '0');
 }
 
+void visualizar_historico_geral(Lista_encadeada *lista_de_usuarios)
+{
+    limpar_terminal();
+
+    if (lista_de_usuarios == NULL)
+    {
+        printf("Nao ha usuarios\n");
+        pausar_terminal();
+        return;
+    }
+
+    Lista_circular *ordenar_historico = NULL;
+
+    while (lista_de_usuarios != NULL)
+    {
+        USUARIO *usuario = (USUARIO *)lista_de_usuarios->informacoes;
+
+        if (usuario != NULL)
+        {
+            if (usuario->historico != NULL)
+            {
+                copiar_lista_circular(usuario->historico, &ordenar_historico);
+            }
+        }
+
+        lista_de_usuarios = lista_de_usuarios->proximo;
+    }
+
+    if (ordenar_historico == NULL)
+    {
+        printf("Nao ha historico\n");
+        pausar_terminal();
+        return;
+    }
+
+    //Um metodo exclusivo para lista circular
+    selection_sort_lista_circular(&ordenar_historico, comparar_data_conclusao);
+
+    printf("Historico geral\n\n");
+    printar_lista_circular(ordenar_historico);
+
+    liberar_memoria_circular(&ordenar_historico, false);
+    pausar_terminal();
+}
+
 bool menu_gerente()
 {
     char opcao;
@@ -958,8 +1059,9 @@ bool menu_gerente()
         printf("4. Adicionar usuario\n");
         printf("5. Buscar usuario\n");
         printf("6. Listar usuarios\n");
-        printf("7. Trocar de conta\n");
-        printf("8. Desfazer ultima acao\n");
+        printf("7. Visualizar historico geral\n");
+        printf("8. Apagar historico geral\n");
+        printf("9. Trocar de conta\n");
         printf("0. Sair\n");
         printf("Escolha uma opcao: ");
         limpar_buffer();
@@ -987,8 +1089,14 @@ bool menu_gerente()
             listar_usuarios((*geral)->usuarios);
             break;
         case '7':
+            visualizar_historico_geral((*geral)->usuarios);
             break;
         case '8':
+            apagar_historico_geral((*geral)->usuarios);
+            printf("\nHistorico geral apagado\n");
+            pausar_terminal();
+            break;
+        case '9':
             // Implementar função de desfazer última ação
             break;
         case '0':
@@ -1001,7 +1109,7 @@ bool menu_gerente()
             break;
         }
 
-    } while (opcao != '0' && opcao != '7');
+    } while (opcao != '0' && opcao != '9');
 
     return false;
 }
@@ -1089,6 +1197,21 @@ void ver_proxima_tarefa(Fila **tarefas)
     
 }
 
+void visualizar_historico_usuario(Lista_circular *historico)
+{
+    limpar_terminal();
+
+    if (historico == NULL)
+    {
+        printf("Nao ha historico\n");
+        pausar_terminal();
+        return;
+    }
+
+    printf("Historico\n\n");
+    printar_lista_circular(historico);
+    pausar_terminal();
+}
 
 
 bool menu_usuario(USUARIO *usuario)
@@ -1110,7 +1233,9 @@ bool menu_usuario(USUARIO *usuario)
         printf("2. Organizar tarefas\n");
         printf("3. Ver proxima tarefa\n");
         printf("4. Listar tarefas\n");
-        printf("5. Trocar de conta\n");
+        printf("5. Visualizar historico\n");
+        printf("6. Apagar historico\n");
+        printf("7. Trocar de conta\n");
         printf("0. Sair\n");
         printf("Escolha uma opcao: ");
         limpar_buffer();
@@ -1132,11 +1257,20 @@ bool menu_usuario(USUARIO *usuario)
             listar_tarefas(&usuario->tarefas_associadas, CONTA_USUARIO);
             break;
         case '5':
+            visualizar_historico_usuario(usuario->historico);
+            break;
+        case '6':
+            apagar_historico(usuario);
 
+            printf("\nHistorico apagado\n");
+            pausar_terminal();
+            break;
+        case '7':
             break;
         case '0':
             msg_saindo();
             liberar_fila(&tarefas_do_usuario, false);
+            usuario_logado = NULL;
             return true;
             break;
         default:
@@ -1145,9 +1279,11 @@ bool menu_usuario(USUARIO *usuario)
             break;
         }
 
-    } while (opcao != '0' && opcao != '5');
-
+    } while (opcao != '0' && opcao != '7');
+ 
     liberar_fila(&tarefas_do_usuario, false);
+
+    usuario_logado = NULL;
 
     return false;
 }

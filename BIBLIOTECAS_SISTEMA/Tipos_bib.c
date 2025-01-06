@@ -12,6 +12,52 @@ void error_tipo()
     exit(1);
 }
 
+DATA_HORA *retornar_data_entrega_convertida(TIPO_INFO tipo, void *info)
+{
+    if (info == NULL)
+    {
+        return NULL;
+    }
+
+    switch (tipo)
+    {
+    case INFO_TAREFA:
+        return ((TAREFA *)info)->data_entrega;
+        break;
+
+    case INFO_USUARIO:
+        return NULL;
+        break;
+
+    default:
+        error_tipo();
+        break;
+    }
+}
+
+DATA_HORA *retornar_data_criacao_convertida(TIPO_INFO tipo, void *info)
+{
+    if (info == NULL)
+    {
+        return NULL;
+    }
+
+    switch (tipo)
+    {
+    case INFO_TAREFA:
+        return ((TAREFA *)info)->data_criacao;
+        break;
+
+    case INFO_USUARIO:
+        return NULL;
+        break;
+
+    default:
+        error_tipo();
+        break;
+    }
+}
+
 void conferir_tipos(TIPO_INFO tipo1, TIPO_INFO tipo2, void *info1, void *info2)
 {
     if (info1 == NULL || info2 == NULL)

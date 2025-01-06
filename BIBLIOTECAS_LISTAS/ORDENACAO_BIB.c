@@ -4,6 +4,7 @@
 
 #include "ORDENACAO_BIB.h"
 
+
 void copiar_lista_para_duplamente(Lista_encadeada *lista, Lista_duplamente_encadeada **lista_dupla)
 {
     if (lista == NULL)
@@ -32,6 +33,35 @@ void copiar_duplamente_para_lista(Lista_duplamente_encadeada *lista, Lista_encad
     }
 }
 
+void copiar_circular_para_duplamente(Lista_circular *lista, Lista_duplamente_encadeada **lista_dupla)
+{
+    if (lista == NULL)
+    {
+        return;
+    }
+
+    Lista_circular *aux = lista;
+
+    do
+    {
+        adicionar_elemento_duplamente_encadeada(lista_dupla, aux->info, aux->tipo, true);
+        aux = aux->prox;
+    } while (aux != lista);
+}
+
+void copiar_duplamente_para_circular(Lista_duplamente_encadeada *lista, Lista_circular **lista_circular)
+{
+    if (lista == NULL)
+    {
+        return;
+    }
+
+    while (lista != NULL)
+    {
+        adicionar_elemento_circular(lista_circular, lista->informacoes, lista->tipo);
+        lista = lista->proximo;
+    }
+}
 
 short int comparar_ID(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2)
 {
@@ -145,8 +175,10 @@ short int comparar_data_entrega(void *info1, void *info2, TIPO_INFO tipo1, TIPO_
         error_tipo();
     }
 
-    DATA_HORA *data1 = retorna_info_convertida(tipo1, info1);
-    DATA_HORA *data2 = retorna_info_convertida(tipo2, info2);
+    DATA_HORA *data1 = retornar_data_entrega_convertida(tipo1, info1);
+    DATA_HORA *data2 = retornar_data_entrega_convertida(tipo2, info2);
+    
+
 
     return comparar_data(data1, data2);
 }
@@ -158,16 +190,63 @@ short int comparar_data_criacao(void *info1, void *info2, TIPO_INFO tipo1, TIPO_
         error_tipo();
     }
 
-    DATA_HORA *data1 = retorna_info_convertida(tipo1, info1);
-    DATA_HORA *data2 = retorna_info_convertida(tipo2, info2);
+    DATA_HORA *data1 = retornar_data_criacao_convertida(tipo1, info1);
+    DATA_HORA *data2 = retornar_data_criacao_convertida(tipo2, info2);
 
     return comparar_data(data1, data2);
 }
+
+//Comparaçãoe excluisiva para lista circular
+short int comparar_data_conclusao(Lista_circular *no1, Lista_circular *no2)
+{
+    if (no1 == NULL || no2 == NULL)
+    {
+        return 0;
+    }
+
+    return comparar_data(no1->data, no2->data);
+}
+
 
 // void printar_no_teste(Lista_duplamente_encadeada *anterior, Lista_duplamente_encadeada *no, Lista_duplamente_encadeada *proximo, char *nome)
 // {
 //     printf("anterior: %s  %s: %s  proximo:  %s\n", anterior == NULL ? "NULL" : anterior->informacoes->nome, nome, no == NULL ? "NULL" : no->informacoes->nome, proximo == NULL ? "NULL" : proximo->informacoes->nome);
 // }
+
+
+//Essa ordenação é exclusiva para historico geral
+void selection_sort_lista_circular(Lista_circular **lista, short int (*comparar)(Lista_circular *no1, Lista_circular *no2))
+{
+    if (*lista == NULL)
+    {
+        return;
+    }
+
+    Lista_circular *aux1 = *lista;
+    Lista_circular *aux2 = NULL;
+    Lista_circular *menor = NULL;
+
+    while (aux1->prox != *lista)
+    {
+        aux2 = aux1->prox;
+        menor = aux1;
+
+        while (aux2 != *lista)
+        {
+            if (comparar(menor, aux2) > 0)
+            {
+                menor = aux2;
+            }
+            aux2 = aux2->prox;
+        }
+
+        void *info = menor->info;
+        menor->info = aux1->info;
+        aux1->info = info;
+
+        aux1 = aux1->prox;
+    }
+}
 
 void trocar_nos(Lista_duplamente_encadeada **no1, Lista_duplamente_encadeada **no2)
 {

@@ -23,12 +23,14 @@ short int adicionar_elemento_circular(Lista_circular **lista, void *informacoes,
 
     if (*lista == NULL)
     {
+
         *lista = (Lista_circular *)malloc(sizeof(Lista_circular));
         (*lista)->info = informacoes;
         (*lista)->tipo = tipo;
         (*lista)->prox = *lista;
-        pegar_data_atual(&(*lista)->data);
-
+        (*lista)->data = criar_data_hora();
+        pegar_data_atual((*lista)->data);
+        
         return 1;
     }
     else
@@ -40,7 +42,8 @@ short int adicionar_elemento_circular(Lista_circular **lista, void *informacoes,
         novo_no->info = informacoes;
         novo_no->tipo = tipo;
         novo_no->prox = *lista;
-        pegar_data_atual(&novo_no->data);
+        novo_no->data = criar_data_hora();
+        pegar_data_atual(novo_no->data);
 
         Lista_circular *atual = *lista;
 
@@ -66,6 +69,8 @@ void printar_lista_circular(Lista_circular *lista)
     Lista_circular *atual = lista;
     do
     {
+        printf("Data de conclusao: ");
+        printf("%02hd/%02hd/%d %02hd:%02hd\n", atual->data->dia, atual->data->mes, atual->data->ano, atual->data->hora, atual->data->minuto);
         printar_INFO_convertido(atual->tipo, atual->info);
         printf("\n");
         atual = atual->prox;
@@ -251,4 +256,19 @@ void liberar_memoria_circular(Lista_circular **lista, bool liberar_info)
 
     liberar_no_circular(atual, liberar_info);
     *lista = NULL;
+}
+
+void copiar_lista_circular(Lista_circular *lista1, Lista_circular **lista2)
+{
+    if (lista1 == NULL)
+    {
+        return;
+    }
+
+    Lista_circular *aux = lista1;
+    do
+    {
+        adicionar_elemento_circular(lista2, aux->info, aux->tipo);
+        aux = aux->prox;
+    } while (aux != lista1);
 }

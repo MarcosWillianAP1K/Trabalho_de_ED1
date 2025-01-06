@@ -27,4 +27,6 @@ Lista_circular *buscar_lista_circular(Lista_circular *lista, int ID, TIPO_INFO t
 
 void liberar_memoria_circular(Lista_circular **lista, bool liberar_info);
 
+void copiar_lista_circular(Lista_circular *lista1, Lista_circular **lista2);
+
 #endif // LISTA_CIRCULAR_BIB_H

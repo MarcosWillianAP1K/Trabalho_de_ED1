@@ -1,5 +1,5 @@
 #include <stdbool.h>
-
+#include "Struct_data_hora.h"
 
 #ifndef Tipos_bib_h
 #define Tipos_bib_h
@@ -20,6 +20,10 @@ void *retorna_info_convertida(TIPO_INFO tipo, void *info);
 short int retornar_ID_convertido(TIPO_INFO tipo, void *info);
 
 char *retornar_nome_convertido(TIPO_INFO tipo, void *info);
+
+DATA_HORA *retornar_data_entrega_convertida(TIPO_INFO tipo, void *info);
+
+DATA_HORA *retornar_data_criacao_convertida(TIPO_INFO tipo, void *info);
 
 void atribuir_ID_convertido(TIPO_INFO tipo, void *info, short int ID);
 

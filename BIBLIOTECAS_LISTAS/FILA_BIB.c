@@ -120,6 +120,12 @@ void printar_fila(Fila *f)
 
 void liberar_fila(Fila **f, bool liberar_info)
 {
+    if (*f == NULL)
+    {
+        return;
+    }
+    
+
     Lista_encadeada *atual = (*f)->inicio;
     while (atual != NULL)
     {
