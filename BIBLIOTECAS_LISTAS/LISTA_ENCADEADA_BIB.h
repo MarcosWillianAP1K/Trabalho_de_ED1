@@ -43,4 +43,7 @@ Endereco_lista_encadeada *buscar_lista_encadeada_por_nome(Lista_encadeada *list,
 
 Endereco_lista_encadeada *buscar_lista_encadeada(Lista_encadeada *list, int ID, TIPO_INFO tipo);
 
+void copiar_lista_encadeada(Lista_encadeada **lista1, Lista_encadeada *lista2);
+
+
 #endif // LISTA_ENCADEADA_BIB_H

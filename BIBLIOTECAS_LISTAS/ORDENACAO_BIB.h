@@ -3,10 +3,14 @@
 
 #include "../BIBLIOTECAS_SISTEMA/Tipos_bib.h"
 #include "../BIBLIOTECAS_SISTEMA/Struct_data_hora.h"
+#include "../BIBLIOTECAS_LISTAS/LISTA_ENCADEADA_BIB.h"
 
 #ifndef ORDENACAO_BIB_H
 #define ORDENACAO_BIB_H
 
+void copiar_lista_para_duplamente(Lista_encadeada *lista, Lista_duplamente_encadeada **lista_dupla);
+
+void copiar_duplamente_para_lista(Lista_duplamente_encadeada *lista, Lista_encadeada **lista_encadeada);
 
 short int comparar_ID(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2);
 

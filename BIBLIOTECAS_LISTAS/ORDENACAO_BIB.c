@@ -4,6 +4,35 @@
 
 #include "ORDENACAO_BIB.h"
 
+void copiar_lista_para_duplamente(Lista_encadeada *lista, Lista_duplamente_encadeada **lista_dupla)
+{
+    if (lista == NULL)
+    {
+        return;
+    }
+
+    while (lista != NULL)
+    {
+        adicionar_elemento_duplamente_encadeada(lista_dupla, lista->informacoes, lista->tipo, true);
+        lista = lista->proximo;
+    }
+}
+
+void copiar_duplamente_para_lista(Lista_duplamente_encadeada *lista, Lista_encadeada **lista_encadeada)
+{
+    if (lista == NULL)
+    {
+        return;
+    }
+
+    while (lista != NULL)
+    {
+        adicionar_elemento_encadeada(lista_encadeada, lista->informacoes, lista->tipo);
+        lista = lista->proximo;
+    }
+}
+
+
 short int comparar_ID(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2)
 {
     short int ID1 = retornar_ID_convertido(tipo1, info1);

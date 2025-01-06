@@ -18,32 +18,41 @@ void liberar_no_circular(Lista_circular *no, bool liberar_info)
     free(no);
 }
 
-void adicionar_elemento_circular(Lista_circular **lista, void *informacoes, TIPO_INFO tipo)
+short int adicionar_elemento_circular(Lista_circular **lista, void *informacoes, TIPO_INFO tipo)
 {
+
     if (*lista == NULL)
     {
         *lista = (Lista_circular *)malloc(sizeof(Lista_circular));
         (*lista)->info = informacoes;
         (*lista)->tipo = tipo;
         (*lista)->prox = *lista;
-        pegar_data_atual((*lista)->data);
+        pegar_data_atual(&(*lista)->data);
 
+        return 1;
     }
     else
     {
+
+        // Inicia com 1 pois ja vai adicionar 1
+        short int contador = 1;
         Lista_circular *novo_no = (Lista_circular *)malloc(sizeof(Lista_circular));
         novo_no->info = informacoes;
         novo_no->tipo = tipo;
         novo_no->prox = *lista;
-        pegar_data_atual(novo_no->data);
+        pegar_data_atual(&novo_no->data);
 
         Lista_circular *atual = *lista;
 
         while (atual->prox != *lista)
         {
             atual = atual->prox;
+            contador++;
         }
         atual->prox = novo_no;
+
+        // soma mais 1 pois o contador para no penultimo elemento
+        return contador + 1;
     }
 }
 
@@ -92,7 +101,7 @@ void remover_primeiro_elemento_circular(Lista_circular **lista, bool liberar_inf
     }
 }
 
-void remover_elemento_circular_por_ID(Lista_circular **lista, int ID, TIPO_INFO tipo ,bool liberar_info)
+void remover_elemento_circular_por_ID(Lista_circular **lista, int ID, TIPO_INFO tipo, bool liberar_info)
 {
     if (*lista == NULL)
     {
@@ -126,7 +135,7 @@ void remover_elemento_circular_por_ID(Lista_circular **lista, int ID, TIPO_INFO 
                     }
                     anterior->prox = atual->prox;
                     *lista = atual->prox;
-                    
+
                     liberar_no_circular(atual, liberar_info);
                     return;
                 }
@@ -134,7 +143,7 @@ void remover_elemento_circular_por_ID(Lista_circular **lista, int ID, TIPO_INFO 
             else
             {
                 anterior->prox = atual->prox;
-                
+
                 liberar_no_circular(atual, liberar_info);
                 return;
             }
@@ -179,7 +188,7 @@ void remover_elemento_circular_por_endereco(Lista_circular **lista, Lista_circul
                     }
                     anterior->prox = atual->prox;
                     *lista = atual->prox;
-                    
+
                     liberar_no_circular(atual, liberar_info);
                     return;
                 }
@@ -187,7 +196,7 @@ void remover_elemento_circular_por_endereco(Lista_circular **lista, Lista_circul
             else
             {
                 anterior->prox = atual->prox;
-                
+
                 liberar_no_circular(atual, liberar_info);
                 return;
             }
@@ -239,7 +248,7 @@ void liberar_memoria_circular(Lista_circular **lista, bool liberar_info)
         atual = proximo;
         proximo = atual->prox;
     }
-    
+
     liberar_no_circular(atual, liberar_info);
     *lista = NULL;
 }

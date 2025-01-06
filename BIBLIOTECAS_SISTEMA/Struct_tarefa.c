@@ -96,28 +96,6 @@ void atribuir_nome(char **nome1, char *nome2)
     strcpy(*nome1, nome2);
 }
 
-void copiar_lista_encadeada(Lista_encadeada **lista1, Lista_encadeada *lista2, TIPO_INFO tipo)
-{
-    if (lista2 == NULL)
-    {
-        return;
-    }
-
-    if (*lista1 == NULL)
-    {
-        *lista1 = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
-    }
-
-    Lista_encadeada *aux = lista2;
-
-    while (aux != NULL)
-    {
-
-        adicionar_elemento_encadeada(lista1, aux->informacoes, tipo);
-        
-        aux = aux->proximo;
-    }
-}
 
 void copiar_tarefas(TAREFA **tarefa1, TAREFA *tarefa2)
 {
@@ -158,7 +136,7 @@ void copiar_tarefas(TAREFA **tarefa1, TAREFA *tarefa2)
     (*tarefa1)->data_criacao->mes = tarefa2->data_criacao->mes;
     (*tarefa1)->data_criacao->ano = tarefa2->data_criacao->ano;
 
-   copiar_lista_encadeada(&(*tarefa1)->usuarios_associados, tarefa2->usuarios_associados, INFO_USUARIO);
+   copiar_lista_encadeada(&(*tarefa1)->usuarios_associados, tarefa2->usuarios_associados);
 
    
 }

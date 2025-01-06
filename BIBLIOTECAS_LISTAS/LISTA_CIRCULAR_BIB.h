@@ -13,7 +13,7 @@ typedef struct Lista_circular
     struct Lista_circular *prox;
 } Lista_circular;
 
-void adicionar_elemento_circular(Lista_circular **lista, void *informacoes, TIPO_INFO tipo);
+short int adicionar_elemento_circular(Lista_circular **lista, void *informacoes, TIPO_INFO tipo);
 
 void printar_lista_circular(Lista_circular *lista);
 
