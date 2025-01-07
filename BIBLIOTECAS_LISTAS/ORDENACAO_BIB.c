@@ -93,7 +93,8 @@ short int comparar_prioridade(void *info1, void *info2, TIPO_INFO tipo1, TIPO_IN
 {
     if (tipo1 == INFO_USUARIO || tipo2 == INFO_USUARIO)
     {
-        error_tipo();
+        printf("tipo invalido\n");
+        exit(1);
     }
 
     short int prioridade1 = retornar_ID_convertido(tipo1, info1);
@@ -172,7 +173,8 @@ short int comparar_data_entrega(void *info1, void *info2, TIPO_INFO tipo1, TIPO_
 {
     if (tipo1 == INFO_USUARIO || tipo2 == INFO_USUARIO)
     {
-        error_tipo();
+        printf("tipo invalido\n");
+        exit(1);
     }
 
     DATA_HORA *data1 = retornar_data_entrega_convertida(tipo1, info1);
@@ -187,7 +189,8 @@ short int comparar_data_criacao(void *info1, void *info2, TIPO_INFO tipo1, TIPO_
 {
     if (tipo1 == INFO_USUARIO || tipo2 == INFO_USUARIO)
     {
-        error_tipo();
+        printf("tipo invalido\n");
+        exit(1);
     }
 
     DATA_HORA *data1 = retornar_data_criacao_convertida(tipo1, info1);

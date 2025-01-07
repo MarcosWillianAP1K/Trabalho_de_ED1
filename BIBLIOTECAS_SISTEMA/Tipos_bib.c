@@ -7,9 +7,25 @@
 #include <stdlib.h>
 
 
-void error_tipo()
+void error_tipo(TIPO_INFO tipo)
 {
     printf("Tipo invalido\n");
+    const char *tipo_str;
+    switch (tipo) {
+        case INFO_TAREFA:
+            tipo_str = "INFO_TAREFA";
+            break;
+        case INFO_USUARIO:
+            tipo_str = "INFO_USUARIO";
+            break;
+        case INFO_GERENTE:
+            tipo_str = "INFO_GERENTE";
+            break;
+        default:
+            tipo_str = "UNKNOWN";
+            break;
+    }
+    printf("O tipo e: %s\n", tipo_str);
     exit(1);
 }
 
@@ -32,7 +48,7 @@ DATA_HORA *retornar_data_entrega_convertida(TIPO_INFO tipo, void *info)
         break;
 
     default:
-        error_tipo();
+        error_tipo(tipo);
         break;
     }
 }
@@ -57,7 +73,7 @@ DATA_HORA *retornar_data_criacao_convertida(TIPO_INFO tipo, void *info)
         break;
 
     default:
-        error_tipo();
+        error_tipo(tipo);
         break;
     }
 }
@@ -82,23 +98,12 @@ if (info == NULL)
         break;
 
     default:
-        error_tipo();
+        error_tipo(tipo);
         break;
     }
 }
 
-void conferir_tipos(TIPO_INFO tipo1, TIPO_INFO tipo2, void *info1, void *info2)
-{
-    if (info1 == NULL || info2 == NULL)
-    {
-        return;
-    }
 
-    if (tipo1 != tipo2)
-    {
-        error_tipo();
-    }
-}
 
 void *retorna_info_convertida(TIPO_INFO tipo, void *info)
 {
@@ -117,7 +122,7 @@ void *retorna_info_convertida(TIPO_INFO tipo, void *info)
         break;
 
     default:
-        error_tipo();
+        error_tipo(tipo);
         break;
     }
 }
@@ -145,7 +150,7 @@ short int retornar_ID_convertido(TIPO_INFO tipo, void *info)
         break;
 
     default:
-        error_tipo();
+        error_tipo(tipo);
         break;
     }
 }
@@ -172,7 +177,7 @@ char *retornar_nome_convertido(TIPO_INFO tipo, void *info)
         break;
 
     default:
-        error_tipo();
+        error_tipo(tipo);
         break;
     }
 }
@@ -199,7 +204,7 @@ void atribuir_ID_convertido(TIPO_INFO tipo, void *info, short int ID)
         break;
 
     default:
-        error_tipo();
+        error_tipo(tipo);
         break;
     }
 }
@@ -226,7 +231,7 @@ void liberar_INFO_convertido(TIPO_INFO tipo, void **info)
         break;
 
     default:
-        error_tipo();
+        error_tipo(tipo);
         break;
     }
 }
@@ -253,7 +258,7 @@ void printar_INFO_convertido(TIPO_INFO tipo, void *info)
         break;
 
     default:
-        error_tipo();
+        error_tipo(tipo);
         break;
     }
 }
@@ -282,7 +287,7 @@ void *editar_INFO_convertido(TIPO_INFO tipo, void **info, bool liberar_info_anti
         break;
 
     default:
-        error_tipo();
+        error_tipo(tipo);
         break;
     }
 
