@@ -1282,9 +1282,9 @@ bool menu_gerente()
 {
     char opcao;
 
-    armazenamento_desfazer = NULL;
+    // armazenamento_desfazer = NULL;
 
-    adicionar_no_desfazer(*geral, &armazenamento_desfazer);
+    // adicionar_no_desfazer(*geral, &armazenamento_desfazer);
 
     do
     {
