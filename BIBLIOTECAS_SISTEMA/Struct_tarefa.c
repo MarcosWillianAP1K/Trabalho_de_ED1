@@ -252,6 +252,7 @@ TAREFA *escrever_tarefa()
 
     while (1)
     {
+        limpar_terminal();
         // tarefa->ID = digitar_ID();
 
         // Sera atribuido o ID correto depois
@@ -285,6 +286,7 @@ TAREFA *escrever_tarefa()
                     printf("Operacao cancelada.\n");
                     return tarefa;
                 }
+                limpar_terminal();
             }
             else
             {
@@ -329,6 +331,7 @@ TAREFA *editar_tarefa(TAREFA **tarefa, bool liberar_tarefa_antiga)
 
     do
     {
+        limpar_terminal();
         printar_tarefa(nova_tarefa);
         // printar_tarefa(*tarefa);
 
@@ -389,6 +392,7 @@ TAREFA *editar_tarefa(TAREFA **tarefa, bool liberar_tarefa_antiga)
                         free(data);
                         break;
                     }
+                    limpar_terminal();
                 }
             }
         }
@@ -425,6 +429,7 @@ TAREFA *editar_tarefa(TAREFA **tarefa, bool liberar_tarefa_antiga)
                         free(data);
                         break;
                     }
+                    limpar_terminal();
                 }
             }
         }
