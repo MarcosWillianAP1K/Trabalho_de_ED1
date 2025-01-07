@@ -4,8 +4,8 @@
 
 void adicionar_elemento_pilha(Pilha **p, void *info, TIPO_INFO tipo)
 {
-    Lista_encadeada *novo = (Lista_encadeada *)malloc(sizeof(Lista_encadeada));
-    novo->informacoes = info;
+    Pilha_encadeada *novo = (Pilha_encadeada *)malloc(sizeof(Pilha_encadeada));
+    novo->ultimo_estado = info;
     novo->tipo = tipo;
     novo->proximo = NULL;
 
@@ -28,23 +28,6 @@ void adicionar_elemento_pilha(Pilha **p, void *info, TIPO_INFO tipo)
     }
 }
 
-void atribuir_Lista_encadeada_a_pilha(Lista_encadeada *lista, Pilha **p)
-{
-    if (lista == NULL)
-    {
-        return;
-    }
-
-    if (*p != NULL && (*p)->topo != NULL)
-    {
-        printf("\nPilha ja possui elementos.\n");
-        return;
-    }
-    free(*p);
-    *p = (Pilha *)malloc(sizeof(Pilha));
-    (*p)->topo = lista;
-}
-
 void *remover_elemento_pilha(Pilha *p)
 {
     if (p == NULL || p->topo == NULL)
@@ -52,15 +35,12 @@ void *remover_elemento_pilha(Pilha *p)
         return NULL;
     }
 
-    Lista_encadeada *removido = p->topo;
+    Pilha_encadeada *removido = p->topo;
     p->topo = p->topo->proximo;
 
-    void *info = removido->informacoes;
+    void *info = removido->ultimo_estado;
     TIPO_INFO tipo = removido->tipo;
     free(removido);
-
-
-   
 
     return retorna_info_convertida(tipo, info);
 }
@@ -73,7 +53,7 @@ void printar_topo_pilha(Pilha *p)
         return;
     }
 
-    printar_INFO_convertido(p->topo->tipo, p->topo->informacoes);
+    printar_INFO_convertido(p->topo->tipo, p->topo->ultimo_estado);
     printf("\n");
 }
 
@@ -85,11 +65,11 @@ void printar_pilha(Pilha *p)
         return;
     }
 
-    Lista_encadeada *aux = p->topo;
+    Pilha_encadeada *aux = p->topo;
 
     while (aux != NULL)
     {
-        printar_INFO_convertido(aux->tipo, aux->informacoes);
+        printar_INFO_convertido(aux->tipo, aux->ultimo_estado);
         printf("\n");
         aux = aux->proximo;
     }
@@ -102,13 +82,20 @@ void liberar_pilha(Pilha **p, bool liberar_info)
         return;
     }
 
-    Lista_encadeada *aux;
+    Pilha_encadeada *aux;
 
     while ((*p)->topo != NULL)
     {
+        if ((*p)->topo->tipo == INFO_GERENTE)
+        {
+            printf("Esse tipo de informacao nao pode ser liberada aqui\n");
+            exit(1);
+        }
+
         aux = (*p)->topo;
         (*p)->topo = (*p)->topo->proximo;
-        liberar_no_encadeada(aux, liberar_info);
+        liberar_INFO_convertido(aux->tipo, aux->ultimo_estado);
+        free(aux);
     }
     free(*p);
     *p = NULL;

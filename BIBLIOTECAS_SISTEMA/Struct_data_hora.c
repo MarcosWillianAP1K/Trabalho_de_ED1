@@ -62,6 +62,12 @@ bool validar_data(DATA_HORA *data)
 
 void pegar_data_atual(DATA_HORA *data)
 {
+    if (data == NULL)
+    {
+       return;
+    }
+    
+
     time_t t = time(NULL);
     // Pega a data atual
     struct tm tempo_atual = *localtime(&t);

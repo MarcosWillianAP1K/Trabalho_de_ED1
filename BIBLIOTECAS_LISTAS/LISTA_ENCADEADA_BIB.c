@@ -90,6 +90,12 @@ void *verificar_ID(void *arg)
 
 void adicionar_elemento_encadeada_atribuir_ID(Lista_encadeada **lista, void *informacoes, TIPO_INFO tipo)
 {
+    if (tipo == INFO_GERENTE)
+    {
+        return;
+    }
+    
+
     srand(time(NULL));
 
     // vazia
@@ -165,7 +171,7 @@ void adicionar_elemento_encadeada(Lista_encadeada **lista, void *informacoes, TI
 // Fornece o ID do elemento a ser removido
 void remover_elemento_encadeada_por_ID(Lista_encadeada **lista, int ID, TIPO_INFO tipo ,bool liberar_info)
 {
-    if (lista == NULL)
+    if (*lista == NULL || tipo == INFO_GERENTE)
     {
         return;
     }

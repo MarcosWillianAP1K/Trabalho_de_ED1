@@ -31,9 +31,9 @@ short int comparar_data_criacao(void *info1, void *info2, TIPO_INFO tipo1, TIPO_
 
 void trocar_nos(Lista_duplamente_encadeada **no1, Lista_duplamente_encadeada **no2);
 
-short int comparar_data_conclusao(Lista_circular *no1, Lista_circular *no2);
+short int comparar_data_conclusao(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2);
 
-void selection_sort_lista_circular(Lista_circular **lista, short int (*comparar)(Lista_circular *no1, Lista_circular *no2));
+void selection_sort_lista_circular(Lista_circular **lista, short int (*comparar)(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2));
 
 void bubble_sort_lista_duplamente_encadeada(Lista_duplamente_encadeada **inicio, short int (*comparar)(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2));
 

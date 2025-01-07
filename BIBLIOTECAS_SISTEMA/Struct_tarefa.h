@@ -13,6 +13,7 @@ typedef struct TAREFA
     signed short int nivel_prioridade;
     DATA_HORA *data_entrega;
     DATA_HORA *data_criacao;
+    DATA_HORA *data_conclusao;
     // char *descricao;????
 
     Lista_encadeada *usuarios_associados;

@@ -25,5 +25,6 @@ USUARIO *escrever_usuario();
 
 void printar_usuario(USUARIO *info);
 
+void copiar_USUARIO(USUARIO *original, USUARIO **copia);
 
 #endif // Struct_usuario_h

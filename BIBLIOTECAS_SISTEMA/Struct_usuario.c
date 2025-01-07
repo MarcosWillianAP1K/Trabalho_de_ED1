@@ -173,3 +173,32 @@ void printar_usuario(USUARIO *info)
 
 
 }
+
+void copiar_USUARIO(USUARIO *original, USUARIO **copia)
+{
+    if (original == NULL)
+    {
+        return;
+    }
+
+
+    if (*copia != NULL)
+    {
+        liberar_USUARIO(copia);
+    }
+    *copia = criar_USUARIO();
+
+    (*copia)->ID = original->ID;
+    (*copia)->login = (char *)malloc((strlen(original->login) + 1) * sizeof(char));
+    strcpy((*copia)->login, original->login);
+
+    if (original->tarefas_associadas != NULL)
+    {
+        copiar_lista_encadeada(&(*copia)->tarefas_associadas, original->tarefas_associadas);
+    }
+
+    if (original->historico != NULL)
+    {
+        copiar_lista_circular(original->historico, &(*copia)->historico);
+    }
+}

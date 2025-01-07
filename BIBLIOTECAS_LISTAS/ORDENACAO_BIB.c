@@ -196,15 +196,19 @@ short int comparar_data_criacao(void *info1, void *info2, TIPO_INFO tipo1, TIPO_
     return comparar_data(data1, data2);
 }
 
-//Comparaçãoe excluisiva para lista circular
-short int comparar_data_conclusao(Lista_circular *no1, Lista_circular *no2)
+
+short int comparar_data_conclusao(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2)
 {
-    if (no1 == NULL || no2 == NULL)
+    if (info1 == NULL || info2 == NULL)
     {
         return 0;
     }
 
-    return comparar_data(no1->data, no2->data);
+    DATA_HORA *data1 = retornar_data_conclusao_convertida(tipo1, info1);
+    DATA_HORA *data2 = retornar_data_conclusao_convertida(tipo2, info2);
+
+
+    return comparar_data(data1, data2);
 }
 
 
@@ -214,8 +218,8 @@ short int comparar_data_conclusao(Lista_circular *no1, Lista_circular *no2)
 // }
 
 
-//Essa ordenação é exclusiva para historico geral
-void selection_sort_lista_circular(Lista_circular **lista, short int (*comparar)(Lista_circular *no1, Lista_circular *no2))
+//Essa ordenação é exclusiva para lista circular
+void selection_sort_lista_circular(Lista_circular **lista, short int (*comparar)(void *info1, void *info2, TIPO_INFO tipo1, TIPO_INFO tipo2))
 {
     if (*lista == NULL)
     {
@@ -233,7 +237,7 @@ void selection_sort_lista_circular(Lista_circular **lista, short int (*comparar)
 
         while (aux2 != *lista)
         {
-            if (comparar(menor, aux2) > 0)
+            if (comparar(menor->info, aux2->info, menor->tipo, aux2->tipo) > 0)
             {
                 menor = aux2;
             }

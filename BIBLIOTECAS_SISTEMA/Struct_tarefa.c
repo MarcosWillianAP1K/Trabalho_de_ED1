@@ -7,9 +7,16 @@
 
 void liberar_TAREFA(TAREFA **tarefa)
 {
+    if (*tarefa == NULL)
+    {
+        return;
+    }
+    
+
     free((*tarefa)->nome);
     liberar_DATA_HORA(&(*tarefa)->data_entrega);
     liberar_DATA_HORA(&(*tarefa)->data_criacao);
+    liberar_DATA_HORA(&(*tarefa)->data_conclusao);
     liberar_memoria_encadeada(&(*tarefa)->usuarios_associados, false);
     free(*tarefa);
     *tarefa = NULL;
@@ -77,6 +84,7 @@ TAREFA *criar_tarefa()
     tarefa->nivel_prioridade = 0;
     tarefa->data_criacao = criar_data_hora();
     tarefa->data_entrega = criar_data_hora();
+    tarefa->data_conclusao = NULL;
     tarefa->usuarios_associados = NULL;
 
     pegar_data_atual(tarefa->data_criacao);
@@ -96,7 +104,6 @@ void atribuir_nome(char **nome1, char *nome2)
     strcpy(*nome1, nome2);
 }
 
-
 void copiar_tarefas(TAREFA **tarefa1, TAREFA *tarefa2)
 {
 
@@ -105,30 +112,22 @@ void copiar_tarefas(TAREFA **tarefa1, TAREFA *tarefa2)
         return;
     }
 
-   
-
     if (*tarefa1 == NULL)
     {
         *tarefa1 = criar_tarefa();
     }
-   
 
     (*tarefa1)->ID = tarefa2->ID;
-   
 
     atribuir_nome(&(*tarefa1)->nome, tarefa2->nome);
-    
 
     (*tarefa1)->nivel_prioridade = tarefa2->nivel_prioridade;
-   
 
     (*tarefa1)->data_entrega->minuto = tarefa2->data_entrega->minuto;
     (*tarefa1)->data_entrega->hora = tarefa2->data_entrega->hora;
     (*tarefa1)->data_entrega->dia = tarefa2->data_entrega->dia;
     (*tarefa1)->data_entrega->mes = tarefa2->data_entrega->mes;
     (*tarefa1)->data_entrega->ano = tarefa2->data_entrega->ano;
-    
-
 
     (*tarefa1)->data_criacao->minuto = tarefa2->data_criacao->minuto;
     (*tarefa1)->data_criacao->hora = tarefa2->data_criacao->hora;
@@ -136,9 +135,17 @@ void copiar_tarefas(TAREFA **tarefa1, TAREFA *tarefa2)
     (*tarefa1)->data_criacao->mes = tarefa2->data_criacao->mes;
     (*tarefa1)->data_criacao->ano = tarefa2->data_criacao->ano;
 
-   copiar_lista_encadeada(&(*tarefa1)->usuarios_associados, tarefa2->usuarios_associados);
+    if (tarefa2->data_conclusao != NULL)
+    {
+        (*tarefa1)->data_conclusao->minuto = tarefa2->data_conclusao->minuto;
+        (*tarefa1)->data_conclusao->hora = tarefa2->data_conclusao->hora;
+        (*tarefa1)->data_conclusao->dia = tarefa2->data_conclusao->dia;
+        (*tarefa1)->data_conclusao->mes = tarefa2->data_conclusao->mes;
+        (*tarefa1)->data_conclusao->ano = tarefa2->data_conclusao->ano;
+    }
+    
 
-   
+    copiar_lista_encadeada(&(*tarefa1)->usuarios_associados, tarefa2->usuarios_associados);
 }
 
 void printar_tarefa(TAREFA *tarefa)

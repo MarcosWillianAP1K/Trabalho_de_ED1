@@ -7,7 +7,8 @@
 
 typedef enum TIPO_INFO{
     INFO_TAREFA,
-    INFO_USUARIO
+    INFO_USUARIO,
+    INFO_GERENTE
 } TIPO_INFO;
 
 void error_tipo();
@@ -24,6 +25,8 @@ char *retornar_nome_convertido(TIPO_INFO tipo, void *info);
 DATA_HORA *retornar_data_entrega_convertida(TIPO_INFO tipo, void *info);
 
 DATA_HORA *retornar_data_criacao_convertida(TIPO_INFO tipo, void *info);
+
+DATA_HORA *retornar_data_conclusao_convertida(TIPO_INFO tipo, void *info);
 
 void atribuir_ID_convertido(TIPO_INFO tipo, void *info, short int ID);
 

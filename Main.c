@@ -7,7 +7,7 @@ int main()
 {
     GERENTE *gerente = NULL;
 
-    inicializacao_do_sistema(&gerente);
+    inicializacao_do_sistema(&gerente, true);
 
     menu_inicial(&gerente);
 

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "LISTA_CIRCULAR_BIB.h"
+#include "../BIBLIOTECAS_SISTEMA/Struct_tarefa.h"
 
 void liberar_no_circular(Lista_circular *no, bool liberar_info)
 {
@@ -13,23 +14,30 @@ void liberar_no_circular(Lista_circular *no, bool liberar_info)
     {
         liberar_INFO_convertido(no->tipo, &no->info);
     }
-    liberar_DATA_HORA(&no->data);
 
     free(no);
 }
 
 short int adicionar_elemento_circular(Lista_circular **lista, void *informacoes, TIPO_INFO tipo)
 {
+    if (tipo == INFO_TAREFA)
+    { 
+        TAREFA *info = (TAREFA *)informacoes;
+        if (info->data_conclusao == NULL)
+        {
+            
+            info->data_conclusao = criar_data_hora();
+            pegar_data_atual(info->data_conclusao);
+        }
+    }
 
     if (*lista == NULL)
     {
-
+       
         *lista = (Lista_circular *)malloc(sizeof(Lista_circular));
         (*lista)->info = informacoes;
         (*lista)->tipo = tipo;
         (*lista)->prox = *lista;
-        (*lista)->data = criar_data_hora();
-        pegar_data_atual((*lista)->data);
         
         return 1;
     }
@@ -42,8 +50,6 @@ short int adicionar_elemento_circular(Lista_circular **lista, void *informacoes,
         novo_no->info = informacoes;
         novo_no->tipo = tipo;
         novo_no->prox = *lista;
-        novo_no->data = criar_data_hora();
-        pegar_data_atual(novo_no->data);
 
         Lista_circular *atual = *lista;
 
@@ -69,8 +75,9 @@ void printar_lista_circular(Lista_circular *lista)
     Lista_circular *atual = lista;
     do
     {
+        TAREFA *tarefa = (TAREFA *)atual->info;
         printf("Data de conclusao: ");
-        printf("%02hd/%02hd/%d %02hd:%02hd\n", atual->data->dia, atual->data->mes, atual->data->ano, atual->data->hora, atual->data->minuto);
+        printf("%02hd/%02hd/%d %02hd:%02hd\n", tarefa->data_conclusao->dia, tarefa->data_conclusao->mes, tarefa->data_conclusao->ano, tarefa->data_conclusao->hora, tarefa->data_conclusao->minuto);
         printar_INFO_convertido(atual->tipo, atual->info);
         printf("\n");
         atual = atual->prox;

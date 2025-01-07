@@ -6,10 +6,15 @@
 
 #include "Sistema.h"
 
+Pilha *ultimo_estado = NULL;
+
 GERENTE **geral = NULL;
 USUARIO *usuario_logado = NULL;
 Fila *tarefas_do_usuario = NULL;
 char ultima_organizacao_do_usuario = '1';
+
+
+
 
 void apagar_historico(USUARIO *usuario)
 {
@@ -42,63 +47,7 @@ void msg_saindo()
     Sleep(100);
 }
 
-void adicionar_testes(GERENTE **gerente)
-{
-    TAREFA *tarefa1 = criar_tarefa();
-    TAREFA *tarefa2 = criar_tarefa();
 
-    atribuir_nome(&tarefa1->nome, "tarefa1");
-    atribuir_nome(&tarefa2->nome, "tarefa2");
-
-    tarefa1->ID = 1;
-    tarefa2->ID = 2;
-
-    tarefa1->nivel_prioridade = 1;
-    tarefa2->nivel_prioridade = 2;
-
-    adicionar_elemento_encadeada_atribuir_ID(&(*gerente)->tarefas, tarefa1, INFO_TAREFA);
-    adicionar_elemento_encadeada_atribuir_ID(&(*gerente)->tarefas, tarefa2, INFO_TAREFA);
-
-    USUARIO *usuario1 = criar_USUARIO();
-    USUARIO *usuario2 = criar_USUARIO();
-
-    atribuir_nome(&usuario1->login, "usuario1");
-    atribuir_nome(&usuario2->login, "usuario2");
-
-    usuario1->ID = 1;
-    usuario2->ID = 2;
-
-    adicionar_elemento_encadeada_atribuir_ID(&(*gerente)->usuarios, usuario1, INFO_USUARIO);
-    adicionar_elemento_encadeada_atribuir_ID(&(*gerente)->usuarios, usuario2, INFO_USUARIO);
-}
-
-void inicializacao_do_sistema(GERENTE **gerente)
-{
-    if (*gerente != NULL)
-    {
-        liberacao_da_memoria_sistema(gerente);
-    }
-    else
-    {
-        *gerente = (GERENTE *)malloc(sizeof(GERENTE));
-    }
-
-    (*gerente)->tarefas = NULL;
-    (*gerente)->usuarios = NULL;
-
-    adicionar_testes(gerente);
-
-    // printf("Sistema inicializado\n");
-}
-
-void liberacao_da_memoria_sistema(GERENTE **gerente)
-{
-    liberar_memoria_encadeada(&(*gerente)->tarefas, true);
-    liberar_memoria_encadeada(&(*gerente)->usuarios, true);
-
-    free(*gerente);
-    *gerente = NULL;
-}
 
 void criar_tarefa_gerente(Lista_encadeada **lista)
 {
@@ -175,8 +124,7 @@ void excluir_INFO(Endereco_lista_encadeada *endereco, TIPO_INFO tipo, bool liber
         TAREFA *tarefa = (TAREFA *)endereco->no->informacoes;
         Lista_encadeada *usuarios = tarefa->usuarios_associados;
 
-        if (usuarios != NULL)
-        {
+        
 
             while (usuarios != NULL)
             {
@@ -190,7 +138,7 @@ void excluir_INFO(Endereco_lista_encadeada *endereco, TIPO_INFO tipo, bool liber
             }
 
             liberar_memoria_encadeada(&tarefa->usuarios_associados, false);
-        }
+        
 
         remover_elemento_encadeada_por_endereco(endereco, &(*geral)->tarefas, liberar_info);
     }
@@ -1370,4 +1318,185 @@ void menu_inicial(GERENTE **gerente)
         }
 
     } while (opcao != '0');
+}
+
+
+void ligar_ponteiros_do_usuario_tarefas_associadas_a_tarefas(USUARIO *usuario, Lista_encadeada *tarefas)
+{
+    if (usuario == NULL || tarefas == NULL)
+    {
+        return;
+    }
+    Lista_encadeada *nova_tarefa_associada = tarefas;
+
+    while (tarefas != NULL)
+    {
+        TAREFA *tarefa = (TAREFA *)tarefas->informacoes;
+
+        if (tarefa != NULL)
+        {
+            if (verificar_se_usuario_possui_tarefa(usuario, &tarefa->ID))
+            {
+                adicionar_elemento_encadeada(&tarefa->usuarios_associados, usuario, INFO_USUARIO);
+                adicionar_elemento_encadeada(&nova_tarefa_associada, tarefa, INFO_TAREFA);
+            }
+        }
+        tarefas = tarefas->proximo;
+    }
+
+    liberar_memoria_encadeada(&usuario->tarefas_associadas, false);
+    usuario->tarefas_associadas = nova_tarefa_associada;
+}
+
+void copiar_historico_alocando(USUARIO *usuario)
+{
+
+    if(usuario == NULL || usuario->historico == NULL)
+    {
+        return;
+    }
+    Lista_circular *aux = usuario->historico;
+    Lista_circular *novo_historico = NULL;
+
+    do
+    {
+        TAREFA *copia = NULL;
+
+        copiar_tarefas(&copia, aux->info);
+        adicionar_elemento_circular(&novo_historico, copia, INFO_TAREFA);
+    }while(aux != usuario->historico);
+
+    liberar_memoria_circular(&usuario->historico, false);
+    usuario->historico = novo_historico;
+
+}
+
+void copiar_sistema_para_outro_sistema(GERENTE *gerente_copiado, GERENTE **gerente_recebedor)
+{
+    if(gerente_copiado == NULL)
+    {
+        return;
+    }
+
+    if(*gerente_recebedor != NULL)
+    {
+        liberacao_da_memoria_sistema(gerente_recebedor);
+    }
+
+    Lista_encadeada *tarefas = gerente_copiado->tarefas;
+
+    while (tarefas != NULL)
+    {
+        TAREFA *tarefa = (TAREFA *)tarefas->informacoes;
+
+        
+            TAREFA *copia = NULL;
+            copiar_tarefas(&copia, tarefa);
+            liberar_memoria_encadeada(&copia->usuarios_associados, false);
+            
+            adicionar_elemento_encadeada(&(*gerente_recebedor)->tarefas, copia, INFO_TAREFA);
+        
+
+        tarefas = tarefas->proximo;
+    }
+    
+    
+
+    Lista_encadeada *usuarios = gerente_copiado->usuarios;
+    
+
+    while ( usuarios != NULL)
+    {
+        USUARIO *usuario = (USUARIO *)usuarios->informacoes;
+
+        if(usuario != NULL)
+        {
+            USUARIO *copia = NULL;
+            copiar_USUARIO(usuario, &copia);
+            ligar_ponteiros_do_usuario_tarefas_associadas_a_tarefas(copia, (*gerente_recebedor)->tarefas);
+            copiar_historico_alocando(copia);
+            adicionar_elemento_encadeada(&(*gerente_recebedor)->usuarios, copia, INFO_USUARIO);
+        }
+
+        usuarios = usuarios->proximo;
+    }
+
+    usuarios = gerente_copiado->usuarios;
+
+
+
+
+}
+
+
+
+
+void adicionar_testes(GERENTE **gerente)
+{
+    TAREFA *tarefa1 = criar_tarefa();
+    TAREFA *tarefa2 = criar_tarefa();
+
+    atribuir_nome(&tarefa1->nome, "tarefa1");
+    atribuir_nome(&tarefa2->nome, "tarefa2");
+
+    tarefa1->ID = 1;
+    tarefa2->ID = 2;
+
+    tarefa1->nivel_prioridade = 1;
+    tarefa2->nivel_prioridade = 2;
+
+    adicionar_elemento_encadeada_atribuir_ID(&(*gerente)->tarefas, tarefa1, INFO_TAREFA);
+    adicionar_elemento_encadeada_atribuir_ID(&(*gerente)->tarefas, tarefa2, INFO_TAREFA);
+
+    USUARIO *usuario1 = criar_USUARIO();
+    USUARIO *usuario2 = criar_USUARIO();
+
+    atribuir_nome(&usuario1->login, "usuario1");
+    atribuir_nome(&usuario2->login, "usuario2");
+
+    usuario1->ID = 1;
+    usuario2->ID = 2;
+
+    adicionar_elemento_encadeada_atribuir_ID(&(*gerente)->usuarios, usuario1, INFO_USUARIO);
+    adicionar_elemento_encadeada_atribuir_ID(&(*gerente)->usuarios, usuario2, INFO_USUARIO);
+
+
+    //Atribuir
+    adicionar_elemento_encadeada(&usuario1->tarefas_associadas, tarefa1, INFO_TAREFA);
+    adicionar_elemento_encadeada(&tarefa1->usuarios_associados, usuario1, INFO_USUARIO);
+
+
+    adicionar_elemento_encadeada(&usuario2->tarefas_associadas, tarefa2, INFO_TAREFA);
+    adicionar_elemento_encadeada(&tarefa2->usuarios_associados, usuario2, INFO_USUARIO);
+}
+
+void inicializacao_do_sistema(GERENTE **gerente, bool com_testes)
+{
+    if (*gerente != NULL)
+    {
+        liberacao_da_memoria_sistema(gerente);
+    }
+    else
+    {
+        *gerente = (GERENTE *)malloc(sizeof(GERENTE));
+    }
+
+    (*gerente)->tarefas = NULL;
+    (*gerente)->usuarios = NULL;
+
+    if (com_testes)
+    {
+        adicionar_testes(gerente);
+    }
+
+    // printf("Sistema inicializado\n");
+}
+
+void liberacao_da_memoria_sistema(GERENTE **gerente)
+{
+    liberar_memoria_encadeada(&(*gerente)->tarefas, true);
+    liberar_memoria_encadeada(&(*gerente)->usuarios, true);
+
+    free(*gerente);
+    *gerente = NULL;
 }
