@@ -283,6 +283,15 @@ void desfazer(Pilha *p, GERENTE **gerente)
         return;
     }
 
+    if (usuario_logado != NULL)
+    {
+        Endereco_lista_encadeada *endereco = buscar_lista_encadeada(((GERENTE *)p->topo->ultimo_estado)->usuarios, usuario_logado->ID, INFO_USUARIO);
+
+        usuario_logado = (USUARIO *)endereco->no->informacoes;
+
+
+    }
+
     liberacao_da_memoria_sistema(gerente);
 
     *gerente = (GERENTE *)p->topo->ultimo_estado;
@@ -414,7 +423,6 @@ void excluir_INFO(Endereco_lista_encadeada *endereco, TIPO_INFO tipo, bool liber
 
     if (tipo == INFO_TAREFA)
     {
-        adicionar_no_desfazer(*geral, &armazenamento_desfazer);
         TAREFA *tarefa = (TAREFA *)endereco->no->informacoes;
         Lista_encadeada *usuarios = tarefa->usuarios_associados;
 
@@ -438,7 +446,7 @@ void excluir_INFO(Endereco_lista_encadeada *endereco, TIPO_INFO tipo, bool liber
     }
     else if (tipo == INFO_USUARIO)
     {
-        adicionar_no_desfazer(*geral, &armazenamento_desfazer);
+        
         USUARIO *usuario = (USUARIO *)endereco->no->informacoes;
         Lista_encadeada *tarefas = usuario->tarefas_associadas;
 
@@ -554,10 +562,9 @@ void atribuir_usuarior_tarefa(USUARIO *usuario, Lista_encadeada *tarefas)
 
 void reoganizar_tarefas(Fila **f, char *opcao)
 {
-    if (*f == NULL || (*f)->inicio == NULL)
+    if (usuario_logado->tarefas_associadas == NULL)
     {
-        printf("Nao ha tarefas\n");
-        pausar_terminal();
+        liberar_fila(f, false);
         return;
     }
 
@@ -688,6 +695,7 @@ void menu_oque_fazer_com_a_INFO(void *info, TIPO_INFO tipo)
             editar_INFO(&info, tipo);
             break;
         case '2':
+        adicionar_no_desfazer(*geral, &armazenamento_desfazer);
             if (tipo == INFO_TAREFA)
             {
                 excluir_INFO(buscar_lista_encadeada((*geral)->tarefas, retornar_ID_convertido(tipo, info), tipo), tipo, true);
@@ -1451,15 +1459,14 @@ void visualizar_historico_usuario(Lista_circular *historico)
 }
 
 
-bool menu_usuario(USUARIO *usuario)
+bool menu_usuario()
 {
     char opcao;
 
-    usuario_logado = usuario;
     Lista_encadeada *fila_encadeada = NULL;
     ultima_organizacao_do_usuario = '1';
 
-    copiar_lista_encadeada(&fila_encadeada, usuario->tarefas_associadas);
+    copiar_lista_encadeada(&fila_encadeada, usuario_logado->tarefas_associadas);
     atribuir_Lista_encadeada_a_fila(fila_encadeada, &tarefas_do_usuario);
 
     do
@@ -1483,7 +1490,7 @@ bool menu_usuario(USUARIO *usuario)
         switch (opcao)
         {
         case '1':
-            menu_buscar(usuario->tarefas_associadas, INFO_TAREFA, CONTA_USUARIO);
+            menu_buscar(usuario_logado->tarefas_associadas, INFO_TAREFA, CONTA_USUARIO);
             break;
         case '2':
             organizar_tarefas(&tarefas_do_usuario, &ultima_organizacao_do_usuario);
@@ -1492,13 +1499,13 @@ bool menu_usuario(USUARIO *usuario)
             ver_proxima_tarefa(&tarefas_do_usuario);
             break;
         case '4':
-            listar_tarefas(&usuario->tarefas_associadas, CONTA_USUARIO);
+            listar_tarefas(&usuario_logado->tarefas_associadas, CONTA_USUARIO);
             break;
         case '5':
-            visualizar_historico_usuario(usuario->historico);
+            visualizar_historico_usuario(usuario_logado->historico);
             break;
         case '6':
-            apagar_historico(usuario);
+            apagar_historico(usuario_logado);
 
             printf("\nHistorico apagado\n");
             pausar_terminal();
@@ -1508,7 +1515,7 @@ bool menu_usuario(USUARIO *usuario)
             case 'z':
         case 'Z':
             desfazer(armazenamento_desfazer, geral);
-
+            reoganizar_tarefas(&tarefas_do_usuario, &ultima_organizacao_do_usuario);
             break;
         case '0':
             msg_saindo();
@@ -1567,7 +1574,9 @@ void selecionar_usuario(bool *sair)
         return;
     }
 
-    *sair = menu_usuario(usuario);
+    usuario_logado = usuario;
+
+    *sair = menu_usuario();
 
     liberar_endereco_lista_encadeada(&endereco);
 }
