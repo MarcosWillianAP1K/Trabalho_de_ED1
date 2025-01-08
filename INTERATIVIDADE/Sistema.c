@@ -158,6 +158,7 @@ void copiar_historico_alocando(USUARIO *usuario)
 
         copiar_tarefas(&copia, aux->info);
         adicionar_elemento_circular(&novo_historico, copia, INFO_TAREFA);
+      
     }while(aux != usuario->historico);
 
     liberar_memoria_circular(&usuario->historico, false);
@@ -172,15 +173,15 @@ void copiar_sistema_para_outro_sistema(GERENTE *gerente_copiado, GERENTE **geren
     {
         return;
     }
+   
 
     if(*gerente_recebedor != NULL)
     {
         liberacao_da_memoria_sistema(gerente_recebedor);
     }
-
+    
     inicializacao_do_sistema(gerente_recebedor, false);
 
-    
 
     Lista_encadeada *tarefas = gerente_copiado->tarefas;
     
@@ -202,7 +203,8 @@ void copiar_sistema_para_outro_sistema(GERENTE *gerente_copiado, GERENTE **geren
         tarefas = tarefas->proximo;
         
     }
-
+    
+    // printf("Lista de tarefas copiada\n");
     // printar_lista_encadeada((*gerente_recebedor)->tarefas);
     // system("pause");
     
@@ -210,7 +212,7 @@ void copiar_sistema_para_outro_sistema(GERENTE *gerente_copiado, GERENTE **geren
 
     Lista_encadeada *usuarios = gerente_copiado->usuarios;
     
-
+    printf("inicio\n");
     while ( usuarios != NULL)
     {
         USUARIO *usuario = (USUARIO *)usuarios->informacoes;
@@ -227,9 +229,11 @@ void copiar_sistema_para_outro_sistema(GERENTE *gerente_copiado, GERENTE **geren
         usuarios = usuarios->proximo;
     }
 
+    // printf("Lista de tarefas copiada associados\n");
     // printar_lista_encadeada((*gerente_recebedor)->tarefas);
     // system("pause");
 
+    // printf("Lista de usuarios copiada\n");
     // printar_lista_encadeada((*gerente_recebedor)->usuarios);
     // system("pause");
 }
@@ -243,7 +247,7 @@ void adicionar_no_desfazer(GERENTE *estado_atual, Pilha **p)
     }
     
     GERENTE *copia = NULL;
-
+    
     copiar_sistema_para_outro_sistema(estado_atual, &copia);
 
     adicionar_elemento_pilha(p, copia, INFO_GERENTE);
@@ -1281,10 +1285,6 @@ void visualizar_historico_geral(Lista_encadeada *lista_de_usuarios)
 bool menu_gerente()
 {
     char opcao;
-
-    // armazenamento_desfazer = NULL;
-
-    // adicionar_no_desfazer(*geral, &armazenamento_desfazer);
 
     do
     {

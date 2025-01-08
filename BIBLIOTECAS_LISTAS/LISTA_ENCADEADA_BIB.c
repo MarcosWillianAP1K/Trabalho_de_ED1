@@ -337,7 +337,7 @@ void copiar_lista_encadeada(Lista_encadeada **lista1, Lista_encadeada *lista2)
     {
         return;
     }
-
+    
     if (*lista1 != NULL)
     {
         liberar_memoria_encadeada(lista1, false);
@@ -349,4 +349,5 @@ void copiar_lista_encadeada(Lista_encadeada **lista1, Lista_encadeada *lista2)
         adicionar_elemento_encadeada(lista1, lista2->informacoes, lista2->tipo);
         lista2 = lista2->proximo;
     }
+    
 }
