@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "Utilidades_sistema.h"
 
 USUARIO *criar_USUARIO()
 {
@@ -99,6 +100,7 @@ void liberar_USUARIO(USUARIO **info)
 
 USUARIO *escrever_usuario()
 {
+    limpar_terminal();
     USUARIO *novo = criar_USUARIO();
 
     if (novo == NULL)

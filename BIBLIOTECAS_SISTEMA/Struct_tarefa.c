@@ -310,6 +310,7 @@ TAREFA *escrever_tarefa()
         {
             liberar_TAREFA(&tarefa);
             printf("Operacao cancelada.\n");
+            pausar_terminal();
             break;
         }
     }
@@ -474,6 +475,7 @@ TAREFA *editar_tarefa(TAREFA **tarefa, bool liberar_tarefa_antiga)
 
                 liberar_TAREFA(&nova_tarefa);
                 printf("Operacao cancelada.\n");
+                pausar_terminal();
             }
             else
             {

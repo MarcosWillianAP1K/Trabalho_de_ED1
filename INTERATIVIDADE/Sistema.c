@@ -212,7 +212,7 @@ void copiar_sistema_para_outro_sistema(GERENTE *gerente_copiado, GERENTE **geren
 
     Lista_encadeada *usuarios = gerente_copiado->usuarios;
     
-    printf("inicio\n");
+    
     while ( usuarios != NULL)
     {
         USUARIO *usuario = (USUARIO *)usuarios->informacoes;
@@ -406,7 +406,11 @@ void editar_INFO(void **info, TIPO_INFO tipo)
         pausar_terminal();
     }
 
-    adicionar_no_desfazer(*geral, &armazenamento_desfazer);
+    if(tipo != INFO_USUARIO)
+    {
+        adicionar_no_desfazer(*geral, &armazenamento_desfazer);
+    }
+    
 
     // Mexer no desfazer aqui, tem o problema se n editar nada, vai ter um desfazer
     editar_INFO_convertido(tipo, info, true);
