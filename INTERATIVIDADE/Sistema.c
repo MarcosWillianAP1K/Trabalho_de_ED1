@@ -321,7 +321,7 @@ void apagar_historico(USUARIO *usuario)
     {
         return;
     }
-    adicionar_no_desfazer(*geral, &armazenamento_desfazer);
+    
 
     liberar_memoria_circular(&usuario->historico, true);
 }
@@ -1509,6 +1509,7 @@ bool menu_usuario()
             visualizar_historico_usuario(usuario_logado->historico);
             break;
         case '6':
+            adicionar_no_desfazer(*geral, &armazenamento_desfazer);
             apagar_historico(usuario_logado);
 
             printf("\nHistorico apagado\n");
